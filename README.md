@@ -9,16 +9,18 @@ Skills work with any agent that supports the [skills](https://github.com/anthrop
 Pick the skills you need:
 
 ```bash
+npx skills add https://github.com/yarlson/skills/tree/main/architecture-sparring
 npx skills add https://github.com/yarlson/skills/tree/main/code-review
 npx skills add https://github.com/yarlson/skills/tree/main/infra-code-review
 ```
 
 ## Skills
 
-| Skill                                     | What it does                                                                             |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [`code-review`](code-review/)             | Code review — security, bugs, perf — with ranked findings and fixes                      |
-| [`infra-code-review`](infra-code-review/) | IaC review — network exposure, IAM, destructive changes, cost — before plan/apply/deploy |
+| Skill                                             | What it does                                                                                   |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [`architecture-sparring`](architecture-sparring/) | Architecture sparring — force clear product and system design decisions one question at a time |
+| [`code-review`](code-review/)                     | Code review — security, bugs, perf — with ranked findings and fixes                            |
+| [`infra-code-review`](infra-code-review/)         | IaC review — network exposure, IAM, destructive changes, cost — before plan/apply/deploy       |
 
 ## How skills work
 
