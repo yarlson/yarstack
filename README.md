@@ -10,17 +10,29 @@ Pick the skills you need:
 
 ```bash
 npx skills add https://github.com/yarlson/skills/tree/main/architecture-sparring
+npx skills add https://github.com/yarlson/skills/tree/main/ci
+npx skills add https://github.com/yarlson/skills/tree/main/ci-with-pr
 npx skills add https://github.com/yarlson/skills/tree/main/code-review
+npx skills add https://github.com/yarlson/skills/tree/main/coderabbit
+npx skills add https://github.com/yarlson/skills/tree/main/critical-journey-docs
 npx skills add https://github.com/yarlson/skills/tree/main/infra-code-review
+npx skills add https://github.com/yarlson/skills/tree/main/project-context
+npx skills add https://github.com/yarlson/skills/tree/main/review
 ```
 
 ## Skills
 
-| Skill                                             | What it does                                                                                   |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| [`architecture-sparring`](architecture-sparring/) | Architecture sparring — force clear product and system design decisions one question at a time |
-| [`code-review`](code-review/)                     | Code review — security, bugs, perf — with ranked findings and fixes                            |
-| [`infra-code-review`](infra-code-review/)         | IaC review — network exposure, IAM, destructive changes, cost — before plan/apply/deploy       |
+| Skill                                             | What it does                                                                                          |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [`architecture-sparring`](architecture-sparring/) | Architecture sparring — force clear product and system design decisions one question at a time        |
+| [`ci`](ci/)                                       | CI — commit all changes, push, wait for checks, fix red builds, and iterate until green               |
+| [`ci-with-pr`](ci-with-pr/)                       | CI with PR — branch, commit, push, open a draft PR, wait for checks, and fix red builds               |
+| [`code-review`](code-review/)                     | Code review — security, bugs, perf — with ranked findings and fixes                                   |
+| [`coderabbit`](coderabbit/)                       | CodeRabbit — triage bot review comments, fix legitimate issues, push, and resolve threads             |
+| [`critical-journey-docs`](critical-journey-docs/) | Critical journey docs — concise Markdown journey, flow, acceptance, telemetry, and coverage artifacts |
+| [`infra-code-review`](infra-code-review/)         | IaC review — network exposure, IAM, destructive changes, cost — before plan/apply/deploy              |
+| [`project-context`](project-context/)             | Project context — create or update current-state docs under `docs/context/`                           |
+| [`review`](review/)                               | Review — rigorous code review of uncommitted changes                                                  |
 
 ## How skills work
 
