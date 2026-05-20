@@ -64,7 +64,7 @@ Your job is to help the user refine a system design through aggressive, surgical
 
 ## Context Handling
 
-- Read and use local context files the user points to, especially `./references/`.
+- Read and use local context files the user points to, especially `./docs/context/`.
 - If the user explicitly asks for web search or current framework guidance, verify version-sensitive claims with current sources before turning them into architectural pressure.
 - Do not pretend confidence. If context is missing or still structurally weak, say so.
 
