@@ -6,7 +6,7 @@ Skills work with any agent that supports the [skills](https://github.com/anthrop
 
 ## Install
 
-Pick the skills you need:
+All current repo skills:
 
 ```bash
 npx skills add https://github.com/yarlson/skills/tree/main/architecture-sparring
@@ -18,7 +18,6 @@ npx skills add https://github.com/yarlson/skills/tree/main/create-todo
 npx skills add https://github.com/yarlson/skills/tree/main/critical-journey-docs
 npx skills add https://github.com/yarlson/skills/tree/main/infra-code-review
 npx skills add https://github.com/yarlson/skills/tree/main/project-context
-npx skills add https://github.com/yarlson/skills/tree/main/review
 ```
 
 ## Skills
@@ -34,7 +33,6 @@ npx skills add https://github.com/yarlson/skills/tree/main/review
 | [`critical-journey-docs`](critical-journey-docs/) | Critical journey docs — concise Markdown journey, flow, acceptance, telemetry, and coverage artifacts |
 | [`infra-code-review`](infra-code-review/)         | IaC review — network exposure, IAM, destructive changes, cost — before plan/apply/deploy              |
 | [`project-context`](project-context/)             | Project context — create or update current-state docs under `docs/context/`                           |
-| [`review`](review/)                               | Review — rigorous code review of uncommitted changes                                                  |
 
 ## How skills work
 

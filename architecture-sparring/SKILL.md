@@ -1,6 +1,6 @@
 ---
 name: architecture-sparring
-description: Use when the user wants a high-pressure architecture and product-design sparring loop for refining system design, product architecture, runtime boundaries, config models, deployment models, operational models, or implementation plans through exactly one sharp question at a time.
+description: Use for architecture/product-design sparring on system design, runtime boundaries, config, deployment, operations, and implementation plans; ask one sharp question at a time.
 disable-model-invocation: true
 ---
 

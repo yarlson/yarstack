@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: This skill should be used when the user asks to "review my changes", "review this code", "check my work", "what's wrong with my changes", "review before I push", "security review", "do a code review", or mentions reviewing, auditing, or analyzing local code changes before committing or opening a PR.
+description: Use for local code review: review my changes/code, check my work, security review, review before push; rank bugs, security, perf, and production risks before PR.
 context: fork
 ---
 

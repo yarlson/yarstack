@@ -1,6 +1,6 @@
 ---
 name: create-todo
-description: Use when the user asks to create a todo, save a task or follow-up, run $create-todo, or turn current conversation context into a committed Markdown todo in ~/.create-todo.
+description: Create a committed Markdown todo in ~/.create-todo from a todo, task, follow-up, $create-todo request, or current conversation context.
 ---
 
 # Create Todo

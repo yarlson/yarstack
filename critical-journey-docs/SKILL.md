@@ -1,6 +1,6 @@
 ---
 name: critical-journey-docs
-description: Use when documenting critical user journeys, user flows, acceptance scenarios, service blueprint slices, telemetry slices, journey portfolios, story maps, or coverage matrices as concise Markdown docs-as-code artifacts.
+description: Create concise Markdown docs-as-code for critical user journeys, flows, acceptance scenarios, service blueprints, telemetry, portfolios, story maps, and coverage matrices.
 ---
 
 # Critical Journey Docs
