@@ -1,6 +1,8 @@
 # Yarstack
 
-Yarstack is a portable workflow stack for disciplined coding agents. It helps an agent frame ambiguous work, plan safely, implement with strict maintainability standards, review quality and risk, ship through CI, and leave useful project context behind.
+<img src="assets/yarstack.png" alt="Yarstack" width="100%">
+
+Yarstack is a workflow stack for disciplined coding agents. It helps an agent frame ambiguous work, plan safely, implement with strict maintainability standards, review quality and risk, ship through CI, and leave useful project context behind.
 
 Built for engineers who want agent help without losing control of scope, code quality, or dirty worktrees.
 
