@@ -1,0 +1,12 @@
+{
+  "name": "yarstack-core",
+  "displayName": "Yarstack Core",
+  "version": "0.1.0",
+  "description": "Core workflow skills for disciplined coding agents.",
+  "author": {
+    "name": "Yarstack"
+  },
+  "repository": "https://github.com/yarlson/skills",
+  "license": "MIT",
+  "keywords": ["agents", "coding", "workflow", "review"]
+}

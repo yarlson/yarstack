@@ -1,0 +1,21 @@
+{
+  "name": "yarstack",
+  "description": "Portable agent workflow stack for disciplined coding agents.",
+  "owner": {
+    "name": "Yarstack"
+  },
+  "plugins": [
+    {
+      "name": "yarstack-core",
+      "source": "./plugins/core",
+      "displayName": "Yarstack Core",
+      "description": "Core workflow skills for framing, planning, implementing, reviewing, shipping, and documenting engineering work.",
+      "author": {
+        "name": "Yarstack"
+      },
+      "repository": "https://github.com/yarlson/skills",
+      "license": "MIT",
+      "keywords": ["agents", "coding", "workflow", "review"]
+    }
+  ]
+}
