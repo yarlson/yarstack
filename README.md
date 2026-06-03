@@ -18,21 +18,25 @@ npx skills add https://github.com/yarlson/skills/tree/main/create-todo
 npx skills add https://github.com/yarlson/skills/tree/main/critical-journey-docs
 npx skills add https://github.com/yarlson/skills/tree/main/infra-code-review
 npx skills add https://github.com/yarlson/skills/tree/main/project-context
+npx skills add https://github.com/yarlson/skills/tree/main/thermo-nuclear-implementation
+npx skills add https://github.com/yarlson/skills/tree/main/thermo-nuclear-implementation-planning
 ```
 
 ## Skills
 
-| Skill                                             | What it does                                                                                          |
-| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| [`architecture-sparring`](architecture-sparring/) | Architecture sparring — force clear product and system design decisions one question at a time        |
-| [`ci`](ci/)                                       | CI — commit all changes, push, wait for checks, fix red builds, and iterate until green               |
-| [`ci-with-pr`](ci-with-pr/)                       | CI with PR — branch, commit, push, open a draft PR, wait for checks, and fix red builds               |
-| [`code-review`](code-review/)                     | Code review — security, bugs, perf — with ranked findings and fixes                                   |
-| [`coderabbit`](coderabbit/)                       | CodeRabbit — triage bot review comments, fix legitimate issues, push, and resolve threads             |
-| [`create-todo`](create-todo/)                     | Create todo — capture concrete work as committed Markdown todos grouped by project                    |
-| [`critical-journey-docs`](critical-journey-docs/) | Critical journey docs — concise Markdown journey, flow, acceptance, telemetry, and coverage artifacts |
-| [`infra-code-review`](infra-code-review/)         | IaC review — network exposure, IAM, destructive changes, cost — before plan/apply/deploy              |
-| [`project-context`](project-context/)             | Project context — create or update current-state docs under `docs/context/`                           |
+| Skill                                                                               | What it does                                                                                                     |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| [`architecture-sparring`](architecture-sparring/)                                   | Architecture sparring — force clear product and system design decisions one question at a time                   |
+| [`ci`](ci/)                                                                         | CI — commit all changes, push, wait for checks, fix red builds, and iterate until green                          |
+| [`ci-with-pr`](ci-with-pr/)                                                         | CI with PR — branch, commit, push, open a draft PR, wait for checks, and fix red builds                          |
+| [`code-review`](code-review/)                                                       | Code review — security, bugs, perf — with ranked findings and fixes                                              |
+| [`coderabbit`](coderabbit/)                                                         | CodeRabbit — triage bot review comments, fix legitimate issues, push, and resolve threads                        |
+| [`create-todo`](create-todo/)                                                       | Create todo — capture concrete work as committed Markdown todos grouped by project                               |
+| [`critical-journey-docs`](critical-journey-docs/)                                   | Critical journey docs — concise Markdown journey, flow, acceptance, telemetry, and coverage artifacts            |
+| [`infra-code-review`](infra-code-review/)                                           | IaC review — network exposure, IAM, destructive changes, cost — before plan/apply/deploy                         |
+| [`project-context`](project-context/)                                               | Project context — create or update current-state docs under `docs/context/`                                      |
+| [`thermo-nuclear-implementation`](thermo-nuclear-implementation/)                   | Implement code under an extremely strict maintainability bar so strict review finds no structural blockers       |
+| [`thermo-nuclear-implementation-planning`](thermo-nuclear-implementation-planning/) | Write implementation plans that prevent structural regressions, wrong-layer logic, file sprawl, and vague phases |
 
 ## How skills work
 
