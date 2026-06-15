@@ -37,71 +37,73 @@ claude plugin install yarstack-core@yarstack
 
 ## Install Individual Skills
 
+Individual skill names use the `yarstack-*` namespace to avoid collisions with generic installed skills from other catalogs.
+
 Core:
 
 ```bash
-npx skills add https://github.com/yarlson/skills/tree/main/frame
-npx skills add https://github.com/yarlson/skills/tree/main/plan
-npx skills add https://github.com/yarlson/skills/tree/main/implement
-npx skills add https://github.com/yarlson/skills/tree/main/review
-npx skills add https://github.com/yarlson/skills/tree/main/infra-review
-npx skills add https://github.com/yarlson/skills/tree/main/ship
-npx skills add https://github.com/yarlson/skills/tree/main/journey-docs
-npx skills add https://github.com/yarlson/skills/tree/main/repo-context-docs
+npx skills add https://github.com/yarlson/skills/tree/main/yarstack-architecture-sparring
+npx skills add https://github.com/yarlson/skills/tree/main/yarstack-implementation-planning
+npx skills add https://github.com/yarlson/skills/tree/main/yarstack-maintainable-implementation
+npx skills add https://github.com/yarlson/skills/tree/main/yarstack-code-review
+npx skills add https://github.com/yarlson/skills/tree/main/yarstack-infra-review
+npx skills add https://github.com/yarlson/skills/tree/main/yarstack-draft-pr-shipping
+npx skills add https://github.com/yarlson/skills/tree/main/yarstack-critical-journey-docs
+npx skills add https://github.com/yarlson/skills/tree/main/yarstack-repo-context-docs
 ```
 
 Integrations:
 
 ```bash
-npx skills add https://github.com/yarlson/skills/tree/main/coderabbit
+npx skills add https://github.com/yarlson/skills/tree/main/yarstack-coderabbit-triage
 ```
 
 Personal utilities:
 
 ```bash
-npx skills add https://github.com/yarlson/skills/tree/main/create-todo
+npx skills add https://github.com/yarlson/skills/tree/main/yarstack-create-todo
 ```
 
 Deprecated:
 
 ```bash
-npx skills add https://github.com/yarlson/skills/tree/main/ci
+npx skills add https://github.com/yarlson/skills/tree/main/yarstack-direct-ci-push
 ```
 
-`ci` is deprecated from the public flagship path because it stages all changes and pushes the current branch directly. Use [`ship`](ship/) for PR-based shipping; keep `ci` only for intentional direct-push flows.
+`yarstack-direct-ci-push` is deprecated from the public flagship path because it stages all changes and pushes the current branch directly. Use [`yarstack-draft-pr-shipping`](yarstack-draft-pr-shipping/) for PR-based shipping; keep `yarstack-direct-ci-push` only for intentional direct-push flows.
 
 ## Current Skill Map
 
 ### Core
 
-| Skill                                     | Workflow role     | What it does                                                                                                     |
-| ----------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------- |
-| [`frame`](frame/)                         | Frame             | Force clear product and system design decisions one question at a time                                           |
-| [`plan`](plan/)                           | Plan              | Write implementation plans that prevent structural regressions, wrong-layer logic, file sprawl, and vague phases |
-| [`implement`](implement/)                 | Implement         | Implement code under an extremely strict maintainability bar so strict review finds no structural blockers       |
-| [`review`](review/)                       | Review            | Review code for security, bugs, performance, regressions, and missing tests                                      |
-| [`infra-review`](infra-review/)           | Review infra      | Review IaC for network exposure, IAM, destructive changes, cost, and deploy risk                                 |
-| [`ship`](ship/)                           | Ship with PR      | Check scope, branch, stage confirmed paths, commit, push, open a draft PR, wait for checks, and fix red builds   |
-| [`journey-docs`](journey-docs/)           | Document journeys | Create concise Markdown journey, flow, acceptance, telemetry, and coverage artifacts                             |
-| [`repo-context-docs`](repo-context-docs/) | Document repo     | Create or update current-state docs under `docs/context/`                                                        |
+| Skill                                                                           | Workflow role          | What it does                                                                                                     |
+| ------------------------------------------------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| [`yarstack-architecture-sparring`](yarstack-architecture-sparring/)             | Architecture decisions | Ask one focused question at a time to clarify product, system, and runtime design                                |
+| [`yarstack-implementation-planning`](yarstack-implementation-planning/)         | Implementation plans   | Write implementation plans that prevent structural regressions, wrong-layer logic, file sprawl, and vague phases |
+| [`yarstack-maintainable-implementation`](yarstack-maintainable-implementation/) | Maintainable coding    | Implement code under an extremely strict maintainability bar so strict review finds no structural blockers       |
+| [`yarstack-code-review`](yarstack-code-review/)                                 | Code review            | Review code for security, bugs, performance, regressions, and missing tests                                      |
+| [`yarstack-infra-review`](yarstack-infra-review/)                               | Infrastructure review  | Review IaC for network exposure, IAM, destructive changes, cost, and deploy risk                                 |
+| [`yarstack-draft-pr-shipping`](yarstack-draft-pr-shipping/)                     | Draft PR shipping      | Check scope, branch, stage confirmed paths, commit, push, open a draft PR, wait for checks, and fix red builds   |
+| [`yarstack-critical-journey-docs`](yarstack-critical-journey-docs/)             | Journey docs           | Create concise Markdown journey, flow, acceptance, telemetry, and coverage artifacts                             |
+| [`yarstack-repo-context-docs`](yarstack-repo-context-docs/)                     | Repo context docs      | Create or update current-state docs under `docs/context/`                                                        |
 
 ### Integrations
 
-| Skill                       | Workflow role | What it does                                                                        |
-| --------------------------- | ------------- | ----------------------------------------------------------------------------------- |
-| [`coderabbit`](coderabbit/) | Integration   | Triage CodeRabbit review comments, fix legitimate issues, push, and resolve threads |
+| Skill                                                       | Workflow role | What it does                                                                        |
+| ----------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------- |
+| [`yarstack-coderabbit-triage`](yarstack-coderabbit-triage/) | Integration   | Triage CodeRabbit review comments, fix legitimate issues, push, and resolve threads |
 
 ### Personal Utilities
 
-| Skill                         | Workflow role    | What it does                                                         |
-| ----------------------------- | ---------------- | -------------------------------------------------------------------- |
-| [`create-todo`](create-todo/) | Personal utility | Capture concrete work as committed Markdown todos grouped by project |
+| Skill                                           | Workflow role    | What it does                                                         |
+| ----------------------------------------------- | ---------------- | -------------------------------------------------------------------- |
+| [`yarstack-create-todo`](yarstack-create-todo/) | Personal utility | Capture concrete work as committed Markdown todos grouped by project |
 
 ### Deprecated
 
-| Skill       | Workflow role | What it does                                                                                                                           |
-| ----------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| [`ci`](ci/) | Ship direct   | Deprecated public flagship path. Stages all changes and pushes the current branch directly. Use [`ship`](ship/) for PR-based shipping. |
+| Skill                                                 | Workflow role | What it does                                                                                                                                                                       |
+| ----------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`yarstack-direct-ci-push`](yarstack-direct-ci-push/) | Ship direct   | Deprecated public flagship path. Stages all changes and pushes the current branch directly. Use [`yarstack-draft-pr-shipping`](yarstack-draft-pr-shipping/) for PR-based shipping. |
 
 ## How Skills Work
 

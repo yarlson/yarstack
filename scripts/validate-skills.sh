@@ -22,11 +22,24 @@ skill_dirs() {
     ! -name '.*' \
     ! -name 'plugins' \
     ! -name 'scripts' \
+    -exec test -f '{}/SKILL.md' \; \
     -exec basename {} \; | sort
 }
 
 frontmatter_name() {
   sed -n 's/^name:[[:space:]]*//p' "$1" | head -n 1 | sed 's/^"//; s/"$//'
+}
+
+validate_frontmatter_yaml() {
+  ruby -ryaml -e '
+    content = File.read(ARGV[0])
+    parts = content.split(/^---\s*$/, 3)
+    exit 1 unless parts.length >= 3
+    data = YAML.load(parts[1])
+    exit 1 unless data.is_a?(Hash)
+    exit 1 unless data["name"].is_a?(String)
+    exit 1 unless data["description"].is_a?(String)
+  ' "$1"
 }
 
 validate_skill_dir() {
@@ -42,6 +55,8 @@ validate_skill_dir() {
   [ -f "$skill_md" ] || return
 
   local name
+  validate_frontmatter_yaml "$skill_md" || fail "$skill SKILL.md frontmatter is invalid"
+
   name="$(frontmatter_name "$skill_md")"
   [ "$name" = "$skill" ] || fail "$skill SKILL.md name is '$name'"
 
@@ -56,7 +71,7 @@ validate_skill_dir() {
 validate_plugin_metadata() {
   local marketplace="$ROOT/.claude-plugin/marketplace.json"
   local plugin="$ROOT/plugins/core/.claude-plugin/plugin.json"
-  local core_skills="frame plan implement review infra-review ship journey-docs repo-context-docs"
+  local core_skills="yarstack-architecture-sparring yarstack-implementation-planning yarstack-maintainable-implementation yarstack-code-review yarstack-infra-review yarstack-draft-pr-shipping yarstack-critical-journey-docs yarstack-repo-context-docs"
 
   [ -f "$marketplace" ] || fail "missing .claude-plugin/marketplace.json"
   [ -f "$plugin" ] || fail "missing plugins/core/.claude-plugin/plugin.json"

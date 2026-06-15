@@ -1,6 +1,6 @@
 {
   "name": "yarstack",
-  "description": "Portable agent workflow stack for disciplined coding agents.",
+  "description": "Agent workflow stack for disciplined coding agents.",
   "owner": {
     "name": "Yarstack"
   },
