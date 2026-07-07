@@ -1,0 +1,6 @@
+interface:
+  display_name: "Yarstack Architecture Sparring"
+  short_description: "Clarify architecture decisions one focused question at a time."
+
+policy:
+  allow_implicit_invocation: false

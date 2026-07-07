@@ -21,12 +21,14 @@ Yarstack turns broad requests into repeatable engineering passes:
 
 ## Install Matrix
 
-| Surface                        | Status        | Install path                                                              |
-| ------------------------------ | ------------- | ------------------------------------------------------------------------- |
-| Individual skills              | Available now | `npx skills add https://github.com/yarlson/skills/tree/main/<skill-name>` |
-| Full Yarstack core plugin      | Available now | `claude plugin install yarstack-core@yarstack`                            |
-| Claude plugin marketplace      | Available now | `claude plugin marketplace add yarlson/skills`                            |
-| Direct repo clone or vendoring | Available now | Clone this repo and copy the skill folders your agent host supports       |
+| Surface                        | Status        | Install path                                                                |
+| ------------------------------ | ------------- | --------------------------------------------------------------------------- |
+| Individual skills              | Available now | `npx skills add https://github.com/yarlson/skills/tree/main/<skill-name>`   |
+| Claude Yarstack core plugin    | Available now | `claude plugin install yarstack-core@yarstack`                              |
+| Claude plugin marketplace      | Available now | `claude plugin marketplace add yarlson/skills`                              |
+| Codex Yarstack core plugin     | Available now | `codex plugin add yarstack-core@yarstack`                                   |
+| Codex plugin marketplace       | Available now | `codex plugin marketplace add yarlson/skills`                               |
+| Direct repo clone or vendoring | Available now | Clone this repo and use the plugin or skill layout your agent host supports |
 
 ## Install Claude Plugin Marketplace
 
@@ -34,6 +36,15 @@ Yarstack turns broad requests into repeatable engineering passes:
 claude plugin marketplace add yarlson/skills
 claude plugin install yarstack-core@yarstack
 ```
+
+## Install Codex Plugin Marketplace
+
+```bash
+codex plugin marketplace add yarlson/skills
+codex plugin add yarstack-core@yarstack
+```
+
+Start a new Codex thread after installing or updating the plugin so Codex picks up the bundled skills.
 
 ## Install Individual Skills
 
@@ -111,13 +122,15 @@ Each skill is a folder with a `SKILL.md` file: YAML frontmatter plus a prompt th
 
 Install the specific skills you want, then invoke them by describing the work. Examples: "review my changes", "write an implementation plan", "review my infra code", or "document this critical user journey".
 
+Plugin invocation syntax is host-specific. Claude plugin skills use `/yarstack-core:<skill-name>`, while Codex plugin skills use `$<skill-name>`.
+
 ## Validate Repo
 
 ```bash
 scripts/validate-skills.sh
 ```
 
-Run this before release-oriented skill changes. It checks skill directory shape, `SKILL.md` frontmatter names, per-skill README titles and install links, root README references, and core plugin skill paths.
+Run this before release-oriented skill changes. It checks skill directory shape, `SKILL.md` frontmatter names, per-skill README titles and install links, root README references, Claude and Codex plugin metadata, core plugin skill symlinks, and manual-only invocation metadata.
 
 ## License
 

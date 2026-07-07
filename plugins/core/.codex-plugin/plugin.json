@@ -1,0 +1,21 @@
+{
+  "name": "yarstack-core",
+  "version": "0.1.0",
+  "description": "Core workflow skills for disciplined coding agents.",
+  "author": {
+    "name": "Yarstack"
+  },
+  "repository": "https://github.com/yarlson/skills",
+  "license": "MIT",
+  "keywords": ["agents", "coding", "workflow", "review"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Yarstack Core",
+    "shortDescription": "Core workflow skills for disciplined coding agents.",
+    "longDescription": "Core workflow skills for framing, planning, implementing, reviewing, shipping, and documenting engineering work.",
+    "developerName": "Yarstack",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": ["Use Yarstack to plan and ship this change."]
+  }
+}
