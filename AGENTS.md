@@ -9,6 +9,7 @@
 ## Package invariants
 
 - Keep the installable package self-contained under `plugins/yarstack/`. Marketplace installs are cached copies; runtime paths must not traverse outside the plugin root.
+- Follow [`SKILL_FORMAT.md`](SKILL_FORMAT.md) when adding or changing skills.
 - Keep Codex metadata in `.codex-plugin/plugin.json`, Claude metadata in `.claude-plugin/plugin.json`, and their marketplace schemas separate.
 - Keep shared identity, author, repository, and version values aligned between manifests.
 - Do not change `0.1.0` or any later explicit version unless the user requests a release/version change. When changing it, update both manifests together.
