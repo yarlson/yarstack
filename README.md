@@ -25,6 +25,43 @@ claude plugin marketplace add yarlson/yarstack
 claude plugin install yarstack@yarstack
 ```
 
+## Skill catalogue
+
+| Skill                                                                                 | Use it for                                                                                          |
+| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| [`alternative-ideation`](plugins/yarstack/skills/alternative-ideation/SKILL.md)       | Generating and testing a genuinely non-incremental product, workflow, or system alternative.        |
+| [`architecture-sparring`](plugins/yarstack/skills/architecture-sparring/SKILL.md)     | Resolving underdefined architecture through one focused decision at a time.                         |
+| [`ci-review`](plugins/yarstack/skills/ci-review/SKILL.md)                             | Finding stale, redundant, unsafe, or unjustified CI and delivery machinery.                         |
+| [`cli-control`](plugins/yarstack/skills/cli-control/SKILL.md)                         | Verifying interactive CLI or TUI behavior with repeatable local evidence.                           |
+| [`code-review`](plugins/yarstack/skills/code-review/SKILL.md)                         | Reviewing local changes for concrete correctness, security, performance, and lifecycle defects.     |
+| [`coderabbit-triage`](plugins/yarstack/skills/coderabbit-triage/SKILL.md)             | Judging and resolving CodeRabbit feedback on the current pull request.                              |
+| [`context-map`](plugins/yarstack/skills/context-map/SKILL.md)                         | Mapping the files, tests, conventions, commands, and risks relevant to a change.                    |
+| [`critical-journey-docs`](plugins/yarstack/skills/critical-journey-docs/SKILL.md)     | Documenting traceable user journeys, acceptance scenarios, telemetry, and service flows.            |
+| [`dependency-review`](plugins/yarstack/skills/dependency-review/SKILL.md)             | Reviewing dependency, lockfile, toolchain, generated-code, and supply-chain changes.                |
+| [`docs-drift-review`](plugins/yarstack/skills/docs-drift-review/SKILL.md)             | Updating documentation made inaccurate by a code or configuration change.                           |
+| [`docs-review`](plugins/yarstack/skills/docs-review/SKILL.md)                         | Auditing or restructuring README and repository documentation against implemented behavior.         |
+| [`draft-pr`](plugins/yarstack/skills/draft-pr/SKILL.md)                               | Branching, committing, pushing, and shipping confirmed changes as a monitored draft PR.             |
+| [`explain-changes`](plugins/yarstack/skills/explain-changes/SKILL.md)                 | Explaining a diff or PR through behavior, boundaries, data flow, operations, and risk.              |
+| [`final-review`](plugins/yarstack/skills/final-review/SKILL.md)                       | Closing completed work against its contract, final diff, and verification evidence.                 |
+| [`go-review`](plugins/yarstack/skills/go-review/SKILL.md)                             | Finding Go-specific concurrency, cancellation, resource, retry, shutdown, and race defects.         |
+| [`infra-review`](plugins/yarstack/skills/infra-review/SKILL.md)                       | Reviewing infrastructure changes for blast radius, exposure, destruction, cost, and recovery risks. |
+| [`macos-swift-review`](plugins/yarstack/skills/macos-swift-review/SKILL.md)           | Auditing macOS Swift and SwiftUI lifecycle, state, concurrency, sandbox, and distribution risks.    |
+| [`marketing-claims-review`](plugins/yarstack/skills/marketing-claims-review/SKILL.md) | Checking product marketing claims and rewrites against shipped-product evidence.                    |
+| [`phase-commit`](plugins/yarstack/skills/phase-commit/SKILL.md)                       | Creating one explicitly requested local commit for a completed, verified phase.                     |
+| [`phase-implement`](plugins/yarstack/skills/phase-implement/SKILL.md)                 | Implementing exactly one selected plan phase without later-phase work.                              |
+| [`phase-review`](plugins/yarstack/skills/phase-review/SKILL.md)                       | Fixing maintainability problems in a completed phase without changing behavior or scope.            |
+| [`phase-validate`](plugins/yarstack/skills/phase-validate/SKILL.md)                   | Validating one implemented phase against its stated behavioral contract.                            |
+| [`plan-create`](plugins/yarstack/skills/plan-create/SKILL.md)                         | Producing an implementation-ready repository plan with decisions, phases, risks, and validation.    |
+| [`plan-update`](plugins/yarstack/skills/plan-update/SKILL.md)                         | Making the smallest evidence-backed correction to an implementation plan.                           |
+| [`refactor-plan`](plugins/yarstack/skills/refactor-plan/SKILL.md)                     | Designing a minimal, reversible sequence for behavior-preserving structural change.                 |
+| [`repo-context-docs`](plugins/yarstack/skills/repo-context-docs/SKILL.md)             | Maintaining verified current-state architecture and ownership documentation under `docs/context/`.  |
+| [`rollout-review`](plugins/yarstack/skills/rollout-review/SKILL.md)                   | Reviewing deployment readiness, runtime failure modes, rollback, and recovery.                      |
+| [`security-review`](plugins/yarstack/skills/security-review/SKILL.md)                 | Reviewing changed trust boundaries, dangerous inputs, permissions, secrets, and agent surfaces.     |
+| [`spec-update`](plugins/yarstack/skills/spec-update/SKILL.md)                         | Correcting an authoritative product or architecture contract when implementation exposes a gap.     |
+| [`technical-spike`](plugins/yarstack/skills/technical-spike/SKILL.md)                 | Resolving one bounded, implementation-blocking technical uncertainty.                               |
+| [`test-gap-review`](plugins/yarstack/skills/test-gap-review/SKILL.md)                 | Finding missing behavior coverage and tests that provide false confidence.                          |
+| [`ui-control`](plugins/yarstack/skills/ui-control/SKILL.md)                           | Verifying browser, desktop, Electron, or other UI behavior through the actual interface.            |
+
 ## Engineering standards
 
 The canonical policy fragments live under

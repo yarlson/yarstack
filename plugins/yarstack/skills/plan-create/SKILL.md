@@ -15,10 +15,11 @@ Produce an implementation-ready plan, not a brainstorm transcript or roadmap sum
 4. Prefer concrete choices with meaningful tradeoffs over broad open-ended questions.
 5. Keep decisions in working memory; do not create draft plan files during questioning.
 6. Resolve discoverable facts from the repository before asking the user.
-7. Use current official sources when a decision depends on version-sensitive external behavior.
+7. Use current authoritative sources only when a decision depends on external, unfamiliar, or version-sensitive facts. Distinguish confirmed facts from assumptions and record only findings that change the plan.
 8. Lock ownership boundaries, runtime and data models, persistence, trust boundaries, rollout order, validation gates, non-goals, risks, and unresolved decisions.
 9. Identify review traps before phasing: wrong-layer logic, file sprawl, scattered branching, loose contracts, duplicate ownership, missing tests, and documentation drift.
-10. Write the final plan only when it is ready to implement or when remaining blockers are explicit.
+10. Reread the proposed plan once for hidden assumptions, missing prerequisites, contradictory acceptance criteria, failure and recovery paths, and residual risks that need explicit acceptance.
+11. Write the final plan only when it is ready to implement or when remaining blockers are explicit.
 
 ## Plan Contract
 
@@ -72,6 +73,7 @@ Validation:
 - Separate work with different ownership, rollout risk, or validation methods.
 - Name exact checks when they are discoverable.
 - Give each phase observable acceptance criteria, dependencies, and specific structural traps to avoid.
+- Give every meaningful step a concrete purpose, prerequisites, expected output, and ordering rationale.
 - Flag likely file-size, type-boundary, migration, compatibility, and recovery risks before implementation.
 - Reject umbrella phases such as “build backend,” “add UI,” “wire everything,” or “add tests.”
 - Preserve unresolved decisions explicitly instead of hiding them behind vague verbs.

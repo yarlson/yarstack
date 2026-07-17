@@ -15,10 +15,11 @@ Review the security-sensitive surface changed by the current task.
 4. Check command construction, quoting, argument boundaries, and injection paths.
 5. Check file paths, archives, uploads, and downloads for traversal, unintended overwrite, unsafe deletion, and resource exhaustion.
 6. Check network behavior for SSRF, open redirects, insecure transport, credential leakage, and unbounded requests.
-7. Check authentication and authorization for missing enforcement, privilege escalation, tenant leakage, and insecure defaults.
-8. Check dependency and tool changes for unexpected sources, unsafe permissions, and inappropriate version pinning.
-9. Check plugin, MCP, sandbox, and agent configuration for hardcoded secrets, broad access, and hidden side effects.
-10. Fix confirmed issues within scope and report unrelated risks separately.
+7. Check authentication and authorization for missing enforcement, privilege escalation, tenant leakage, insecure defaults, unsafe session or token lifecycle, and unauthenticated persistent connections such as WebSockets.
+8. When cryptographic material or protected backups are touched, check key ownership, rotation, recovery copies, and exposure during backup or disaster recovery.
+9. Check dependency and tool changes for unexpected sources, unsafe permissions, and inappropriate version pinning.
+10. Check containers, plugins, MCP, sandboxes, and agent configuration for hardcoded secrets, broad mounts or egress, metadata-service access, token exfiltration, escape paths, and hidden side effects.
+11. Fix confirmed issues within scope and report unrelated risks separately.
 
 ## Finding Standard
 

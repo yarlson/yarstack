@@ -1,6 +1,6 @@
 ---
 name: plan-update
-description: Make the smallest evidence-backed correction to an existing implementation plan. Use when implementation or validation proves a phase has an incorrect order, missing prerequisite or validation gate, impossible instruction, contradiction, or incomplete contract.
+description: Make the smallest evidence-backed correction to an existing implementation plan. Use when implementation or validation proves incorrect ordering, a missing prerequisite or gate, an impossible instruction, a contradiction, an incomplete contract, or unjustified complexity.
 ---
 
 # Plan Update
@@ -15,6 +15,7 @@ Correct a plan only when the current work proves it is wrong or incomplete. Do n
 - A required validation gate is insufficient or impossible.
 - The plan contradicts an authoritative repository contract.
 - A concrete prerequisite must become part of the selected scope.
+- The phase prescribes complexity that repository evidence shows is unnecessary to satisfy its stated contract.
 
 ## Workflow
 

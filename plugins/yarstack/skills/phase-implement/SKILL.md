@@ -20,12 +20,13 @@ Establish:
 1. Read repository instructions, the selected phase, and directly linked context.
 2. Map the files, tests, commands, and local patterns relevant to that phase.
 3. State assumptions only when they affect the implementation.
-4. Implement the selected phase without skipping ahead.
-5. Add only prerequisites that are required for the selected phase to work.
-6. Keep the diff surgical and consistent with the codebase.
-7. Run checks required by repository instructions and the phase contract.
-8. Fix failures within phase scope.
-9. Confirm the phase is complete end to end before reporting success.
+4. If the plan requires complexity that current evidence does not justify, identify the exact defect and correct it through `plan-update`; do not silently redesign or skip the requirement.
+5. Implement the selected phase without skipping ahead.
+6. Add only prerequisites that are required for the selected phase to work.
+7. Keep the diff surgical and consistent with the codebase.
+8. Run checks required by repository instructions and the phase contract.
+9. Fix failures within phase scope.
+10. Confirm the phase is complete end to end before reporting success.
 
 ## Scope Rules
 
