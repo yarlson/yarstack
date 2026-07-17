@@ -2,12 +2,15 @@
 
 ![Yarstack pirate coins](assets/yarstack.png)
 
-Yarstack is Yar Kravtsov's portable plugin marketplace for Codex and Claude
-Code. Both platforms install the same self-contained engineering workflows and
-standards while retaining their native manifests and marketplace metadata.
+Yarstack is a portable set of engineering workflows for teams using Codex and
+Claude Code on real repositories. It gives agents bounded playbooks for
+understanding a codebase, planning and implementing scoped changes, reviewing
+risk, validating behavior, and shipping a draft pull request.
 
-The plugin packages reusable engineering skills, a shared engineering-quality
-policy, and a safe installer for global Codex and Claude Code guidance.
+Install the same self-contained skill package in either host, then choose the
+workflow that matches the job. Each skill defines its scope, evidence
+requirements, checks, and guardrails so the agent does not need to invent a new
+engineering process for every session.
 
 ## Install
 
@@ -49,6 +52,47 @@ claude plugin update yarstack@yarstack
 Run `/reload-plugins` or restart Claude Code. Marketplace auto-update can also
 be enabled from the `/plugin` interface.
 
+## Start with an outcome
+
+In Codex, invoke a skill from the repository you want it to work on. Three
+practical entry points are:
+
+```text
+$yarstack:go-review the whole codebase
+$yarstack:draft-pr
+$yarstack:coderabbit-triage
+```
+
+- `go-review` performs a read-only Go lifecycle and correctness audit.
+- `draft-pr` isolates confirmed changes, pushes them, opens a draft pull
+  request, and monitors its checks.
+- `coderabbit-triage` judges unresolved bot feedback, fixes confirmed issues,
+  and resolves handled threads.
+
+Give the skill a concrete scope when the default is ambiguous.
+
+## How skills work together
+
+Use one skill when one workflow is enough. For larger changes, the skills form
+a practical engineering lifecycle:
+
+| Stage      | Skills                                      | Result                                                |
+| ---------- | ------------------------------------------- | ----------------------------------------------------- |
+| Understand | `context-map`, `plan-create`                | Relevant code, constraints, decisions, and a plan     |
+| Change     | `phase-implement`                           | One bounded implementation unit                       |
+| Prove      | `phase-validate` plus focused review skills | Contract checks and concrete risk findings            |
+| Close      | `final-review`                              | Final diff, verification, and remaining risks checked |
+| Deliver    | `draft-pr`, then `coderabbit-triage`        | A monitored draft PR and judged review feedback       |
+
+This composition is task-driven rather than a mandatory pipeline. For example,
+a platform-specific Go fix can move from `go-review` to `technical-spike`, add
+`dependency-review` and `security-review` where the change crosses those trust
+boundaries, close with `final-review`, and ship with `draft-pr`.
+
+Yarstack supplies workflow instructions, not a hosted service or autonomous
+pipeline. Skills use the tools, credentials, and repository access already
+available to the host, and repository instructions still take precedence.
+
 ## Skill catalogue
 
 | Skill                                                                                 | Use it for                                                                                          |
@@ -86,19 +130,27 @@ be enabled from the `/plugin` interface.
 | [`test-gap-review`](plugins/yarstack/skills/test-gap-review/SKILL.md)                 | Finding missing behavior coverage and tests that provide false confidence.                          |
 | [`ui-control`](plugins/yarstack/skills/ui-control/SKILL.md)                           | Verifying browser, desktop, Electron, or other UI behavior through the actual interface.            |
 
-## Engineering standards
+## Optional global engineering standards
 
-The canonical policy fragments live under
-`plugins/yarstack/agent-guidance/engineering-standards/`. Install their combined
-form into the global guidance files for Codex and Claude Code:
+The skills work after plugin installation. Separately, Yarstack includes shared
+engineering guidance that can be installed into the global files used by Codex
+and Claude Code. Preview the exact combined document without writing anything:
+
+```sh
+plugins/yarstack/scripts/install-engineering-standards.sh --print
+```
+
+Install it only when you want to replace the guidance in `~/.codex/AGENTS.md`,
+`~/.agents/AGENTS.md`, and `~/.claude/CLAUDE.md`:
 
 ```sh
 make install-system-prompt
 ```
 
-The installer is idempotent. It preserves symlinks, refuses dangling symlinks,
-and creates timestamped backups before replacing differing existing guidance.
-Use `--print` to inspect the exact combined document without writing anything.
+The installer is idempotent, preserves symlinks, refuses dangling symlinks, and
+creates timestamped backups before replacing differing existing guidance. The
+canonical policy fragments remain under
+`plugins/yarstack/agent-guidance/engineering-standards/`.
 
 ## Repository layout
 
