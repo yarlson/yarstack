@@ -25,6 +25,30 @@ claude plugin marketplace add yarlson/yarstack
 claude plugin install yarstack@yarstack
 ```
 
+## Upgrade
+
+Marketplace installs are cached by version. After Yarstack publishes a new
+version, refresh the marketplace and reinstall or update the plugin.
+
+### Codex
+
+```sh
+codex plugin marketplace upgrade yarstack
+codex plugin add yarstack@yarstack
+```
+
+Start a new Codex thread to load the updated plugin.
+
+### Claude Code
+
+```sh
+claude plugin marketplace update yarstack
+claude plugin update yarstack@yarstack
+```
+
+Run `/reload-plugins` or restart Claude Code. Marketplace auto-update can also
+be enabled from the `/plugin` interface.
+
 ## Skill catalogue
 
 | Skill                                                                                 | Use it for                                                                                          |
