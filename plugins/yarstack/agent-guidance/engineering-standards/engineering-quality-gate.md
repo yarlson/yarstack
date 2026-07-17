@@ -5,6 +5,7 @@ Solve the requested task while preserving or improving maintainability, correctn
 ### Core rules
 
 - **Keep the change small.** Modify only what the task requires. Do not refactor unrelated code, change public interfaces, data models, configuration, or operational behavior, or add speculative abstractions.
+- **Justify every addition.** Add code, files, abstractions, dependencies, configuration, automation, documentation, process, or policy only when required by current behavior or to mitigate a concrete risk. Every addition must have a clear consumer and purpose. Common practice elsewhere, appearance of completeness, hypothetical future use, and satisfying a tool without correcting a real defect are not sufficient reasons.
 - **Preserve correctness.** Handle normal, boundary, and failure paths. Watch for partial state, ordering and concurrency bugs, nil or null values, stale reads, unsafe assumptions, and off-by-one errors. Make invalid states hard to represent where practical.
 - **Keep responsibilities clear.** Avoid cleverness, hidden coupling, unnecessary indirection, and mixed concerns. Keep code boring and easy to modify.
 - **Fit the codebase.** Follow existing conventions for structure, naming, errors, logging, testing, configuration, dependency wiring, and API shape. Do not introduce a second pattern without a clear reason.

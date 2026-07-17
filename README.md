@@ -26,12 +26,6 @@ claude plugin marketplace add yarlson/yarstack
 claude plugin install yarstack@yarstack
 ```
 
-## Catalog
-
-| Plugin   | Version | Codex     | Claude Code | Status               |
-| -------- | ------- | --------- | ----------- | -------------------- |
-| Yarstack | 0.1.0   | Supported | Supported   | Engineering standards |
-
 ## Engineering standards
 
 The canonical policy fragments live under
@@ -73,14 +67,12 @@ Every push and pull request runs:
 - `plugin-scanner lint` and `plugin-scanner verify` for the Codex package.
 - `claude plugin validate --strict` for the plugin and marketplace.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the local review checklist and
-[plugins/yarstack/CHANGELOG.md](plugins/yarstack/CHANGELOG.md) for releases.
+Release history is in
+[plugins/yarstack/CHANGELOG.md](plugins/yarstack/CHANGELOG.md).
 
 ## Security
 
-Review [SECURITY.md](SECURITY.md) before reporting a vulnerability. Plugins are
-a trust boundary: future scripts, hooks, MCP servers, network access, and write
-actions must be explicit and narrowly scoped.
+Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 
 ## License
 
