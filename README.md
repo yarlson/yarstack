@@ -66,9 +66,6 @@ Every push and pull request runs:
 - `plugin-scanner lint` and `plugin-scanner verify` for the Codex package.
 - `claude plugin validate --strict` for the plugin and marketplace.
 
-Release history is in
-[plugins/yarstack/CHANGELOG.md](plugins/yarstack/CHANGELOG.md).
-
 ## Security
 
 Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
