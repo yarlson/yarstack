@@ -7,6 +7,11 @@ and releases use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Eighteen reusable engineering workflow skills for planning, implementation,
+  validation, review, documentation, security, dependencies, and rollout.
+
 ## [0.1.0] - 2026-07-17
 
 ### Added

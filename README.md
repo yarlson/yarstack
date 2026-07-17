@@ -4,11 +4,11 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Yarstack is Yar Kravtsov's portable plugin marketplace for Codex and Claude
-Code. Both platforms install the same self-contained package while retaining
-their native manifests and marketplace metadata.
+Code. Both platforms install the same self-contained engineering workflows and
+standards while retaining their native manifests and marketplace metadata.
 
-The current `0.1.0` release packages a shared engineering-quality policy and a
-safe installer for global Codex and Claude Code guidance.
+The plugin packages reusable engineering skills, a shared engineering-quality
+policy, and a safe installer for global Codex and Claude Code guidance.
 
 ## Install
 
@@ -50,7 +50,7 @@ Makefile                           Local and CI entrypoints
 ```
 
 The package contains separate `.codex-plugin/plugin.json` and
-`.claude-plugin/plugin.json` manifests. Future portable workflows belong in
+`.claude-plugin/plugin.json` manifests. Reusable workflows live once under
 `plugins/yarstack/skills/`; host-specific adapters should be added only when a
 shared implementation cannot express the required behavior.
 

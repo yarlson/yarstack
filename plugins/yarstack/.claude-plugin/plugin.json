@@ -3,7 +3,7 @@
   "name": "yarstack",
   "displayName": "Yarstack",
   "version": "0.1.0",
-  "description": "Portable engineering standards for Codex and Claude Code.",
+  "description": "Portable engineering workflows and standards for Codex and Claude Code.",
   "author": {
     "name": "Yar Kravtsov",
     "url": "https://github.com/yarlson"

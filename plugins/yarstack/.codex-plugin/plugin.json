@@ -1,7 +1,7 @@
 {
   "name": "yarstack",
   "version": "0.1.0",
-  "description": "Portable engineering standards for Codex and Claude Code.",
+  "description": "Portable engineering workflows and standards for Codex and Claude Code.",
   "author": {
     "name": "Yar Kravtsov",
     "url": "https://github.com/yarlson"
@@ -14,16 +14,19 @@
     "claude-code",
     "agent-toolkit"
   ],
+  "skills": "./skills/",
   "interface": {
     "displayName": "Yarstack",
-    "shortDescription": "Portable engineering standards",
-    "longDescription": "Install Yar Kravtsov's engineering standards across Codex and Claude Code.",
+    "shortDescription": "Portable engineering workflows",
+    "longDescription": "Reusable engineering workflows and standards for Codex and Claude Code.",
     "developerName": "Yar Kravtsov",
     "category": "Productivity",
     "capabilities": [
       "Write"
     ],
     "defaultPrompt": [
+      "Map this repository before implementing the change.",
+      "Review this change for security and test gaps.",
       "Help me install Yarstack's engineering standards."
     ]
   }

@@ -1,10 +1,10 @@
 # Yarstack
 
-Yarstack is Yar Kravtsov's portable engineering-standards plugin for Codex and
-Claude Code.
+Yarstack is Yar Kravtsov's portable engineering-workflow and standards plugin
+for Codex and Claude Code.
 
-Version `0.1.0` contains the canonical policy fragments under
-`agent-guidance/engineering-standards/` and a safe, idempotent installer at
+Reusable skills live under `skills/`. Canonical policy fragments live under
+`agent-guidance/engineering-standards/`, with a safe idempotent installer at
 `scripts/install-engineering-standards.sh`. Run the installer with `--print` to
 inspect the combined guidance without changing global files.
 
