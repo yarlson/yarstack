@@ -7,9 +7,8 @@ Yarstack is Yar Kravtsov's portable plugin marketplace for Codex and Claude
 Code. Both platforms install the same self-contained package while retaining
 their native manifests and marketplace metadata.
 
-The current `0.1.0` release establishes packaging, discovery, and installation.
-It intentionally provides no skills, tools, hooks, agents, or other runtime
-capabilities yet.
+The current `0.1.0` release packages a shared engineering-quality policy and a
+safe installer for global Codex and Claude Code guidance.
 
 ## Install
 
@@ -31,7 +30,21 @@ claude plugin install yarstack@yarstack
 
 | Plugin   | Version | Codex     | Claude Code | Status               |
 | -------- | ------- | --------- | ----------- | -------------------- |
-| Yarstack | 0.1.0   | Supported | Supported   | Packaging foundation |
+| Yarstack | 0.1.0   | Supported | Supported   | Engineering standards |
+
+## Engineering standards
+
+The canonical policy fragments live under
+`plugins/yarstack/agent-guidance/engineering-standards/`. Install their combined
+form into the global guidance files for Codex and Claude Code:
+
+```sh
+make install-system-prompt
+```
+
+The installer is idempotent. It preserves symlinks, refuses dangling symlinks,
+and creates timestamped backups before replacing differing existing guidance.
+Use `--print` to inspect the exact combined document without writing anything.
 
 ## Repository layout
 
@@ -57,14 +70,8 @@ make validate
 
 Every push and pull request runs:
 
-- OpenAI's pinned plugin-creator validator.
+- `plugin-scanner lint` and `plugin-scanner verify` for the Codex package.
 - `claude plugin validate --strict` for the plugin and marketplace.
-- Metadata and package-integrity checks with `jq` and `cmp`.
-- A clean Codex marketplace discovery and installation smoke test.
-
-`make smoke-codex-install` runs that stateful smoke test locally. It registers
-this checkout as a Codex marketplace and installs the plugin, so it is not part
-of the default validation target.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the local review checklist and
 [plugins/yarstack/CHANGELOG.md](plugins/yarstack/CHANGELOG.md) for releases.

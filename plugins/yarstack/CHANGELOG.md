@@ -14,6 +14,8 @@ and releases use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Initial Codex and Claude Code plugin manifests.
 - Public marketplace entries for both platforms.
 - Cross-platform validation and installation checks.
+- Engineering-quality guidance for global Codex and Claude Code configuration.
+- Idempotent guidance installer with backups and symlink protection.
 
 [Unreleased]: https://github.com/yarlson/yarstack/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/yarlson/yarstack/releases/tag/v0.1.0

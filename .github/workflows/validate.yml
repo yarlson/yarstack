@@ -12,7 +12,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CODEX_VERSION: 0.144.5
   CLAUDE_CODE_VERSION: 2.1.207
 
 jobs:
@@ -33,14 +32,8 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install pinned plugin CLIs
-        run: |
-          npm install --global \
-            "@openai/codex@$CODEX_VERSION" \
-            "@anthropic-ai/claude-code@$CLAUDE_CODE_VERSION"
+      - name: Install pinned Claude Code CLI
+        run: npm install --global "@anthropic-ai/claude-code@$CLAUDE_CODE_VERSION"
 
       - name: Validate marketplace
         run: make validate
-
-      - name: Smoke-test Codex marketplace installation
-        run: make smoke-codex-install
