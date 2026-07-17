@@ -17,7 +17,8 @@ Produce an implementation-ready plan, not a brainstorm transcript or roadmap sum
 6. Resolve discoverable facts from the repository before asking the user.
 7. Use current official sources when a decision depends on version-sensitive external behavior.
 8. Lock ownership boundaries, runtime and data models, persistence, trust boundaries, rollout order, validation gates, non-goals, risks, and unresolved decisions.
-9. Write the final plan only when it is ready to implement or when remaining blockers are explicit.
+9. Identify review traps before phasing: wrong-layer logic, file sprawl, scattered branching, loose contracts, duplicate ownership, missing tests, and documentation drift.
+10. Write the final plan only when it is ready to implement or when remaining blockers are explicit.
 
 ## Plan Contract
 
@@ -66,9 +67,12 @@ Validation:
 ## Quality Bar
 
 - Make phases implementation-sized and ordered by real dependencies.
+- Ground each phase in current repository evidence and name the canonical owner of changed behavior.
 - Name concrete subsystems, files, APIs, models, migrations, UI surfaces, or test layers.
 - Separate work with different ownership, rollout risk, or validation methods.
 - Name exact checks when they are discoverable.
+- Give each phase observable acceptance criteria, dependencies, and specific structural traps to avoid.
+- Flag likely file-size, type-boundary, migration, compatibility, and recovery risks before implementation.
 - Reject umbrella phases such as “build backend,” “add UI,” “wire everything,” or “add tests.”
 - Preserve unresolved decisions explicitly instead of hiding them behind vague verbs.
 

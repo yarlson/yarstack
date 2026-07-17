@@ -1,7 +1,6 @@
 # Yarstack
 
-[![Validate marketplace](https://github.com/yarlson/yarstack/actions/workflows/validate.yml/badge.svg)](https://github.com/yarlson/yarstack/actions/workflows/validate.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Yarstack pirate coins](assets/yarstack.png)
 
 Yarstack is Yar Kravtsov's portable plugin marketplace for Codex and Claude
 Code. Both platforms install the same self-contained engineering workflows and
