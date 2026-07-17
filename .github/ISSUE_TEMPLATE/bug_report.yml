@@ -1,0 +1,46 @@
+name: Bug report
+description: Report reproducible incorrect behavior in Yarstack.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Do not report security vulnerabilities here. Follow SECURITY.md instead.
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Codex
+        - Claude Code
+        - Both
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Include Yarstack and host CLI versions.
+      placeholder: Yarstack 0.1.0, Codex 0.144.5
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide the smallest deterministic sequence that demonstrates the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Remove credentials and sensitive data before pasting logs.
+      render: shell

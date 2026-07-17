@@ -1,0 +1,28 @@
+{
+  "name": "yarstack",
+  "version": "0.1.0",
+  "description": "Installable foundation for Yar Kravtsov's portable Codex and Claude Code toolkit.",
+  "author": {
+    "name": "Yar Kravtsov",
+    "url": "https://github.com/yarlson"
+  },
+  "homepage": "https://github.com/yarlson/yarstack",
+  "repository": "https://github.com/yarlson/yarstack",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "claude-code",
+    "agent-toolkit"
+  ],
+  "interface": {
+    "displayName": "Yarstack",
+    "shortDescription": "Yar Kravtsov's portable agent toolkit",
+    "longDescription": "The installable foundation for Yar Kravtsov's personal workflows across Codex and Claude Code.",
+    "developerName": "Yar Kravtsov",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": [
+      "Help me use Yarstack."
+    ]
+  }
+}

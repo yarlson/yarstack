@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "yarstack",
+  "description": "Yar Kravtsov's portable toolkit for Codex and Claude Code.",
+  "owner": {
+    "name": "Yar Kravtsov"
+  },
+  "plugins": [
+    {
+      "name": "yarstack",
+      "source": "./plugins/yarstack",
+      "category": "Productivity",
+      "strict": true
+    }
+  ]
+}

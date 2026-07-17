@@ -1,0 +1,46 @@
+name: Validate marketplace
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CODEX_VERSION: 0.144.5
+  CLAUDE_CODE_VERSION: 2.1.207
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+
+      - name: Install pinned plugin CLIs
+        run: |
+          npm install --global \
+            "@openai/codex@$CODEX_VERSION" \
+            "@anthropic-ai/claude-code@$CLAUDE_CODE_VERSION"
+
+      - name: Validate marketplace
+        run: make validate
+
+      - name: Smoke-test Codex marketplace installation
+        run: make smoke-codex-install

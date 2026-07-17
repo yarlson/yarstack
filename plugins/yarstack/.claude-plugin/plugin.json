@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "yarstack",
+  "displayName": "Yarstack",
+  "version": "0.1.0",
+  "description": "Installable foundation for Yar Kravtsov's portable Codex and Claude Code toolkit.",
+  "author": {
+    "name": "Yar Kravtsov",
+    "url": "https://github.com/yarlson"
+  },
+  "homepage": "https://github.com/yarlson/yarstack",
+  "repository": "https://github.com/yarlson/yarstack",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "claude-code",
+    "agent-toolkit"
+  ]
+}
