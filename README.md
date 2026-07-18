@@ -108,6 +108,7 @@ scope, mutation authority, network access, or permission to spawn agents.
 | [`code-review`](plugins/yarstack/skills/code-review/SKILL.md)                         | Performing general review and routing meaningful Go or Swift scopes to specialists.                 |
 | [`coderabbit-triage`](plugins/yarstack/skills/coderabbit-triage/SKILL.md)             | Dispositioning CodeRabbit feedback before authorized remediation and closure.                       |
 | [`critical-journey-document`](plugins/yarstack/skills/critical-journey-document/SKILL.md) | Creating one evidence-linked actor-goal journey record.                                          |
+| [`changes-report`](plugins/yarstack/skills/changes-report/SKILL.md)                   | Reporting a date or period of repository changes by product outcome in plain English.               |
 | [`dependency-review`](plugins/yarstack/skills/dependency-review/SKILL.md)             | Reviewing dependency provenance, pinning, reproducibility, and generated state.                     |
 | [`docs-drift-review`](plugins/yarstack/skills/docs-drift-review/SKILL.md)             | Finding and, when authorized, repairing documentation drift from the current change.                |
 | [`docs-review`](plugins/yarstack/skills/docs-review/SKILL.md)                         | Auditing or improving general repository documentation in an explicit mode.                         |
