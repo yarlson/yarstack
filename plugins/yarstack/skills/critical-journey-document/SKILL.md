@@ -15,6 +15,7 @@ Create one canonical journey record in the repository's established product-docu
 4. Document the ordered journey, decisions, state changes, success, meaningful failures, recovery, ownership, and evidence links.
 5. Add acceptance, telemetry, blueprint, portfolio, coverage, or story-map sections only when a named consumer or delivery gate requires them.
 6. Record unresolved facts only when the task permits them and names the decision owner and resolution condition.
+7. Use `english-text-review` on the completed record and apply material findings without changing agreed contracts, identifiers, or domain terms.
 
 Acceptance sections describe product acceptance; `test-design` owns executable tests. Telemetry sections record agreed contracts rather than inventing events. `repo-context-document` owns implemented-system flows under `docs/context/`; `rollout-readiness-review` owns deployment readiness; `spec-update` owns semantic decisions.
 

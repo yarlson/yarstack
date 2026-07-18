@@ -111,6 +111,7 @@ scope, mutation authority, network access, or permission to spawn agents.
 | [`dependency-review`](plugins/yarstack/skills/dependency-review/SKILL.md)             | Reviewing dependency provenance, pinning, reproducibility, and generated state.                     |
 | [`docs-drift-review`](plugins/yarstack/skills/docs-drift-review/SKILL.md)             | Finding and, when authorized, repairing documentation drift from the current change.                |
 | [`docs-review`](plugins/yarstack/skills/docs-review/SKILL.md)                         | Auditing or improving general repository documentation in an explicit mode.                         |
+| [`english-text-review`](plugins/yarstack/skills/english-text-review/SKILL.md)         | Reviewing English technical prose for plain-language clarity without modifying it.                  |
 | [`go-review`](plugins/yarstack/skills/go-review/SKILL.md)                             | Running the required Go-specific pass for meaningful Go review scopes.                              |
 | [`infra-review`](plugins/yarstack/skills/infra-review/SKILL.md)                       | Reviewing IaC targeting, replacement, state, availability, cost, and recovery blast radius.         |
 | [`macos-swift-review`](plugins/yarstack/skills/macos-swift-review/SKILL.md)           | Running the required Swift and macOS-specific pass for meaningful Swift review scopes.              |

@@ -15,9 +15,10 @@ Own end-to-end draft-PR publication after implementation, validation, and review
 4. Run required checks when existing evidence does not cover the exact staged content.
 5. Commit using repository conventions and push with an upstream when needed.
 6. Follow repository PR templates, title conventions, and required fields. Otherwise write concise evidence-based `Problem`, `Change`, `Tests`, and only necessary `Notes` sections.
-7. Open a draft PR and monitor checks for the pushed commit.
-8. Diagnose failures from logs. Route behavior changes through `behavior-implement` and `test-design`, and specialist failures through their owning workflow; verify, commit, and push only scoped corrections.
-9. Stop when checks pass, the user permits cancellation, or a concrete external blocker prevents meaningful progress.
+7. Use `english-text-review` on the completed title and body, then apply its material findings without changing verified facts, required template wording, or technical terms.
+8. Open a draft PR and monitor checks for the pushed commit.
+9. Diagnose failures from logs. Route behavior changes through `behavior-implement` and `test-design`, and specialist failures through their owning workflow; verify, commit, and push only scoped corrections.
+10. Stop when checks pass, the user permits cancellation, or a concrete external blocker prevents meaningful progress.
 
 Do not rewrite history, force-push, merge, mark ready, release, weaken tests, disable validation, expose secrets, or override repository PR conventions.
 

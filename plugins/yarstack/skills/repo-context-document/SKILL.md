@@ -15,6 +15,7 @@ Own the information architecture and current-state content under an adopted `doc
 4. Create or update only justified topic files before updating the terse context index.
 5. Remove stale claims and duplicate facts; merge or remove files only when authorized.
 6. Verify every edited claim against current implementation.
+7. Use `english-text-review` on edited prose and apply material findings without weakening architectural precision or established terminology.
 
 Write only under `docs/context/`. Use `docs-drift-review` for incidental change-caused drift, `docs-review` for general documentation, and `critical-journey-document` for actor-goal journeys. Link to canonical plans, specifications, runbooks, guides, and API references instead of duplicating them.
 
