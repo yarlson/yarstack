@@ -1,41 +1,24 @@
 ---
 name: behavior-implement
-description: Implement production behavior through a mandatory red-green-refactor cycle. Use before writing or changing testable production code, including bug fixes, features, and behavior-changing refactors, whether or not the work belongs to a formal plan phase.
+description: Implement testable production behavior through a red-green-refactor cycle. Use for bug fixes, features, and behavior-changing refactors, whether or not they belong to a formal plan phase.
 ---
 
 # Test-Driven Implementation
 
-Prove each behavior through a focused test before implementing it.
+Own the implementation cycle for one coherent observable behavior.
 
-## Define the Contract
+## Workflow
 
-1. Read the requested behavior, repository instructions, and closest existing tests and implementation patterns.
-2. Identify the observable outcome, important side effects, and state that must remain unchanged on failure.
-3. Select the smallest test level that can prove the behavior through a stable public or system boundary.
-4. Cover the normal path and only the boundaries, failures, cleanup, or side effects that materially define the contract.
-5. Use `test-design` to design and write the test before changing production behavior.
+1. Read the requested behavior, repository instructions, and closest implementation and test patterns.
+2. Identify the observable outcome, important side effects, and state preserved on failure.
+3. Use `test-design` when selecting the test level, cases, fixtures, or test boundary is non-trivial; otherwise extend the existing test pattern directly.
+4. Write the smallest focused test and confirm it fails because the behavior is missing or wrong.
+5. Change the minimum production code needed to pass without weakening the assertion.
+6. Refactor only as needed for clarity, rerunning the focused test after each behavior-preserving change.
+7. Run relevant surrounding tests and repository-required checks.
 
-## Red, Green, Refactor
+If a maintainable in-scope automated test is genuinely impractical, state before editing why, what concrete evidence will replace it, and the residual risk. Do not add disproportionate infrastructure; stop when the required harness would materially expand scope.
 
-1. Write the smallest test that expresses the missing behavior.
-2. Run it and confirm it fails because the behavior is absent or incorrect, not because setup, syntax, fixtures, or the environment are broken.
-3. Change the minimum production code needed to pass the test without weakening the assertion.
-4. Run the focused test until it passes.
-5. Refactor only where needed to keep the changed code clear, rerunning the focused test after each behavior-preserving change.
-6. Run the relevant surrounding tests and repository-required checks.
+Do not apply this workflow to purely non-behavioral documentation, formatting, metadata, or mechanical generated-state changes.
 
-Do not write production behavior before the failing test. Do not broaden the implementation beyond the behavior established by the test and current task.
-
-## Exceptions
-
-Skip the failing-test-first requirement only when it is genuinely impossible or disproportionate, such as an unavailable external environment, a non-deterministic platform boundary with no practical substitute, or a purely non-behavioral change.
-
-Before changing production code, state:
-
-- why a failing automated test cannot be written first;
-- what concrete verification will replace it;
-- what residual risk remains.
-
-Lack of an existing test harness, anticipated setup effort, or confidence that a change is simple is not sufficient by itself. Add the smallest harness justified by the current behavior; if that would materially broaden scope, stop and surface the constraint.
-
-Finish when the focused test passed from a demonstrated red state, relevant regression checks passed, and any exception is explicit and evidenced.
+Finish when the behavior is proven from a demonstrated red state, or the bounded exception is evidenced, and relevant regression checks pass.

@@ -1,81 +1,24 @@
 ---
 name: plan-create
-description: Create a final repository-local implementation plan from a user brief and codebase evidence. Use for work that needs decisions, non-goals, risks, ordered implementation phases, concrete deliverables, dependencies, and validation before coding.
+description: Create a final implementation-ready plan from a user brief, settled decisions, and repository evidence. Use when work needs ordered phases, concrete deliverables, dependencies, risks, and validation before coding.
 ---
 
 # Plan Creation
 
-Produce an implementation-ready plan, not a brainstorm transcript or roadmap summary.
+Synthesize an implementation-ready plan rather than repeating discovery, architecture sparring, or research.
 
 ## Workflow
 
-1. Inspect the repository enough to understand its stack, boundaries, and existing patterns.
-2. Read applicable repository instructions and existing plans or context documents.
-3. Ask one sharp question at a time until implementation no longer depends on guessing.
-4. Prefer concrete choices with meaningful tradeoffs over broad open-ended questions.
-5. Keep decisions in working memory; do not create draft plan files during questioning.
-6. Resolve discoverable facts from the repository before asking the user.
-7. Use current authoritative sources only when a decision depends on external, unfamiliar, or version-sensitive facts. Distinguish confirmed facts from assumptions and record only findings that change the plan.
-8. Lock ownership boundaries, runtime and data models, persistence, trust boundaries, rollout order, validation gates, non-goals, risks, and unresolved decisions.
-9. Identify review traps before phasing: wrong-layer logic, file sprawl, scattered branching, loose contracts, duplicate ownership, missing tests, and documentation drift.
-10. Reread the proposed plan once for hidden assumptions, missing prerequisites, contradictory acceptance criteria, failure and recovery paths, and residual risks that need explicit acceptance.
-11. Write the final plan only when it is ready to implement or when remaining blockers are explicit.
+1. Confirm the brief, authoritative repository evidence, applicable instructions, output location, and whether writing a repository plan file is authorized.
+2. Identify only decisions whose absence changes the implementation path. Resolve them with the user or record a blocker; keep safe assumptions explicit.
+3. Use `architecture-refine` for unresolved architecture decisions and `technical-spike` for blocking unfamiliar or version-sensitive behavior.
+4. Lock ownership boundaries, non-goals, compatibility, rollout order, validation gates, risks, and unresolved blockers.
+5. Divide work into implementation-sized phases ordered by real dependencies.
+6. Give each phase a goal, concrete deliverables, dependencies, steps, acceptance evidence, and structural traps to avoid.
+7. Reread the plan for hidden assumptions, missing prerequisites, contradictory acceptance criteria, failure and recovery gaps, and duplicate ownership.
 
-## Plan Contract
+Use the repository's established plan format. Omit empty ceremony. Name concrete subsystems, files, interfaces, migrations, UI surfaces, or test layers only where they remove implementation ambiguity.
 
-Use the repository's established format. If none exists, use:
+Do not implement, validate, commit, push, or release. Use `refactor-plan` instead when the requested deliverable is only a local behavior-preserving structural sequence.
 
-```md
-# Plan
-
-## Decisions
-
-- ...
-
-## Non-Goals
-
-- ...
-
-## Open Risks
-
-- ...
-
-## Phase 1 - Name
-
-Goal: ...
-
-Deliverables:
-
-- ...
-
-Dependencies:
-
-- ...
-
-Unresolved decisions:
-
-- ...
-
-Steps:
-
-1. ...
-
-Validation:
-
-- ...
-```
-
-## Quality Bar
-
-- Make phases implementation-sized and ordered by real dependencies.
-- Ground each phase in current repository evidence and name the canonical owner of changed behavior.
-- Name concrete subsystems, files, APIs, models, migrations, UI surfaces, or test layers.
-- Separate work with different ownership, rollout risk, or validation methods.
-- Name exact checks when they are discoverable.
-- Give each phase observable acceptance criteria, dependencies, and specific structural traps to avoid.
-- Give every meaningful step a concrete purpose, prerequisites, expected output, and ordering rationale.
-- Flag likely file-size, type-boundary, migration, compatibility, and recovery risks before implementation.
-- Reject umbrella phases such as “build backend,” “add UI,” “wire everything,” or “add tests.”
-- Preserve unresolved decisions explicitly instead of hiding them behind vague verbs.
-
-Do not implement, commit, push, or run release workflows while creating the plan unless explicitly requested.
+Finish when implementation-changing decisions are settled or explicit blockers, phases are dependency-ordered, and every phase has observable acceptance evidence.

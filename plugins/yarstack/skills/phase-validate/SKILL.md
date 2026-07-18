@@ -1,33 +1,24 @@
 ---
 name: phase-validate
-description: Validate exactly one implemented plan phase or scoped change against its stated contract. Use after implementation to independently inspect behavior, tests, edge cases, documentation, security-sensitive surfaces, and required checks, fixing only scoped gaps.
+description: Validate exactly one implemented phase or scoped change against its authoritative contract. Use after implementation to re-derive criterion-level conclusions from current evidence and fix only required implementation gaps.
 ---
 
 # Phase Validation
 
-Judge the implementation against the selected contract rather than trusting that code presence means completion.
+Own contract validation between implementation and structural review.
 
 ## Workflow
 
-1. Read applicable repository rules and the selected contract when context is missing or stale.
-2. Inspect changed files and relevant surrounding modules.
-3. Compare observable behavior with the contract.
-4. Check normal behavior, important boundaries, meaningful failure paths, preserved state, cleanup, and external side effects.
-5. Inspect test quality, documentation drift, security-sensitive surfaces, dependency changes, and skipped required checks.
-6. Fix only gaps required to complete the selected scope.
-7. Strengthen tests when existing checks do not prove the promised behavior.
-8. Run required and targeted checks after fixes.
+1. Read the authoritative contract and applicable repository rules unconditionally.
+2. Enumerate each observable acceptance criterion and map it to implementation and evidence.
+3. Inspect changed files, tests, failure paths, cleanup, side effects, and required checks without trusting implementation claims.
+4. Invoke focused review skills only when their trigger materially applies; consume read-only findings and keep fixes under this phase's authority.
+5. Use `plan-update` or `spec-update` when the contract is incorrect or incomplete. Do not invent behavior.
+6. Fix only implementation gaps required by the selected contract.
+7. Run focused checks while correcting, then run the authoritative required command once against final content.
 
-## Failed Checks
+For every criterion report `VERIFIED`, `NOT VERIFIED`, or `INCONCLUSIVE`, with evidence and reasoning. Independence means fresh evidence-based conclusions, not mandatory separate-agent execution.
 
-When compilation, type checking, or validation fails:
+Do not perform broad maintainability refactoring, final closeout, shipping, commits, pushes, external mutations, or unrelated cleanup. Use `phase-review` after validation for structural regressions.
 
-1. Identify the failing command.
-2. Group errors by file and category.
-3. Fix the highest-confidence scoped failures first.
-4. Re-run the same command after each focused correction.
-5. Stop when the remaining failure needs unrelated work or missing external state.
-
-If a tool, service, credential, fixture, or environment is unavailable, report exactly what remains unverified and the resulting risk.
-
-Finish only when the contract is verified by concrete evidence, scoped defects are fixed, and blockers are explicit.
+Finish when every criterion has a supported status, scoped defects are fixed, required checks reflect final content, and blockers are explicit.

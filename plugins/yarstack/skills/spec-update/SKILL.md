@@ -1,25 +1,22 @@
 ---
 name: spec-update
-description: Make a minimal update to a product, architecture, or behavior contract when implementation or validation exposes a real gap. Use only when correctness cannot be determined without clarifying an authoritative plan or linked specification.
+description: Make a minimal evidence-backed update to a non-plan product, architecture, API, schema, or behavior contract. Use when implementation or validation cannot determine correctness from the current authoritative contract.
 ---
 
 # Specification Update
 
-Update a contract only when the current implementation depends on a missing or incorrect decision.
-
-## Valid Reasons
-
-- Product behavior required by the current scope is undefined.
-- Code and specification expose an architecture contradiction.
-- Correctness cannot be validated because a required contract is missing.
-- An authoritative linked document is stale in a way that directly affects the change.
+Correct an authoritative semantic contract only when current work depends on it.
 
 ## Workflow
 
-1. Identify the exact missing or incorrect contract.
-2. Confirm the current work requires a decision.
-3. Update the authoritative plan or linked specification minimally.
-4. Preserve the document's existing structure and style.
-5. Return to the implementation or validation task.
+1. Identify the missing or incorrect contract, its canonical document and owner, and the current task it blocks.
+2. Use `plan-update` for implementation-plan mechanics and `docs-drift-review` for ordinary prose drift.
+3. Distinguish an evidence-backed clarification from a new product or architecture decision.
+4. Use `architecture-refine` for an unresolved architecture decision. Stop for the user or named owner when available evidence cannot determine intended behavior.
+5. Confirm authority before editing linked documents outside the repository or requested scope.
+6. Apply only the minimum supported correction in the document's existing structure and style.
+7. State the downstream acceptance or validation effect, then return to the invoking task.
 
-Do not use specifications as implementation logs, add speculative features, rewrite unrelated sections, or silently invent product behavior when evidence cannot determine the correct contract.
+Do not create speculative features, use specifications as implementation logs, rewrite unrelated sections, or silently invent behavior.
+
+Finish with the changed contract, supporting evidence, concrete decision, downstream impact, and any remaining blocker.
