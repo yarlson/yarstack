@@ -19,4 +19,6 @@ Create one isolated local commit without changing history or external state.
 
 Do not amend, rewrite history, push, create branches or pull requests, manage CI, tag, release, or include unrelated changes.
 
-On success report the hash and concise summary. On hook or commit failure, stop and report the blocker without claiming completion.
+On hook or commit failure, stop and report the blocker without claiming completion.
+
+Finish only after verifying the created commit, then report its hash and concise summary.
