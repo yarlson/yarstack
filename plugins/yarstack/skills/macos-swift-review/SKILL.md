@@ -1,11 +1,11 @@
 ---
 name: macos-swift-review
-description: Supplement code review with macOS, Swift, and SwiftUI-specific correctness analysis. Use for a diff, flow, module, or full app involving state ownership, structured concurrency, sandboxing, entitlements, XPC, signing, or notarization.
+description: Supplement code review with macOS, Swift, and SwiftUI-specific correctness analysis. Use alongside code-review whenever the requested scope contains meaningful Swift production or test code, a Swift package, an Xcode project, or a macOS Swift app; skip only when no meaningful Swift code is in scope.
 ---
 
 # macOS Swift Review
 
-Find concrete Apple-platform failures that general review is unlikely to catch. Keep the review read-only.
+Run the required Swift and macOS-specific pass alongside general review and find platform failures it is unlikely to catch. Keep the review read-only.
 
 ## Workflow
 

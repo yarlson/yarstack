@@ -1,11 +1,11 @@
 ---
 name: go-review
-description: Supplement code review with Go-specific correctness and lifecycle analysis. Use when a Go diff, package, execution path, or codebase materially involves concurrency, cancellation, synchronization, timers, resources, retries, shutdown, or race behavior.
+description: Supplement code review with Go-specific correctness and lifecycle analysis. Use alongside code-review whenever the requested scope contains meaningful Go production or test code, a Go package, or a full Go codebase; skip only when no meaningful Go code is in scope.
 ---
 
 # Go Review
 
-Find concrete Go runtime failures that general review is unlikely to catch. Keep the review read-only.
+Run the required Go-specific pass alongside general review and find runtime failures it is unlikely to catch. Keep the review read-only.
 
 ## Workflow
 

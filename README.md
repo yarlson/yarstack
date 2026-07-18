@@ -105,15 +105,15 @@ scope, mutation authority, network access, or permission to spawn agents.
 | [`changes-explain`](plugins/yarstack/skills/changes-explain/SKILL.md)                 | Explaining a confirmed diff through behavior, boundaries, flow, operations, and risk.               |
 | [`ci-review`](plugins/yarstack/skills/ci-review/SKILL.md)                             | Auditing CI topology and whether automation protects real contracts.                                |
 | [`cli-control`](plugins/yarstack/skills/cli-control/SKILL.md)                         | Gathering repeatable evidence from terminal-hosted CLI and TUI surfaces.                            |
-| [`code-review`](plugins/yarstack/skills/code-review/SKILL.md)                         | Performing the general read-only review of a local diff or branch.                                  |
+| [`code-review`](plugins/yarstack/skills/code-review/SKILL.md)                         | Performing general review and routing meaningful Go or Swift scopes to specialists.                 |
 | [`coderabbit-triage`](plugins/yarstack/skills/coderabbit-triage/SKILL.md)             | Dispositioning CodeRabbit feedback before authorized remediation and closure.                       |
 | [`critical-journey-document`](plugins/yarstack/skills/critical-journey-document/SKILL.md) | Creating one evidence-linked actor-goal journey record.                                          |
 | [`dependency-review`](plugins/yarstack/skills/dependency-review/SKILL.md)             | Reviewing dependency provenance, pinning, reproducibility, and generated state.                     |
 | [`docs-drift-review`](plugins/yarstack/skills/docs-drift-review/SKILL.md)             | Finding and, when authorized, repairing documentation drift from the current change.                |
 | [`docs-review`](plugins/yarstack/skills/docs-review/SKILL.md)                         | Auditing or improving general repository documentation in an explicit mode.                         |
-| [`go-review`](plugins/yarstack/skills/go-review/SKILL.md)                             | Supplementing review with Go-specific concurrency and lifecycle analysis.                           |
+| [`go-review`](plugins/yarstack/skills/go-review/SKILL.md)                             | Running the required Go-specific pass for meaningful Go review scopes.                              |
 | [`infra-review`](plugins/yarstack/skills/infra-review/SKILL.md)                       | Reviewing IaC targeting, replacement, state, availability, cost, and recovery blast radius.         |
-| [`macos-swift-review`](plugins/yarstack/skills/macos-swift-review/SKILL.md)           | Supplementing review with macOS, Swift, and SwiftUI platform analysis.                              |
+| [`macos-swift-review`](plugins/yarstack/skills/macos-swift-review/SKILL.md)           | Running the required Swift and macOS-specific pass for meaningful Swift review scopes.              |
 | [`marketing-claims-review`](plugins/yarstack/skills/marketing-claims-review/SKILL.md) | Auditing or rewriting persuasive claims against shipped-product evidence.                           |
 | [`phase-commit`](plugins/yarstack/skills/phase-commit/SKILL.md)                       | Creating one explicitly requested isolated local commit without pushing.                            |
 | [`phase-implement`](plugins/yarstack/skills/phase-implement/SKILL.md)                 | Implementing exactly one selected plan phase without later-phase work.                              |

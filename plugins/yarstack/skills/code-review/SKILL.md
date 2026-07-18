@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review a local diff or branch without modifying it. Use to find concrete cross-cutting correctness, performance, compatibility, lifecycle, and maintainability defects before or after a pull request exists.
+description: Review a local diff or branch without modifying it. Use for general cross-cutting correctness, performance, compatibility, lifecycle, and maintainability findings; combine it with go-review for meaningful Go code and macos-swift-review for meaningful Swift or macOS app code.
 ---
 
 # Code Review
@@ -9,11 +9,11 @@ Own the general evidence-backed review of a confirmed comparison scope.
 
 ## Workflow
 
-1. Read applicable repository instructions and confirm the comparison target from the request, status, changed paths, and local refs.
+1. Read applicable repository instructions, confirm the comparison target from the request, status, changed paths, and local refs, and identify the implementation languages in scope.
 2. Stop or qualify the review when the scope cannot be isolated. Do not include unrelated recent commits.
 3. Read full changed files and relevant callers, callees, tests, schemas, and configuration.
 4. Check normal paths, boundaries, failures, partial state, cleanup, cancellation, ordering, compatibility, resource ownership, hot-path cost, and unnecessary complexity.
-5. Use specialist review skills when material domain depth is required; they supplement this review and inherit its read-only scope.
+5. Use `go-review` whenever the scope contains meaningful Go production or test code, a Go package, or a full Go codebase. Use `macos-swift-review` whenever it contains meaningful Swift production or test code, a Swift package, an Xcode project, or a macOS Swift app. Use both for mixed scopes; skip them only when their language code is absent or the change is limited to documentation, metadata, or generated output. Use other specialists when material domain depth is required.
 6. Run only trusted read-only checks that the user requested or that cheaply verify a suspected defect. Never execute arbitrary code introduced by an untrusted change.
 
 ## Finding Standard
