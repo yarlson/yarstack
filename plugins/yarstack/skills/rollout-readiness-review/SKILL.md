@@ -1,9 +1,9 @@
 ---
-name: rollout-review
+name: rollout-readiness-review
 description: Review operational readiness for changes affecting deployment, infrastructure, runtime configuration, permissions, migrations, observability, background work, dependencies, rollback, recovery, or production failure modes.
 ---
 
-# Rollout Review
+# Rollout Readiness Review
 
 Review only the operational risk introduced by the current change.
 

@@ -16,6 +16,14 @@ Solve the requested task while preserving or improving maintainability, correctn
 - **Own resources.** Avoid inefficient work on hot paths and unbounded memory growth. Close, cancel, clean up, or release files, connections, timers, tasks, threads, and goroutines in the correct order. Bound concurrent or background work.
 - **Avoid needless dependencies.** Prefer the standard library and existing dependencies. Add a dependency only when it materially reduces complexity or risk, and consider its maintenance, license, size, security, and transitive cost.
 
+### Authorization and workflow boundaries
+
+- Treat reviews as read-only unless the user or an authorized implementation or validation workflow explicitly permits changes.
+- Delegating to another workflow does not expand the current scope, mutation authority, network access, or permission to spawn agents.
+- Require explicit authority before external writes, commits, pushes, installations, generated-state changes, or live-system mutations.
+- Follow repository-native commands, templates, and conventions before fallback guidance.
+- Report inconclusive evidence as inconclusive. Do not turn missing context or unavailable tooling into an unsupported conclusion.
+
 ### Before finalizing
 
 Review every changed file and confirm:
@@ -28,6 +36,8 @@ Review every changed file and confirm:
 6. The implementation follows existing conventions.
 
 Fix any failed gate before claiming the work is complete.
+
+Re-read the request and review the final diff before closeout. Confirm that each requirement is satisfied by current evidence, required checks match the final content, directly affected documentation is current, and blockers or unrelated follow-ups are separated from completed work. If closeout requires an edit, rerun the affected checks before reporting completion.
 
 ### Report the result
 

@@ -78,7 +78,7 @@ a practical engineering lifecycle:
 
 | Stage      | Skills                                      | Result                                                |
 | ---------- | ------------------------------------------- | ----------------------------------------------------- |
-| Understand | `context-map`, `plan-create`                | Relevant code, constraints, decisions, and a plan     |
+| Understand | `plan-create`                               | Relevant code, constraints, decisions, and a plan     |
 | Change     | `phase-implement`                           | One bounded implementation unit                       |
 | Prove      | `phase-validate` plus focused review skills | Contract checks and concrete risk findings            |
 | Close      | `final-review`                              | Final diff, verification, and remaining risks checked |
@@ -105,8 +105,6 @@ available to the host, and repository instructions still take precedence.
 | [`cli-control`](plugins/yarstack/skills/cli-control/SKILL.md)                         | Verifying interactive CLI or TUI behavior with repeatable local evidence.                           |
 | [`code-review`](plugins/yarstack/skills/code-review/SKILL.md)                         | Reviewing local changes for concrete correctness, security, performance, and lifecycle defects.     |
 | [`coderabbit-triage`](plugins/yarstack/skills/coderabbit-triage/SKILL.md)             | Judging and resolving CodeRabbit feedback on the current pull request.                              |
-| [`completion-review`](plugins/yarstack/skills/completion-review/SKILL.md)             | Closing completed work against its contract, final diff, and verification evidence.                 |
-| [`context-map`](plugins/yarstack/skills/context-map/SKILL.md)                         | Mapping the files, tests, conventions, commands, and risks relevant to a change.                    |
 | [`critical-journey-document`](plugins/yarstack/skills/critical-journey-document/SKILL.md) | Documenting traceable user journeys, acceptance scenarios, telemetry, and service flows.        |
 | [`dependency-review`](plugins/yarstack/skills/dependency-review/SKILL.md)             | Reviewing dependency, lockfile, toolchain, generated-code, and supply-chain changes.                |
 | [`docs-drift-review`](plugins/yarstack/skills/docs-drift-review/SKILL.md)             | Updating documentation made inaccurate by a code or configuration change.                           |
@@ -124,7 +122,7 @@ available to the host, and repository instructions still take precedence.
 | [`pr-draft`](plugins/yarstack/skills/pr-draft/SKILL.md)                               | Branching, committing, pushing, and shipping confirmed changes as a monitored draft PR.             |
 | [`refactor-plan`](plugins/yarstack/skills/refactor-plan/SKILL.md)                     | Designing a minimal, reversible sequence for behavior-preserving structural change.                 |
 | [`repo-context-document`](plugins/yarstack/skills/repo-context-document/SKILL.md)     | Maintaining verified current-state architecture and ownership documentation under `docs/context/`.  |
-| [`rollout-review`](plugins/yarstack/skills/rollout-review/SKILL.md)                   | Reviewing deployment readiness, runtime failure modes, rollback, and recovery.                      |
+| [`rollout-readiness-review`](plugins/yarstack/skills/rollout-readiness-review/SKILL.md) | Reviewing deployment readiness, runtime failure modes, rollback, and recovery.                    |
 | [`security-review`](plugins/yarstack/skills/security-review/SKILL.md)                 | Reviewing changed trust boundaries, dangerous inputs, permissions, secrets, and agent surfaces.     |
 | [`spec-update`](plugins/yarstack/skills/spec-update/SKILL.md)                         | Correcting an authoritative product or architecture contract when implementation exposes a gap.     |
 | [`technical-spike`](plugins/yarstack/skills/technical-spike/SKILL.md)                 | Resolving one bounded, implementation-blocking technical uncertainty.                               |
