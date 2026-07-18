@@ -1,25 +1,23 @@
 ---
 name: go-review
-description: Review Go code for language-specific correctness and runtime lifecycle risks. Use for Go changes or full-codebase audits involving goroutines, channels, contexts, timers, synchronization, HTTP or database resources, retries, shutdown, or race behavior.
+description: Supplement code review with Go-specific correctness and lifecycle analysis. Use when a Go diff, package, execution path, or codebase materially involves concurrency, cancellation, synchronization, timers, resources, retries, shutdown, or race behavior.
 ---
 
 # Go Review
 
-Find concrete Go failures that generic code review can miss. Keep the review read-only.
+Find concrete Go runtime failures that general review is unlikely to catch. Keep the review read-only.
 
 ## Workflow
 
-1. Confirm whether the scope is a diff, package, execution path, or full codebase. Read `go.mod`, repository instructions, relevant entry points, callers, tests, and shutdown wiring.
-2. Trace every relevant goroutine from creation through cancellation, error propagation, joining, and shutdown. Check for blocked sends or receives, work that outlives its owner, and unbounded fan-out.
-3. Check channel ownership, close responsibility, lock ordering, copied locks, mixed atomic and non-atomic access, and concurrent map or slice mutation.
-4. Check context propagation, timeout ownership, retry lifetime, ticker and timer cleanup, and version-sensitive timer semantics against the repository's Go version.
-5. Check files, response bodies, database rows, transactions, subscriptions, and temporary resources for cleanup on every return and goroutine path.
-6. Check typed nil interfaces, unsafe assertions, zero-value assumptions, slice backing-array aliasing, loop capture for the active Go version, panic boundaries, and recover scope.
-7. Check HTTP and database timeouts, retry idempotency, transaction commit or rollback ordering, `rows.Err`, pool exhaustion, backoff, and cancellation.
-8. Inspect tests for race, cancellation, shutdown, cleanup, retry, and failure coverage. Prefer deterministic coordination or fake time over sleeps. Run focused tests and `go test -race` when appropriate and authorized by the review scope.
+1. Confirm the scope and Go version, then read relevant entry points, callers, tests, and shutdown wiring.
+2. Trace goroutine ownership, cancellation, error propagation, joining, blocked operations, and fan-out bounds.
+3. Check channel close ownership, lock ordering, atomics, concurrent collection access, contexts, timeouts, retries, tickers, and timers.
+4. Check cleanup of files, bodies, rows, transactions, subscriptions, and temporary resources on every relevant path.
+5. Check Go-specific nil, assertion, zero-value, slice-aliasing, loop-capture, panic, HTTP, database, and version-sensitive semantics only where the changed flow uses them.
+6. Run trusted focused tests or `go test -race` only when authorized and useful for a concrete risk.
 
-## Finding Standard
+Use `code-review` for general diff ownership, `security-review` for trust boundaries, `test-gap-review` for comprehensive coverage, and `rollout-readiness-review` for deployment readiness. Their invocation does not authorize edits or unsafe execution.
 
-Report only issues with a concrete failure path. Include the affected location, runtime scenario, impact, smallest safe correction, and verification. State when repository context or tooling leaves a conclusion uncertain.
+Report affected location, runtime scenario, impact, smallest safe correction, verification, and uncertainty. State directly when no Go-specific finding exists.
 
-Use `code-review`, `security-review`, `test-gap-review`, or `refactor-plan` for broader concerns instead of duplicating their checklists.
+Finish when the selected Go lifecycle surface is exhausted and evidence limits are explicit.

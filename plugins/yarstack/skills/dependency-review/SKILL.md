@@ -1,28 +1,23 @@
 ---
 name: dependency-review
-description: Review dependency and supply-chain changes. Use when work touches manifests, lockfiles, generated or vendored code, build scripts, CI tool installation, containers, plugin or MCP configuration, tool versions, registries, or network-fetched scripts.
+description: Review dependency provenance and reproducibility without modifying them. Use when manifests, lockfiles, vendor state, generated dependency state, registries, fetched tools, or version pins change.
 ---
 
 # Dependency Review
 
-Review only the dependency and toolchain surface changed by the current task.
+Own dependency necessity, provenance, pinning, reproducibility, and generated-state consistency.
 
 ## Workflow
 
-1. Identify every dependency, generated-state, and toolchain change.
-2. Confirm each change is necessary for current behavior.
-3. Verify lockfiles and equivalent generated dependency state are consistent.
-4. Follow the repository's established pinning policy.
-5. Check for floating versions, unpinned Git sources, curl-to-shell installation, unexpected registries, and broad install scripts.
-6. Check package, tool, and CI configuration for exposed credentials or unsafe permissions.
-7. Run the repository's available dependency checks.
-8. Report unrelated supply-chain risks without expanding scope.
+1. Confirm the changed dependency surface, comparison target, repository pinning policy, and expected update path.
+2. Establish the consumer and current need for each added, removed, or changed dependency or tool.
+3. Verify manifest, lockfile, vendor, checksum, and generated-state consistency without normalizing unrelated content.
+4. Check provenance, registries, Git sources, floating versions, fetched installers, lifecycle scripts, and reproducibility.
+5. Prefer trusted offline and non-mutating checks. Require explicit authority before network access, installation, cache mutation, lifecycle-script execution, or regeneration.
+6. Delegate exploitability and credentials to `security-review`, CI machinery to `ci-review`, infrastructure impact to `infra-review`, and runtime compatibility to `rollout-readiness-review`.
 
-## Guardrails
+Report each finding with location, affected contract, evidence, consequence, smallest correction, verification, and uncertainty. State directly when no actionable finding exists. An evidenced inconclusive result is valid when tooling or provenance is unavailable.
 
-- Do not upgrade unrelated dependencies.
-- Do not normalize an entire lockfile unless the requested change requires it.
-- Do not add scanners, services, or update automation merely to perform the review.
-- Do not trust committed generated code without checking its source and expected update path.
+Do not upgrade unrelated dependencies, churn an entire lockfile, add scanners, or trust committed generated code without checking its source.
 
-Finish when each changed dependency or tool is necessary, consistent, appropriately pinned, and verified by available checks.
+Finish when each changed dependency is accounted for and residual provenance or reproducibility risk is explicit.

@@ -1,31 +1,23 @@
 ---
 name: rollout-readiness-review
-description: Review operational readiness for changes affecting deployment, infrastructure, runtime configuration, permissions, migrations, observability, background work, dependencies, rollback, recovery, or production failure modes.
+description: Review cross-cutting operational readiness after implementation and before deployment. Use when a concrete change may alter runtime prerequisites, failure visibility, deployment order, rollback, recovery, or production failure modes.
 ---
 
 # Rollout Readiness Review
 
-Review only the operational risk introduced by the current change.
+Assess repository-local deployment readiness without performing or implying a live rollout.
 
 ## Workflow
 
-1. Identify what changes at runtime.
-2. Check required configuration, defaults, and compatibility.
-3. Check startup, shutdown, retry, timeout, cancellation, and failure behavior where relevant.
-4. Check whether failures are visible through existing logs, metrics, traces, health checks, or user-facing errors.
-5. Check rollback, recovery, and partial-state behavior.
-6. Check migration and deployment ordering.
-7. Update directly affected operational documentation when necessary.
-8. Run available preflight and validation commands.
-9. Fix operational gaps within the requested scope.
+1. Confirm the concrete change, target environment class, available evidence, and whether the task is repository review or explicitly authorized live verification.
+2. Identify the runtime delta, required configuration and permissions, compatibility, startup and shutdown behavior, background work, migration order, and partial-state risk.
+3. Determine how failures appear through existing signals and how an operator verifies success.
+4. Define the smallest safe deployment order, rollback conditions, and recovery path.
+5. Delegate IaC blast radius to `infra-review`, trust-boundary risk to `security-review`, dependency provenance to `dependency-review`, documentation drift to `docs-drift-review`, and verification gaps to `test-gap-review`.
+6. Run only trusted non-mutating repository checks unless the enclosing task separately authorizes implementation or live verification.
 
-## Required Answers
+Report the runtime delta, prerequisites, failure visibility, success evidence, deployment order, rollback and recovery, blocking findings, residual risk, and confidence limits. State directly when no readiness finding exists.
 
-- What changes at runtime?
-- Which configuration or permissions are required?
-- How does failure appear?
-- How can an operator verify success?
-- How can an operator roll back or recover?
-- What is the smallest safe deployment order?
+Keep the review read-only by default. Never apply, deploy, execute migrations, change secrets or permissions, modify external systems, or claim production readiness from unavailable live evidence without explicit authority.
 
-Do not add infrastructure, observability systems, release automation, or toy fallback assumptions unless the requested behavior requires them.
+Finish when the required readiness answers are evidenced or explicitly inconclusive.

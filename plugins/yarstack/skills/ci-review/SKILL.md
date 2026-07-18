@@ -1,19 +1,23 @@
 ---
 name: ci-review
-description: Audit CI and delivery automation for stale, redundant, unsafe, ineffective, or unjustified machinery. Use when reviewing workflows, build scripts, quality gates, caches, artifacts, matrices, triggers, permissions, release jobs, or deployment jobs for evidence-backed cleanup.
+description: Audit CI workflow architecture and effectiveness without modifying it. Use when triggers, jobs, commands, quality gates, caches, artifacts, matrices, permissions, release paths, or deployment automation may be stale, redundant, unsafe, or unjustified.
 ---
 
 # CI Review
 
-Determine which automation protects a real contract and which parts should be simplified, fixed, merged, or removed. Keep the review read-only.
+Own automation topology and evidence that each component protects a real contract.
 
 ## Workflow
 
-1. Map workflow triggers, jobs, called scripts, task-runner commands, environments, permissions, secrets, caches, artifacts, release steps, deployment steps, and required checks.
-2. Identify the consumer and enforced contract for each component. Verify claims against repository configuration, supported platforms, deployment paths, and available run evidence.
-3. Check for duplicated local and CI logic, mismatched tool versions, unrelated full-suite runs, ineffective path filters, unused matrices, ignored scanners, retry-masked flakes, dead release paths, and copied configuration that does not fit the repository.
-4. Check whether caches and artifacts have measurable consumers, whether schedules and manual gates have owners, and whether jobs receive more secrets or permissions than they need.
-5. Classify each actionable item as `keep`, `simplify`, `merge`, `fix`, `remove`, or `owner decision`.
-6. For any proposed removal or simplification, state the protection being replaced or why no real protection exists, the change risk, and the smallest verification needed afterward.
+1. Confirm repository scope, comparison target, supported platforms, required-check ownership, and whether remote run evidence is authorized.
+2. Map triggers, jobs, called commands, environments, permissions, secrets, caches, artifacts, release paths, deployment paths, and required checks.
+3. Identify each component's consumer and enforced contract using repository and authorized run evidence.
+4. Find duplicated logic, mismatched versions, ineffective filters, unused matrices, ignored results, retry-masked flakes, dead paths, unjustified permissions, and caches or artifacts without consumers.
+5. Classify actionable items as `keep`, `simplify`, `merge`, `fix`, `remove`, or `owner decision`.
+6. Delegate tool provenance to `dependency-review`, exploit paths to `security-review`, infrastructure semantics to `infra-review`, runtime readiness to `rollout-readiness-review`, and behavioral test sufficiency to `test-gap-review`.
 
-Do not recommend broad workflow rewrites, remove a safety gate on speculation, or add scanners and process merely to make CI look mature. Lead with evidenced findings and finish with a minimal cleanup sequence.
+For each finding report location, affected contract, evidence, consequence, recommended disposition, change risk, and verification. Recommendations do not authorize implementation.
+
+Do not fetch remote evidence without authority, remove a safety gate on speculation, add scanners for appearance, or rewrite workflows broadly.
+
+Finish with prioritized findings or no-findings, scope, evidence limits, and the smallest advisory cleanup sequence.
