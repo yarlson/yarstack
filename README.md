@@ -122,7 +122,6 @@ scope, mutation authority, network access, or permission to spawn agents.
 | [`plan-create`](plugins/yarstack/skills/plan-create/SKILL.md)                         | Synthesizing an implementation-ready phased plan from settled decisions.                            |
 | [`plan-update`](plugins/yarstack/skills/plan-update/SKILL.md)                         | Correcting implementation-plan mechanics without changing semantic contracts.                       |
 | [`pr-draft`](plugins/yarstack/skills/pr-draft/SKILL.md)                               | Publishing confirmed and validated work as a monitored draft PR.                                   |
-| [`refactor-plan`](plugins/yarstack/skills/refactor-plan/SKILL.md)                     | Designing a reversible behavior-preserving structural sequence without implementing it.             |
 | [`repo-context-document`](plugins/yarstack/skills/repo-context-document/SKILL.md)     | Maintaining adopted current-state documentation under `docs/context/`.                              |
 | [`rollout-readiness-review`](plugins/yarstack/skills/rollout-readiness-review/SKILL.md) | Reviewing cross-cutting operational readiness before deployment.                                |
 | [`security-review`](plugins/yarstack/skills/security-review/SKILL.md)                 | Tracing focused trust boundaries and concrete exploit paths.                                        |

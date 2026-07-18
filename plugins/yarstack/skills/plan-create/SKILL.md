@@ -19,6 +19,6 @@ Synthesize an implementation-ready plan rather than repeating discovery, archite
 
 Use the repository's established plan format. Omit empty ceremony. Name concrete subsystems, files, interfaces, migrations, UI surfaces, or test layers only where they remove implementation ambiguity.
 
-Do not implement, validate, commit, push, or release. Use `refactor-plan` instead when the requested deliverable is only a local behavior-preserving structural sequence.
+Do not implement, validate, commit, push, or release. Keep a local behavior-preserving structural plan proportionate to its actual risk.
 
 Finish when implementation-changing decisions are settled or explicit blockers, phases are dependency-ordered, and every phase has observable acceptance evidence.

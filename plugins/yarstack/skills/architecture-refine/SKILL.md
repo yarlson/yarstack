@@ -18,6 +18,6 @@ Resolve only the architecture decisions needed for the user's stated next step.
 
 Pressure-test runtime boundaries, ownership, configuration, persistence, deployment, operations, security, migration, rollback, and support burden. Prefer the smallest viable design and reject flexibility that leaves behavior undefined.
 
-Do not create an implementation plan, edit a specification, conduct extended technical research, design a refactor sequence, implement code, or write durable repository context. Use `plan-create`, `spec-update`, `technical-spike`, `refactor-plan`, or `repo-context-document` for those outputs.
+Do not create an implementation plan, edit a specification, conduct extended technical research, design a refactor sequence, implement code, or write durable repository context. Use `plan-create`, `spec-update`, `technical-spike`, or `repo-context-document` for those outputs.
 
 Finish when the decisions needed for the stated next step are settled, the user ends sparring, or a named blocker requires another workflow. Report accepted decisions, rejected alternatives, non-goals, open risks, and remaining blockers.

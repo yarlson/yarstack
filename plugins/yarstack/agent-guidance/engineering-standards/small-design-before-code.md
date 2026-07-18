@@ -11,3 +11,5 @@ Define the smallest safe design before implementing. The sketch must cover:
 Reject unrelated cleanup, broad refactoring, speculative abstractions, future-proofing, new frameworks, service boundaries, workers, queues, state machines, or configuration unless the task requires them.
 
 Choose the simplest design that safely satisfies the requirement. Before finalizing, confirm the implementation still matches the sketch; explain necessary growth or reduce the change.
+
+For behavior-preserving structural work, identify the behavior that must remain unchanged, keep the edit sequence mechanical and reversible, name rollback points when partial application is risky, and specify focused regression checks before editing.
