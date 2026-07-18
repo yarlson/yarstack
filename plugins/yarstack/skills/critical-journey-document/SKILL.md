@@ -1,5 +1,5 @@
 ---
-name: critical-journey-docs
+name: critical-journey-document
 description: Create concise Markdown documentation for critical user journeys, flows, acceptance scenarios, service blueprints, telemetry, portfolios, story maps, and coverage. Use when product behavior needs traceable docs-as-code tied to evidence and ownership.
 ---
 

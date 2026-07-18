@@ -1,5 +1,5 @@
 ---
-name: explain-changes
+name: changes-explain
 description: Explain a pull request, commit range, branch, or local diff from a system-design perspective. Use when readers need practical understanding of changed behavior, boundaries, data flow, ownership, operations, risks, and verification without a line-by-line code walkthrough.
 ---
 

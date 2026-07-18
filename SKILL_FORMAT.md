@@ -18,7 +18,14 @@ or host-specific copies by default.
 ## Naming
 
 - Use lowercase kebab-case.
-- Keep the name short and action-oriented.
+- Name skills `<scope>-<action>`, with the subject or domain first and the
+  operation last, such as `code-review`, `phase-validate`, or `plan-create`.
+- Use the narrowest recognizable scope. It may contain multiple words when
+  needed, such as `docs-drift-review` or `marketing-claims-review`.
+- End with a concrete action word. Prefer a short base-form verb and preserve an
+  established operation term when it is clearer than forced grammar.
+- Keep the name short. Do not use abstract labels that hide the operation or
+  action-first names that break scope grouping.
 - Match the directory name and frontmatter `name` exactly.
 - Name a tool or platform when it materially narrows the trigger.
 - Do not encode project history, origin, or the Yarstack name in a reusable skill.

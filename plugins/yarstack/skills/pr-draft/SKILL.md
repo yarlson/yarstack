@@ -1,5 +1,5 @@
 ---
-name: draft-pr
+name: pr-draft
 description: Create and ship a GitHub draft pull request from confirmed local changes. Use only when asked to branch, stage scoped paths, commit, push, open a draft PR, monitor CI, and fix scoped failures.
 ---
 

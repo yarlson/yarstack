@@ -1,5 +1,5 @@
 ---
-name: alternative-ideation
+name: alternatives-explore
 description: Generate and evaluate genuinely different approaches to a product, workflow, or system problem. Use when the user asks for a bold, contrarian, experimental, or non-incremental alternative and wants a testable recommendation rather than ordinary optimization.
 ---
 

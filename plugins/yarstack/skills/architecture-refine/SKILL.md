@@ -1,5 +1,5 @@
 ---
-name: architecture-sparring
+name: architecture-refine
 description: Refine product and system architecture through one focused decision at a time. Use when runtime boundaries, ownership, configuration, persistence, deployment, operations, security, or implementation structure remain underdefined.
 ---
 

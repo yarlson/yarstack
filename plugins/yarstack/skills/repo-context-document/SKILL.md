@@ -1,5 +1,5 @@
 ---
-name: repo-context-docs
+name: repo-context-document
 description: Create, update, or consolidate current-state project documentation under docs/context/. Use when durable architecture, ownership, runtime, domain, flow, terminology, or engineering-practice context must be synchronized with the implemented codebase.
 ---
 

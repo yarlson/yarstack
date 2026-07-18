@@ -1,5 +1,5 @@
 ---
-name: final-review
+name: completion-review
 description: Perform final closeout for a completed implementation or plan phase. Use before reporting completion to compare the result with the requested contract, review the final diff, confirm verification, and separate blockers or unrelated follow-ups without expanding scope.
 ---
 

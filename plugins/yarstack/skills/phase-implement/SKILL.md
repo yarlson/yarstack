@@ -21,16 +21,18 @@ Establish:
 2. Map the files, tests, commands, and local patterns relevant to that phase.
 3. State assumptions only when they affect the implementation.
 4. If the plan requires complexity that current evidence does not justify, identify the exact defect and correct it through `plan-update`; do not silently redesign or skip the requirement.
-5. Implement the selected phase without skipping ahead.
-6. Add only prerequisites that are required for the selected phase to work.
-7. Keep the diff surgical and consistent with the codebase.
-8. Run checks required by repository instructions and the phase contract.
-9. Fix failures within phase scope.
-10. Confirm the phase is complete end to end before reporting success.
+5. Before changing production behavior, use `behavior-implement` for each coherent behavior change. Do not proceed without a demonstrated failing test unless that skill's exception is stated first with alternative verification and residual risk.
+6. Implement the selected phase without skipping ahead.
+7. Add only prerequisites that are required for the selected phase to work.
+8. Keep the diff surgical and consistent with the codebase.
+9. Run checks required by repository instructions and the phase contract.
+10. Fix failures within phase scope.
+11. Confirm the phase is complete end to end before reporting success.
 
 ## Scope Rules
 
 - Do not add unrelated features, flags, workflows, release automation, configuration, abstractions, documentation, or cleanup.
+- Keep phase scope and completion decisions here; `behavior-implement` owns only the red-green-refactor cycle for behavior inside the phase.
 - Update the plan or linked contract only when implementation reveals a concrete defect in it.
 - Do not commit or push unless explicitly requested.
 
