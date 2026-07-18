@@ -1,27 +1,23 @@
 ---
 name: docs-drift-review
-description: Review repository documentation for drift caused by a code or configuration change. Use when changed behavior may affect README files, agent instructions, plans, API or schema docs, operational docs, examples, configuration templates, or command help.
+description: Review documentation for drift caused by the current code or configuration change. Use to identify concrete inaccuracies and, when authorized, repair only directly affected documentation.
 ---
 
 # Documentation Drift Review
 
-Update only documentation made inaccurate by the current change.
+Own change-scoped documentation accuracy through separate inspection and repair stages.
 
 ## Workflow
 
-1. Identify changed behavior, commands, configuration, APIs, workflows, and contracts.
-2. Search repository documentation that describes those surfaces.
-3. Compare the documentation with the implementation.
-4. Update only directly affected canonical documents.
-5. Follow the repository's existing documentation style.
-6. Update examples, templates, and command help when they are part of the affected contract.
+1. Confirm the changed behavior and whether the task authorizes documentation edits or only a read-only drift report.
+2. Identify canonical, generated, mirrored, and external documentation describing the changed surface.
+3. Compare implementation with README files, instructions, APIs, schemas, operational docs, examples, templates, and command help in scope.
+4. Report concrete drift with the affected claim, implementation evidence, canonical owner, and required correction.
+5. When edits are authorized, update only directly affected canonical documents in their existing style.
+6. Change generated documentation or help at its source and regenerate it through the repository's established command.
 
-## Guardrails
+Use `docs-review` for broader documentation quality, `repo-context-document` for deliberate `docs/context/` work, `plan-update` for plan mechanics, and `spec-update` for semantic contract decisions.
 
-- Do not document unchanged behavior.
-- Do not rewrite documentation for style alone.
-- Do not create a parallel documentation system.
-- Do not put implementation-plan details into user-facing documentation unless that is the established convention.
-- Do not leave contract changes only in chat when a repository document owns them.
+Do not restructure documentation, hand-edit generated content, change product behavior, or modify external documentation without authority.
 
-Finish when affected documentation is accurate, or when inspection provides concrete evidence that no documentation change is needed.
+Finish with changed documents, an evidenced no-change result, or unresolved owner decisions.

@@ -1,21 +1,22 @@
 ---
 name: docs-review
-description: Audit, restructure, or improve repository documentation using implemented behavior as the source of truth. Use for deliberate README or documentation-quality work beyond drift caused by a current code change.
+description: Audit or improve general repository documentation against implemented behavior. Use for deliberate README or documentation-quality work not owned by a more specific documentation skill.
 ---
 
 # Documentation Review
 
-Make the requested documentation accurate, useful, discoverable, and proportionate to the project.
+Own general repository-document quality in an explicit audit-only or authorized edit mode.
 
 ## Workflow
 
-1. Confirm the audience, requested document set, and whether the task is an audit, rewrite, consolidation, or removal pass.
-2. Inspect the implementation, commands, configuration, examples, tests, package metadata, and existing canonical documents that support the affected claims.
-3. Identify duplicated, stale, unsupported, misplaced, missing, or needlessly detailed content. Classify changes as `keep`, `update`, `merge`, `split`, `move`, `archive`, or `remove`.
-4. Edit only the requested or clearly affected canonical documents. Preserve the repository's structure and voice unless that structure is the problem being fixed.
-5. For a README, make the opening quickly establish what the project is, who it serves, why it exists, and the shortest verified path to a useful result. Add sections only when the project has real content for them.
-6. Verify every changed command, flag, configuration key, file path, package name, example, compatibility statement, and capability claim against repository evidence.
+1. Confirm audience, document set, desired outcome, and whether the task authorizes edits.
+2. Route current-change drift to `docs-drift-review`, `docs/context/` structure to `repo-context-document`, semantic contracts to `spec-update`, journeys to `critical-journey-document`, and persuasive claims to `marketing-claims-review`.
+3. Verify content against implementation, commands, configuration, examples, tests, metadata, and canonical documents.
+4. Classify evidence-backed findings as `keep`, `update`, `merge`, `split`, `move`, `archive`, or `remove`.
+5. In audit-only mode, return prioritized findings without edits.
+6. In edit mode, change only the confirmed document set and preserve repository structure and voice unless that structure is the requested defect.
+7. Require explicit authority before archiving, removing, or materially expanding the document set.
 
-Do not invent features, installation paths, architecture, benchmarks, screenshots, support promises, or roadmap items. Do not impose a standard README template or expand a focused request into a repository-wide documentation program.
+Do not invent features, commands, architecture, benchmarks, screenshots, promises, or roadmap items; impose a generic template; or broaden a focused request.
 
-Finish with the changed documents, corrected or removed claims, verification performed, and any fact that still needs an owner.
+Finish with an evidence-backed audit or verified scoped edits, plus unresolved facts needing an owner.

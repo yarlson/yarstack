@@ -1,29 +1,23 @@
 ---
 name: cli-control
-description: Verify user-visible CLI or TUI behavior with repeatable local evidence. Use when work changes terminal output, prompts, interactive input, interrupts, hangs, resizing, startup behavior, or terminal demonstrations.
+description: Verify terminal-hosted CLI or TUI behavior with repeatable local evidence. Use for output, prompts, interactive input, signals, hangs, resizing, startup, exit status, or terminal restoration.
 ---
 
 # CLI Control
 
-Use a repeatable local harness instead of manual terminal poking.
+Gather reproducible evidence from terminal-hosted interfaces without changing production behavior.
 
 ## Workflow
 
-1. Identify the command, working directory, and observable behavior under test.
-2. Prefer repository-native integration tests, end-to-end tests, demo scripts, PTY helpers, or expect scripts.
-3. If none exists, use a temporary local harness outside the repository.
-4. Drive one action at a time and wait for concrete output before continuing.
-5. Capture the smallest transcript or measurement that proves or disproves the behavior.
-6. Check interrupts, cleanup, exit status, hangs, and terminal restoration where relevant.
-7. Clean up temporary sessions, processes, and artifacts unless the user asks to keep them.
-8. Turn findings into a scoped fix or explicit blocker.
+1. Identify the command, working directory, terminal conditions, and observable contract.
+2. Choose the smallest repeatable method: direct execution or repository tests for ordinary output and status; a terminal-capable harness for prompts, signals, resizing, hangs, or restoration.
+3. Prefer an existing trusted harness. Otherwise use a temporary local harness outside the repository without adding dependencies.
+4. Drive one action at a time and capture the smallest transcript or measurement that proves or disproves the behavior.
+5. Check interrupts, cleanup, exit status, hangs, and terminal restoration only where relevant.
+6. Clean up only sessions, processes, and artifacts created by this workflow.
 
-## Guardrails
+Keep verification read-only unless the parent task separately authorizes implementation. Use `behavior-implement` and `test-design` for fixes or regression tests. Leave browser, desktop, Electron, and other graphical surfaces to `ui-control`.
 
-- Do not send credentials or destructive commands through the harness.
-- Do not hardcode paths or assumptions from another repository.
-- Do not keep one-off harness code in the repository unless it belongs in the product test suite.
-- Do not add a testing dependency for a one-off probe without a current need.
-- Do not treat screenshots or transcripts as sufficient when a stable automated test is practical.
+Do not send credentials or destructive commands, retain sensitive transcripts, or keep one-off harness code in the repository without a product-test consumer.
 
-Finish when the CLI or TUI behavior is verified with local evidence, fixed within scope, or blocked for a concrete reason.
+Finish with the command and conditions, observed output and exit status, evidence, and any blocker or limitation.

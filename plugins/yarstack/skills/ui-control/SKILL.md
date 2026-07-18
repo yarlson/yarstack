@@ -1,29 +1,24 @@
 ---
 name: ui-control
-description: Verify browser, desktop, Electron, or other local UI behavior through the actual interface. Use when work requires screenshot, accessibility, console, network, trace, or browser-driven evidence of changed behavior.
+description: Verify graphical browser, desktop, or Electron behavior through the actual interface. Use when screenshot, accessibility, console, network, trace, or browser-driven evidence is required; exclude terminal-hosted interfaces.
 ---
 
 # UI Control
 
-Gather evidence from the actual UI surface using repository-native tooling when available.
+Gather reproducible evidence from the actual graphical surface without changing production behavior.
 
 ## Workflow
 
-1. Identify the UI surface and observable behavior under test.
-2. Start the application with its documented local command.
-3. Prefer existing Playwright, Cypress, Storybook, browser, desktop, or Electron harnesses.
-4. Locate pages and controls by stable roles, labels, test identifiers, or application markers.
-5. Capture before-and-after evidence only when it proves the changed behavior.
-6. Inspect console, network, traces, screenshots, or accessibility output only as needed.
-7. Check relevant loading, empty, error, keyboard, focus, responsive, and cleanup behavior.
-8. Clean up servers, debug sessions, temporary profiles, and artifacts unless the user asks to keep them.
+1. Identify the target surface, build or session, and observable contract.
+2. Reuse the authorized running or authenticated surface when it is the target. Start a local app only when necessary and authorized.
+3. Prefer existing repository harnesses and locate controls by stable roles, labels, identifiers, or application markers.
+4. Perform only actions needed for the requested behavior or a concrete risk.
+5. Capture the smallest relevant screenshot, accessibility output, console entry, network evidence, or trace.
+6. Check loading, empty, error, keyboard, focus, responsive, and cleanup states only when material to the contract.
+7. Clean up only servers, profiles, sessions, and artifacts created by this workflow.
 
-## Guardrails
+Keep verification read-only unless the parent task separately authorizes implementation. Use `behavior-implement` for fixes, `phase-validate` for contract acceptance, and `test-gap-review` for evidence sufficiency.
 
-- Do not add browser automation dependencies merely for a one-off probe.
-- Do not reuse stale selectors or coordinates after navigation or layout changes.
-- Avoid coordinate clicks unless a fresh screenshot immediately establishes the target.
-- Do not retain sensitive screenshots, traces, HTTP bodies, profiles, or memory dumps without a concrete need.
-- Do not hardcode ports, selectors, or scripts copied from another repository.
+Do not add automation dependencies for a one-off probe, retain sensitive evidence, use stale selectors, or terminate user-owned resources.
 
-Finish when UI behavior is verified with direct evidence, fixed within scope, or blocked for a concrete reason.
+Finish with the surface tested, actions, observed result, retained evidence, and blockers or limitations.

@@ -1,38 +1,22 @@
 ---
 name: phase-commit
-description: Create one local commit for a completed implementation phase or other clearly scoped unit of work. Use only after implementation, validation, and review are complete when the user explicitly requests a commit without pushing.
+description: Create one local commit for a completed, validated, and reviewed unit of work. Use only when the user explicitly requests a commit without pushing or other delivery actions.
 ---
 
 # Phase Commit
 
-Create one local commit containing only the completed unit of work.
+Create one isolated local commit without changing history or external state.
 
 ## Workflow
 
-1. Inspect `git status`, unstaged changes, staged changes, and relevant untracked files.
-2. Separate the completed work from pre-existing or unrelated user changes.
-3. Stop if the intended commit cannot be isolated safely.
-4. Stage only files belonging to the completed scope.
-5. Review the staged diff.
-6. Create one local commit.
-7. Report the commit hash and one-line summary.
+1. Confirm required repository checks and applicable validation and review cover the exact intended content.
+2. Inspect status, staged and unstaged changes, and relevant untracked files; preserve all unrelated user work.
+3. Stop when scope is ambiguous or includes sensitive, unexpectedly generated, or otherwise unsafe paths.
+4. Stage only explicit paths with `git add -- <paths>`; never use broad staging commands or globs.
+5. Review the staged path list and diff against the requested unit.
+6. Commit using repository conventions, without bypassing hooks or changing signing policy.
+7. Verify the created commit content and remaining worktree.
 
-## Commit Message
+Do not amend, rewrite history, push, create branches or pull requests, manage CI, tag, release, or include unrelated changes.
 
-Use the repository's commit convention. If none exists, use Conventional Commits:
-
-```text
-<type>(<optional-scope>): <imperative summary>
-```
-
-Keep the subject concise, imperative, and without a trailing period. Add a body only when the reason, migration impact, security implications, or breaking behavior is not obvious.
-
-Do not include a changed-file inventory, verification boilerplate, AI attribution, or emoji.
-
-## Guardrails
-
-- Do not create an empty commit.
-- Do not stage unrelated changes.
-- Do not push, create branches or pull requests, manage CI, publish releases, or create tags.
-
-Finish with the commit hash and concise summary only.
+On success report the hash and concise summary. On hook or commit failure, stop and report the blocker without claiming completion.
