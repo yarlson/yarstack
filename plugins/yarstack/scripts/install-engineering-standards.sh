@@ -22,7 +22,11 @@ trap cleanup EXIT
   printf '\n'
   cat "$GUIDANCE_DIR/module-boundaries.md"
   printf '\n'
+  cat "$GUIDANCE_DIR/contract-evolution.md"
+  printf '\n'
   cat "$GUIDANCE_DIR/new-code-complexity-budget.md"
+  printf '\n'
+  cat "$GUIDANCE_DIR/state-change-safety.md"
   printf '\n'
   cat "$GUIDANCE_DIR/clear-naming.md"
   printf '\n'
