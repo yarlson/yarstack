@@ -129,7 +129,7 @@ scope, mutation authority, network access, or permission to spawn agents.
 | [`security-review`](plugins/yarstack/skills/security-review/SKILL.md)                 | Tracing focused trust boundaries and concrete exploit paths.                                        |
 | [`spec-update`](plugins/yarstack/skills/spec-update/SKILL.md)                         | Correcting a non-plan semantic contract when current work cannot determine correctness.             |
 | [`technical-spike`](plugins/yarstack/skills/technical-spike/SKILL.md)                 | Resolving one correctness-blocking external or version-specific uncertainty.                        |
-| [`test-design`](plugins/yarstack/skills/test-design/SKILL.md)                         | Designing or writing a prospective deterministic test contract.                                    |
+| [`test-design`](plugins/yarstack/skills/test-design/SKILL.md)                         | Designing or writing reproducible tests matched to behavioral risk.                                |
 | [`test-gap-review`](plugins/yarstack/skills/test-gap-review/SKILL.md)                 | Auditing whether current verification credibly proves a scoped behavior contract.                   |
 | [`ui-control`](plugins/yarstack/skills/ui-control/SKILL.md)                           | Gathering direct evidence from graphical browser, desktop, or Electron surfaces.                    |
 
