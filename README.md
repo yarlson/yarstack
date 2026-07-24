@@ -39,7 +39,9 @@ summary.
 Tests should describe promised behavior, not mirror internal code. Yarstack
 supports test design before implementation, red-green-refactor while changing
 behavior, and a separate test-gap review to ask whether the final evidence is
-actually sufficient.
+actually sufficient. Changes to engineering tooling and infrastructure use
+native checks unless their complexity or failure risk warrants focused
+automated tests.
 
 ### Modules that contain decisions
 
@@ -128,12 +130,13 @@ keeping their native manifests separate.
 - [`plan-update`](plugins/yarstack/skills/plan-update/SKILL.md) corrects plan
   mechanics when implementation evidence proves them wrong.
 - [`test-design`](plugins/yarstack/skills/test-design/SKILL.md) designs
-  reproducible tests around behavioral risk.
+  reproducible tests when behavioral risk warrants dedicated test code.
 
 ### Implement and prove
 
 - [`behavior-implement`](plugins/yarstack/skills/behavior-implement/SKILL.md)
-  changes production behavior through red-green-refactor.
+  changes behavior through red-green-refactor when focused tests are
+  proportionate.
 - [`phase-implement`](plugins/yarstack/skills/phase-implement/SKILL.md)
   implements exactly one selected plan phase.
 - [`phase-validate`](plugins/yarstack/skills/phase-validate/SKILL.md) checks a

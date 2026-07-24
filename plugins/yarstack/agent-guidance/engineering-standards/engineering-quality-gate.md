@@ -10,7 +10,7 @@ Solve the requested task while preserving or improving maintainability, correctn
 - **Keep responsibilities clear.** Avoid cleverness, hidden coupling, unnecessary indirection, and mixed concerns. Keep code boring and easy to modify.
 - **Fit the codebase.** Follow existing conventions for structure, naming, errors, logging, testing, configuration, dependency wiring, and API shape. Do not introduce a second pattern without a clear reason.
 - **Control complexity.** Prefer short units, shallow control flow, guard clauses, and explicit data flow. Add concurrency or complex runtime patterns only when a simpler design is insufficient.
-- **Test the contract.** Add or update deterministic tests for changed behavior, important boundaries, failure paths, and cleanup. Do not weaken existing tests without a clear justification.
+- **Test the contract.** Add or update deterministic tests for changed product behavior, important boundaries, failure paths, and cleanup. For engineering tooling and infrastructure, first use the applicable native checks. Add dedicated tests only when those checks cannot credibly prove important behavior, concrete complexity or failure risk warrants regression coverage, and a focused deterministic test boundary fits the task. Do not weaken existing tests without a clear justification.
 - **Surface failures.** Return, wrap, log, or expose errors according to project conventions. Add logs, metrics, traces, or health signals only when useful. Keep failures diagnosable without leaking secrets or sensitive data.
 - **Protect trust boundaries.** Validate untrusted input and preserve authentication, authorization, tenant isolation, and permissions. Avoid injection, unsafe paths or deserialization, SSRF, secret exposure, insecure defaults, and unnecessary privilege or access.
 - **Own resources.** Avoid inefficient work on hot paths and unbounded memory growth. Close, cancel, clean up, or release files, connections, timers, tasks, threads, and goroutines in the correct order. Bound concurrent or background work.
@@ -32,7 +32,7 @@ Review every changed file and confirm:
 2. Complexity did not grow unnecessarily.
 3. Changed units remain small, readable, and focused.
 4. Errors, edge cases, cleanup, and cancellation are handled.
-5. Tests cover the meaningful behavior.
+5. Applicable tests and native checks cover the meaningful behavior.
 6. The implementation follows existing conventions.
 
 Fix any failed gate before claiming the work is complete.

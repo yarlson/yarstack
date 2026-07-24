@@ -12,7 +12,7 @@ Own phase scope and orchestrate only the work required to implement it.
 1. Read the selected phase, applicable repository instructions, and the minimum local evidence needed to identify files, patterns, and required checks.
 2. Confirm phase boundaries, prerequisites, acceptance criteria, and unchanged behavior.
 3. Use `plan-update` for proven plan-mechanics defects and `spec-update` for non-plan semantic contract defects.
-4. Use `behavior-implement` for each testable production behavior. Implement documentation, configuration, migrations, generated state, and externally verified work through their repository-native paths without imposing a red-green cycle where it does not apply.
+4. Use `behavior-implement` for product behavior. For engineering tooling and infrastructure, use it only when native checks cannot credibly prove important behavior, concrete complexity or failure risk warrants regression coverage, and a focused deterministic test boundary fits the task. Otherwise implement through the repository-native path and run its applicable checks without adding test infrastructure.
 5. Implement only the phase and prerequisites required for it to work.
 6. Run phase-required and focused checks, fixing only scoped implementation failures.
 7. Report implemented behavior, changed scope, checks, alternative evidence, and remaining blockers.
