@@ -7,6 +7,8 @@ description: Implement exactly one selected phase from an authoritative reposito
 
 Own phase scope and orchestrate only the work required to implement it.
 
+Keep the implementation simple and limited to current requirements. Reuse an existing source of truth when the same rule or knowledge would otherwise be maintained in more than one place, but do not combine unrelated behavior merely because the code looks similar. Add abstractions, flexibility, and configuration only when a concrete current need justifies them.
+
 ## Workflow
 
 1. Read the selected phase, applicable repository instructions, and the minimum local evidence needed to identify files, patterns, and required checks.

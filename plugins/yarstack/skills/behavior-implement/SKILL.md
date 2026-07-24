@@ -7,6 +7,8 @@ description: Implement behavior through a red-green-refactor cycle when focused 
 
 Own the implementation cycle for one coherent observable behavior.
 
+Keep the implementation simple and limited to current requirements. Reuse an existing source of truth when the same rule or knowledge would otherwise be maintained in more than one place, but do not combine unrelated behavior merely because the code looks similar. Add abstractions, flexibility, and configuration only when a concrete current need justifies them.
+
 ## Workflow
 
 1. Read the requested behavior, repository instructions, and closest implementation and test patterns.
