@@ -16,8 +16,9 @@ Own the prospective test contract and test code, not the production implementati
 5. Make generated or scheduled cases reproducible with a recorded seed, useful bounds, and a minimized counterexample or retained failing input where the tooling supports them.
 6. Select only cases that materially define the behavior: normal operation, important boundaries, meaningful failures, cleanup, and external effects.
 7. Follow the repository's existing test structure, helpers, fixtures, and commands.
-8. Write the smallest reproducible test whose failure identifies the broken contract.
-9. State what remains unverified when the behavior cannot be tested economically instead of adding a weak proxy assertion.
+8. Design test code to the same engineering standard as product code. Reuse existing focused helpers before adding new ones. Extract cohesive repeated setup while keeping scenario inputs and expected results visible. Prefer named table-driven cases when they share one setup, action, and assertion path; use direct tests when they do not.
+9. Write the smallest reproducible test whose failure identifies the broken contract.
+10. State what remains unverified when the behavior cannot be tested economically instead of adding a weak proxy assertion.
 
 Use `technical-spike` when a high-consequence claim may need unfamiliar model checking or proof beyond tests. Use `behavior-implement` for red-green behavior changes, `test-gap-review` for retrospective verification sufficiency, `cli-control` for terminal evidence, and `ui-control` for graphical interface evidence.
 

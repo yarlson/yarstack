@@ -2,18 +2,20 @@
 
 Tests must explain the behavior the system promises, not the mechanics used to arrange the test. A reader should quickly understand the condition, action, observable outcome, and what remains true on failure.
 
+Treat test code as maintained product code. Apply the same standards for naming, structure, readability, error handling, cleanup, dependency control, and maintainability.
+
 ### Keep tests direct
 
 - Arrange only inputs that define the scenario, perform one meaningful action, and assert the observable result and important side effects.
 - Name tests in domain language so they read like behavioral contracts.
-- Hide temporary directories, fake servers, process wiring, credentials, fixtures, and repetitive construction behind focused setup helpers. Keep scenario-defining values visible.
+- Reuse existing focused helpers before adding new ones. Extract repeated setup and infrastructure mechanics into shared helpers when they form one cohesive responsibility. Keep scenario-defining inputs and expected results visible in each test.
 - Make each setup helper do one cohesive job, fail near a broken prerequisite, and register cleanup where it creates the resource.
 - Keep test code shallow, deterministic, independent, and free of hidden mutable state or ordering dependencies.
 - Prefer one behavior per test. Avoid conditionals that change a test's meaning and loops outside simple parameterized cases.
 
 ### Use tables only when they clarify
 
-Use parameterized or table-based tests when named cases share the same setup, action, and assertions, especially for validation, parsing, mappings, and boundaries.
+Prefer named table-driven or parameterized cases when they share the same setup, action, and assertions, especially for validation, parsing, mappings, and boundaries.
 
 Keep case data focused on what varies. Separate materially different behaviors when combining them requires mode flags, branching assertions, different lifecycle expectations, or substantially different setup.
 

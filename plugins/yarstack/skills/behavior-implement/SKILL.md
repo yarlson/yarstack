@@ -15,7 +15,7 @@ Keep the implementation simple and limited to current requirements. Reuse an exi
 2. Confirm that focused automated tests are proportionate. For engineering tooling and infrastructure, use this workflow only when native checks cannot credibly prove important behavior, concrete complexity or failure risk warrants regression coverage, and a focused deterministic test boundary fits the task. Otherwise leave this skill and use direct implementation with the applicable native checks.
 3. Identify the observable outcome, important side effects, and state preserved on failure.
 4. Use `test-design` when selecting the test level, cases, fixtures, or test boundary is non-trivial; otherwise extend the existing test pattern directly.
-5. Write the smallest focused test and confirm it fails because the behavior is missing or wrong.
+5. Write the smallest focused test and confirm it fails because the behavior is missing or wrong. Treat the test as maintained product code. Reuse existing focused helpers, extract cohesive repeated setup without hiding scenario values, and prefer named table-driven cases only when they share one execution path.
 6. Change the minimum production code needed to pass without weakening the assertion.
 7. Refactor only as needed for clarity, rerunning the focused test after each behavior-preserving change.
 8. Run relevant surrounding tests and repository-required checks.
