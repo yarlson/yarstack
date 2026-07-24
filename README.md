@@ -150,6 +150,8 @@ keeping their native manifests separate.
 
 - [`code-review`](plugins/yarstack/skills/code-review/SKILL.md) reviews
   correctness, performance, compatibility, lifecycle, and maintainability.
+- [`crap-index-assess`](plugins/yarstack/skills/crap-index-assess/SKILL.md)
+  assesses method-level change risk from complexity and automated test coverage.
 - [`go-review`](plugins/yarstack/skills/go-review/SKILL.md) adds Go-specific
   correctness and lifecycle analysis.
 - [`macos-swift-review`](plugins/yarstack/skills/macos-swift-review/SKILL.md)

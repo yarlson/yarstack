@@ -15,6 +15,7 @@ Own the general evidence-backed review of a confirmed comparison scope.
 4. Check normal paths, boundaries, failures, partial state, cleanup, cancellation, ordering, compatibility, resource ownership, hot-path cost, and unnecessary complexity.
 5. Use `go-review` whenever the scope contains meaningful Go production or test code, a Go package, or a full Go codebase. Use `macos-swift-review` whenever it contains meaningful Swift production or test code, a Swift package, an Xcode project, or a macOS Swift app. Use both for mixed scopes; skip them only when their language code is absent or the change is limited to documentation, metadata, or generated output. Use other specialists when material domain depth is required.
 6. Run only trusted read-only checks that the user requested or that cheaply verify a suspected defect. Never execute arbitrary code introduced by an untrusted change.
+7. Use `crap-index-assess` within those execution bounds when the review targets CRAP or the repository's configured CRAP check covers changed methods. Treat the result as a maintainability signal and apply the finding standard below.
 
 ## Finding Standard
 
