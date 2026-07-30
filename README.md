@@ -148,6 +148,9 @@ keeping their native manifests separate.
 
 ### Review risk
 
+- [`claude-review`](plugins/yarstack/skills/claude-review/SKILL.md) runs an
+  independent `code-review` through Claude Opus against the repository's
+  default branch, then verifies the findings locally.
 - [`code-review`](plugins/yarstack/skills/code-review/SKILL.md) reviews
   correctness, performance, compatibility, lifecycle, and maintainability.
 - [`crap-index-assess`](plugins/yarstack/skills/crap-index-assess/SKILL.md)
