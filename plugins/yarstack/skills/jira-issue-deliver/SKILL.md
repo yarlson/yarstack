@@ -22,6 +22,8 @@ Own one Jira issue from first read to a reviewable pull request. Use the issue a
    - the PR title and body match the final diff and test evidence.
 5. Never merge, deploy, release, or transition the Jira issue under this skill. A ready, green, reviewed PR is the terminal state.
 
+Keep this stage with the current agent. It becomes an orchestrator only if a later stage uses subagents.
+
 ## Maintain autonomous progress
 
 1. Treat the full-delivery request as an instruction to continue without routine confirmation. Do not ask the user for a fact or choice that available evidence can resolve.
@@ -35,6 +37,17 @@ Own one Jira issue from first read to a reviewable pull request. Use the issue a
 5. Ask the user only when the unresolved answer would materially change required behavior or scope, available credentials or mutation authority are missing, authoritative requirements conflict, or every safe path would cause an irreversible or high-risk action.
 6. Ask one concise question. Briefly state what you checked, the remaining decision, and why it blocks progress. Continue all independent work while waiting when possible.
 7. Do not treat silence as authority. If the blocker prevents the terminal state, report it precisely instead of claiming completion.
+
+Keep the decision to ask the user with the current agent or orchestrator; a subagent may report missing evidence but must not interrupt the user directly.
+
+## Coordinate subagents only when useful
+
+1. Use one agent by default. Add subagents only when at least two bounded tasks are independent and parallel work will save meaningful time or provide a useful independent challenge.
+2. Use an orchestrator only while subagents are active or their results need integration. The current agent owns the Jira contract, plan, scope, authority, task boundaries, shared state, remote mutations, and final claims.
+3. Give each subagent one concrete task, the minimum raw context it needs, an explicit read or write scope, and the expected result. Delegation never expands user authority.
+4. Parallelize independent read-only work freely. Allow parallel writes only when the plan proves that dependencies and paths are disjoint; assign one writer to each file or shared artifact. Otherwise serialize the work.
+5. Verify subagent results against repository or remote evidence before using them. Agreement between agents is not proof.
+6. Do not create an orchestrator or subagent for a small task, a sequential dependency, duplicated analysis, or ceremony. Integrate all required results before advancing the owning stage.
 
 ## Read the Jira issue
 
@@ -50,6 +63,8 @@ Own one Jira issue from first read to a reviewable pull request. Use the issue a
 
 Keep Jira access read-only unless the user separately requests a Jira mutation.
 
+Parallel option: after the current agent resolves the issue key and access path, an orchestrator may have one read-only subagent extract the Jira contract while another reads repository guidance and locates likely entry points. The orchestrator reconciles both results before planning.
+
 ## Discover the repository flow
 
 1. Inspect the worktree, branch, remotes, and base branch. Preserve unrelated staged, unstaged, and untracked work; isolate the change or stop if safe isolation is impossible.
@@ -60,6 +75,8 @@ Keep Jira access read-only unless the user separately requests a Jira mutation.
 6. Stop discovery when the edit surface, verification surface, constraints, and unresolved risks are clear. Do not inventory unrelated modules or generated and vendored content.
 7. Before editing, report the existing pattern, how the change will follow it, and any necessary deviation.
 
+Parallel option: split independent product areas, modules, or version-specific research among read-only subagents. Keep the end-to-end flow synthesis with the orchestrator.
+
 ## Create the implementation plan
 
 1. Use `plan-create` to turn the Jira criterion map and repository evidence into the authoritative implementation plan.
@@ -68,6 +85,8 @@ Keep Jira access read-only unless the user separately requests a Jira mutation.
 4. Use `architecture-refine` or `technical-spike` through the planning workflow when an unresolved decision or version-specific fact changes the implementation path. Apply the autonomous-progress rules before seeking user input.
 5. Write a repository plan file only when the user authorizes it and the repository has an established location or format. Otherwise keep the plan in the active workflow.
 6. Use `plan-update` only when implementation or validation proves that phase order, prerequisites, scope, dependencies, steps, or validation gates are wrong. Do not use it to change Jira acceptance meaning or hide scope growth.
+
+Parallel option: subagents may independently check acceptance coverage, phase dependencies, risks, or technical facts. The orchestrator owns the single final plan and resolves conflicts from source evidence.
 
 ## Implement, validate, and review each phase
 
@@ -80,6 +99,8 @@ Keep Jira access read-only unless the user separately requests a Jira mutation.
 7. After all phases, use `code-review` on the complete diff, map every Jira criterion to final evidence, and run the authoritative repository checks.
 8. Review every changed file and the final diff. Confirm every addition serves the Jira requirement and no unrelated change entered the scope.
 
+Parallel option: implement separate phases concurrently only when the plan proves that their dependencies and write scopes are disjoint. After writes stop, run independent specialist reviews in parallel. The orchestrator or owning implementation agent serializes fixes and reruns the affected phase gates.
+
 ## Publish a draft and make it reviewable
 
 1. Use `pr-draft` after local implementation, validation, and review are complete. Its shipping authority comes from the explicit full-delivery request; do not broaden the staged paths.
@@ -91,6 +112,8 @@ Keep Jira access read-only unless the user separately requests a Jira mutation.
 
 Do not rewrite published history, force-push, weaken tests, disable checks, or use admin overrides to obtain a green result.
 
+Keep staging, commits, pushes, PR creation, and ready-state changes with the current agent or orchestrator because these operations share ordered remote state.
+
 ## Drive CI to green
 
 1. Record the remote head SHA and inspect required checks for that exact commit. A green prior commit is not evidence for a newer push.
@@ -98,6 +121,8 @@ Do not rewrite published history, force-push, weaken tests, disable checks, or u
 3. Classify the failure as caused by the change, a real pre-existing blocker, or transient infrastructure. Fix only scoped defects. Retry only failures with evidence that another run may succeed unchanged.
 4. Route corrections through the owning plan phase, then repeat its implementation, validation, and review gates. Commit and push only the confirmed correction.
 5. After every push, discard stale check conclusions, record the new head, and repeat this section. Finish only when all required checks on the current head are successful or explicitly neutral.
+
+Parallel option: assign independent failed jobs to read-only subagents for diagnosis. The orchestrator chooses the correction, assigns one writer for overlapping code, and serializes commits and pushes.
 
 ## Close CodeRabbit and other automated review
 
@@ -113,9 +138,13 @@ Do not rewrite published history, force-push, weaken tests, disable checks, or u
 7. Wait for CodeRabbit's post-push review or use the repository-supported way to trigger another review on the new head. Audit all threads again because a fix can create a new finding. Do not rely on an approval emoji, a summary comment, or a passing check alone.
 8. Repeat only when a new commit, check result, review, or thread provides new evidence. If the reviewer is unavailable or keeps the workflow pending without new evidence, exhaust safe repository-supported retries, then report the external blocker instead of claiming success.
 
+Parallel option: classify independent review threads with read-only subagents. Serialize overlapping fixes, and keep replies and thread resolution with the orchestrator after the relevant commit is remote.
+
 ## Final audit and result
 
 Fetch fresh local and remote evidence after the last review cycle. Confirm the local commit, remote head, ready state, required checks, review result, unresolved-thread count, PR title, PR body, and worktree scope all agree. Re-run any check invalidated by a closeout edit.
+
+Keep the final audit with the current agent or orchestrator. Start it only after required subagent results are integrated and no subagent is still writing.
 
 Report:
 
