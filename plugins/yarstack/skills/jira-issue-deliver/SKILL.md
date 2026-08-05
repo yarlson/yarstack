@@ -1,6 +1,6 @@
 ---
 name: jira-issue-deliver
-description: Deliver one Jira issue from authoritative intake through a minimal repository change to a ready GitHub pull request with required CI passing and requested automated review feedback closed. Use only when the user explicitly authorizes the full Jira-to-PR workflow, including implementation, commits, pushes, PR state changes, and review remediation.
+description: Autonomously deliver one Jira issue from intake to a ready GitHub pull request. Use only when the user authorizes implementation, commits, pushes, PR state changes, CI remediation, and resolution of requested automated review feedback.
 ---
 
 # Jira Issue Delivery
@@ -11,16 +11,30 @@ Own one Jira issue from first read to a reviewable pull request. Use the issue a
 
 1. Extract the Jira URL or key, repository, expected base branch, requested review systems, and terminal condition from the request.
 2. Confirm that the request explicitly permits code edits, commits, pushes, PR creation, marking the PR ready, review fixes, review replies, and thread resolution. Do not infer missing mutation authority from the issue alone.
-3. Read all applicable repository instructions before any repository or remote mutation. Obey repository-specific PR, title, test, release, merge-queue, and generated-file rules.
+3. Read all applicable repository instructions before any repository or remote mutation. Obey repository-specific PR, title, test, release, and generated-file rules.
 4. Treat the task as complete only when current evidence proves all applicable conditions:
    - the PR implements every in-scope acceptance criterion;
    - the PR is open and ready for review, not a draft;
    - the remote PR head matches the validated commit;
    - every required check for that head passed or has a neutral result allowed by repository rules;
-   - each requested automated reviewer completed its review of the current change;
-   - every review thread has an evidence-backed disposition and every actionable thread is resolved;
+   - each requested automated reviewer completed its review of the current remote PR head;
+   - each requested automated review thread has a recorded outcome supported by repository evidence, and each actionable thread is resolved;
    - the PR title and body match the final diff and test evidence.
-5. Never merge, enqueue, deploy, release, or transition the Jira issue under this skill. A ready, green, reviewed PR is the terminal state. Follow stricter repository rules such as merge-queue-only merging.
+5. Never merge, deploy, release, or transition the Jira issue under this skill. A ready, green, reviewed PR is the terminal state.
+
+## Maintain autonomous progress
+
+1. Treat the full-delivery request as an instruction to continue without routine confirmation. Do not ask the user for a fact or choice that available evidence can resolve.
+2. Before asking a question, exhaust every applicable safe source:
+   - Jira fields, comments, links, attachments, and related issues;
+   - repository instructions, code, tests, documentation, configuration, and relevant history;
+   - installed CLI help, APIs, connectors, MCP tools, and authorized browser sessions;
+   - official web documentation and release notes for public technical facts.
+3. Never send private issue or repository data to public search. Search only the public terms needed to resolve the technical fact.
+4. When the evidence supports several valid approaches, choose the smallest reversible option that preserves current behavior and authorized scope. Record the assumption and proceed.
+5. Ask the user only when the unresolved answer would materially change required behavior or scope, available credentials or mutation authority are missing, authoritative requirements conflict, or every safe path would cause an irreversible or high-risk action.
+6. Ask one concise question. Briefly state what you checked, the remaining decision, and why it blocks progress. Continue all independent work while waiting when possible.
+7. Do not treat silence as authority. If the blocker prevents the terminal state, report it precisely instead of claiming completion.
 
 ## Read the Jira issue
 
@@ -29,10 +43,10 @@ Own one Jira issue from first read to a reviewable pull request. Use the issue a
    - use an available Jira connector or purpose-built Jira tool;
    - use the installed Atlassian CLI after inspecting its current help, for example `acli jira workitem view <KEY> --json`;
    - use an authorized logged-in browser session when API and CLI access are unavailable.
-3. Read the summary, description, acceptance criteria, engineering notes, comments, links, attachments, status, and relevant parent or child context. Prefer structured JSON or the source document model when rendered text loses lists, panels, or code.
+3. Read the summary, description, acceptance criteria, engineering notes, comments, links, attachments, status, and relevant parent or child context. Prefer structured JSON or Jira's structured field data when rendered text loses lists, panels, or code.
 4. Separate authoritative requirements from context, suggestions, prior investigation, and out-of-scope ideas. Do not silently promote an engineering note into product behavior.
 5. Build a criterion map with one row per observable requirement: input or state, expected result, failure behavior, likely owning code, and required evidence.
-6. Resolve straightforward questions from linked issues, repository vocabulary, current behavior, and tests. Make a conservative assumption only when it preserves established behavior and does not expand scope. Stop and report a blocker when materially different implementations remain possible.
+6. Resolve straightforward questions from linked issues, repository vocabulary, current behavior, and tests. Apply the autonomous-progress rules before asking about any remaining ambiguity.
 
 Keep Jira access read-only unless the user separately requests a Jira mutation.
 
@@ -41,46 +55,30 @@ Keep Jira access read-only unless the user separately requests a Jira mutation.
 1. Inspect the worktree, branch, remotes, and base branch. Preserve unrelated staged, unstaged, and untracked work; isolate the change or stop if safe isolation is impossible.
 2. Read root and nearest repository guidance plus linked architecture, test, and PR documents.
 3. Find the closest implementation and test patterns before proposing new code. Trace the complete affected flow from its user, API, event, or CLI entry point through validation, domain decisions, persistence, external calls, and final observable result.
-4. Identify:
-   - the source of truth for the new decision;
-   - the earliest safe decision point before irreversible state or side effects;
-   - error propagation and cleanup paths;
-   - retries, duplicate delivery, stale state, ordering, and cancellation risks;
-   - contract consumers and mixed-version concerns;
-   - exact or bounded queries that avoid remote scans or history traversal.
+4. Record the files, interfaces, dependencies, tests, documentation, and current behavior that constrain the change.
 5. Inspect installed tool versions before relying on version-specific behavior. Search official vendor documentation or release notes when correctness depends on recent public behavior, such as stacked-PR support or a new `gh` release. Prefer primary sources and distinguish source facts from inference.
 6. Stop discovery when the edit surface, verification surface, constraints, and unresolved risks are clear. Do not inventory unrelated modules or generated and vendored content.
 7. Before editing, report the existing pattern, how the change will follow it, and any necessary deviation.
 
-## Define the smallest safe design
+## Create the implementation plan
 
-Write a short implementation sketch that names:
+1. Use `plan-create` to turn the Jira criterion map and repository evidence into the authoritative implementation plan.
+2. Keep the plan proportional. Use one phase for a small coherent change and multiple phases only when dependencies require an order.
+3. Give each phase a goal, concrete deliverables, dependencies, acceptance evidence, and explicit unchanged behavior. Map every in-scope Jira criterion to at least one phase and validation gate.
+4. Use `architecture-refine` or `technical-spike` through the planning workflow when an unresolved decision or version-specific fact changes the implementation path. Apply the autonomous-progress rules before seeking user input.
+5. Write a repository plan file only when the user authorizes it and the repository has an established location or format. Otherwise keep the plan in the active workflow.
+6. Use `plan-update` only when implementation or validation proves that phase order, prerequisites, scope, dependencies, steps, or validation gates are wrong. Do not use it to change Jira acceptance meaning or hide scope growth.
 
-- the exact observable behavior to change;
-- the smallest files or units involved;
-- data flow, decision point, side effects, and error paths;
-- focused success, boundary, and failure tests;
-- contracts and behavior that must remain unchanged.
+## Implement, validate, and review each phase
 
-Prefer an existing boundary and source of truth. Use exact or server-filtered remote queries instead of unbounded scans. Reject unrelated cleanup, speculative configuration, new dependencies, new service boundaries, and abstractions without a second current consumer. If the issue requires an incompatible contract change, define the expand, migrate, and contract sequence before implementation.
-
-## Implement and prove the issue
-
-1. Use `behavior-implement` for changed observable behavior. Demonstrate the missing or incorrect behavior with the smallest proportionate failing test, implement only enough to pass, and refactor only for local clarity.
-2. Use `test-design` when the test level, fixtures, failure cases, or realistic boundary are not obvious. For tooling or configuration, prefer authoritative native checks when a dedicated test would add more machinery than confidence.
-3. Follow existing naming, error, logging, dependency, mock, and generated-code conventions. Regenerate artifacts only with repository-native commands and only when the source change requires them.
-4. Keep invalid input, partial failure, cleanup, duplicate execution, ambiguous remote outcomes, and cancellation behavior visible at the owning boundary.
-5. Run focused tests during implementation, then the repository-required checks for every affected area.
-
-## Validate and review before publication
-
-1. Use `phase-validate` against the Jira criterion map. Re-derive each conclusion from the current diff and evidence; do not trust implementation notes.
-2. Use `test-gap-review` when meaningful behavior or failure paths may lack proof.
-3. Use `code-review` on the complete diff. Add the relevant language or platform review, such as `go-review`, when its trigger applies.
-4. Use `security-review` for changed trust boundaries, authentication, authorization, secrets, file paths, shell execution, deserialization, or network behavior. Use `dependency-review` when manifests, lockfiles, or dependencies change.
-5. Use `docs-drift-review` when behavior, configuration, commands, or public contracts may make nearby documentation stale.
-6. Fix only verified in-scope defects, rerun affected focused checks, and rerun the authoritative repository checks against the final content.
-7. Review every changed file and the final diff. Confirm every addition serves the Jira requirement, functions and tests stay focused, errors and resource ownership remain clear, and no unrelated change entered the scope.
+1. Select the next phase whose prerequisites are complete and use `phase-implement`. Let it route changed behavior through `behavior-implement` and non-trivial test choices through `test-design`.
+2. Follow existing naming, error, logging, dependency, mock, and generated-code conventions. Regenerate artifacts only with repository-native commands and only when the source change requires them.
+3. Use `phase-validate` against that phase's Jira criteria and planned evidence. Re-derive each conclusion from the current implementation and checks; do not trust implementation notes.
+4. Use `phase-review` after validation to catch structural regressions introduced by the phase.
+5. Invoke specialist reviews only when their triggers apply: `test-gap-review`, `security-review`, `dependency-review`, `docs-drift-review`, and the relevant language or platform review.
+6. Fix only verified in-scope defects and rerun affected checks before starting the next phase. Use `plan-update` if evidence proves the remaining plan mechanics are wrong.
+7. After all phases, use `code-review` on the complete diff, map every Jira criterion to final evidence, and run the authoritative repository checks.
+8. Review every changed file and the final diff. Confirm every addition serves the Jira requirement and no unrelated change entered the scope.
 
 ## Publish a draft and make it reviewable
 
@@ -98,7 +96,7 @@ Do not rewrite published history, force-push, weaken tests, disable checks, or u
 1. Record the remote head SHA and inspect required checks for that exact commit. A green prior commit is not evidence for a newer push.
 2. Watch checks without blocking communication for long intervals. For each failure, inspect the failed job, annotations, and relevant logs before editing.
 3. Classify the failure as caused by the change, a real pre-existing blocker, or transient infrastructure. Fix only scoped defects. Retry only failures with evidence that another run may succeed unchanged.
-4. Route behavior corrections back through `behavior-implement` and the relevant validation and review steps. Commit and push only the confirmed correction.
+4. Route corrections through the owning plan phase, then repeat its implementation, validation, and review gates. Commit and push only the confirmed correction.
 5. After every push, discard stale check conclusions, record the new head, and repeat this section. Finish only when all required checks on the current head are successful or explicitly neutral.
 
 ## Close CodeRabbit and other automated review
