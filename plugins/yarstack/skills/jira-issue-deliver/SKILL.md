@@ -65,9 +65,21 @@ Keep Jira access read-only unless the user separately requests a Jira mutation.
 
 Parallel option: after the current agent resolves the issue key and access path, an orchestrator may have one read-only subagent extract the Jira contract while another reads repository guidance and locates likely entry points. The orchestrator reconciles both results before planning.
 
+## Prepare an isolated delivery worktree
+
+1. Honor any user-specified remote or base branch. Verify and use a user-specified issue branch or isolated workspace instead of creating a competing one.
+2. When no workspace is specified, inspect registered worktrees, local and remote issue branches, and issue-linked pull requests. Resume an existing workspace or attach an existing branch unchanged to a new worktree only when it unambiguously belongs to the same delivery. Record its head, upstream, status, verified pull request base, and current remote base commit; do not rebase it merely because the remote base advanced.
+3. If no prior delivery state exists, select the remote that will host the pull request base and use the user-specified base branch or resolve the remote's current default branch from live remote evidence. Do not assume `origin`, `main`, or `master`, and do not rely only on a cached remote `HEAD`.
+4. Fetch the required base ref and record its exact remote commit. Do not switch, pull, reset, stash, or update the primary checkout or its local default branch. Stop if current remote base state cannot be proved.
+5. Use a repository-prescribed worktree location when one exists. Otherwise place it outside the repository, such as `<repository-parent>/.worktrees/<repository>/<issue-key>-<slug>`, without adding ignore rules to the repository. Never overwrite, reset, delete, unlock, prune, or force-reuse a colliding branch, path, or worktree.
+6. For a new delivery, create a short issue-keyed topic branch at the recorded base commit in a linked worktree. Do not make the topic branch track the base branch; set its upstream to the remote topic branch on first push.
+7. Verify that the selected worktree is registered and on the intended issue branch. Verify a new branch is clean and at the recorded base commit; preserve and record the state of a resumed branch. Read applicable repository guidance from the selected path.
+8. Run all discovery, implementation, validation, review, commit, push, CI repair, and review-remediation work in the selected worktree.
+9. Keep the worktree through the final audit. Do not remove it unless the user or repository explicitly requires cleanup.
+
 ## Discover the repository flow
 
-1. Inspect the worktree, branch, remotes, and base branch. Preserve unrelated staged, unstaged, and untracked work; isolate the change or stop if safe isolation is impossible.
+1. Confirm the delivery worktree, issue branch, remotes, and recorded base commit. Preserve unrelated staged, unstaged, and untracked work; stop if safe isolation is impossible.
 2. Read root and nearest repository guidance plus linked architecture, test, and PR documents.
 3. Find the closest implementation and test patterns before proposing new code. Trace the complete affected flow from its user, API, event, or CLI entry point through validation, domain decisions, persistence, external calls, and final observable result.
 4. Record the files, interfaces, dependencies, tests, documentation, and current behavior that constrain the change.
@@ -104,7 +116,7 @@ Parallel option: implement separate phases concurrently only when the plan prove
 ## Publish a draft and make it reviewable
 
 1. Use `pr-draft` after local implementation, validation, and review are complete. Its shipping authority comes from the explicit full-delivery request; do not broaden the staged paths.
-2. Create a short issue-linked branch, stage explicit paths, inspect the staged diff, commit with repository conventions, push with an upstream, and open a draft PR against the verified base.
+2. Use the prepared issue-linked branch, stage explicit paths, inspect the staged diff, commit with repository conventions, push with an upstream, and open a draft PR against the verified base.
 3. Follow the repository PR template. Otherwise state `Problem`, `Fix`, and `Tests`, map each claim to the diff, and link the Jira issue without copying sensitive issue content.
 4. Use `english-text-review` on the title and body and `slop-cop` on the full PR presentation. Apply only material, evidence-backed findings.
 5. Let checks that run on drafts finish and repair failures before changing PR state when practical. Mark the PR ready only when the pushed head is locally validated, the PR accurately describes it, and the full-delivery request authorizes the transition.
@@ -150,6 +162,7 @@ Report:
 
 - the Jira issue and delivered behavior;
 - why the implementation is the smallest safe approach;
+- the delivery worktree path and recorded base commit;
 - changed files and commits;
 - criterion-level test and validation evidence;
 - the PR URL, ready state, current head, and required checks;
