@@ -62,6 +62,15 @@ Engineering work ends in prose: comments, errors, documentation, commits, pull
 requests, runbooks, and reports. Yarstack includes a plain-English standard and
 a dedicated review workflow because vague writing hides vague thinking.
 
+### Jira issues delivered to review-ready pull requests
+
+`jira-issue-deliver` can own an explicitly authorized change from Jira intake
+through implementation, validation, a ready GitHub pull request, passing CI, and
+requested automated review. It resolves routine questions from available
+evidence and can coordinate bounded, independent subagents when that makes the
+work faster or provides a useful second opinion. It stops before merging,
+deploying, releasing, or changing the Jira issue.
+
 ## One engineering system, two parts
 
 Yarstack contains:
@@ -197,6 +206,8 @@ keeping their native manifests separate.
   evidence from graphical interfaces.
 - [`spec-update`](plugins/yarstack/skills/spec-update/SKILL.md) corrects a
   semantic contract when current work cannot determine correctness.
+- [`jira-issue-deliver`](plugins/yarstack/skills/jira-issue-deliver/SKILL.md)
+  delivers an authorized Jira issue to a ready, green, reviewed pull request.
 - [`phase-commit`](plugins/yarstack/skills/phase-commit/SKILL.md) creates one
   explicitly requested local commit without pushing.
 - [`pr-draft`](plugins/yarstack/skills/pr-draft/SKILL.md) publishes confirmed
