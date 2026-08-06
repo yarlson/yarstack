@@ -26,6 +26,14 @@ rollout order, and acceptance evidence. Yarstack separates architecture
 discussion, technical research, plan creation, and plan correction so each has
 one clear job.
 
+### Investigations that end in a decision
+
+`system-investigate` owns a read-only investigation from an initial hypothesis
+to an evidence-backed verdict. It traces repository and runtime behavior,
+coordinates independent evidence gathering when useful, checks current public
+sources when they can change the conclusion, and recommends the smallest safe
+next step without starting implementation.
+
 ### Correctness before completion
 
 Code that works on the happy path is not enough. Yarstack makes normal paths,
@@ -128,6 +136,9 @@ keeping their native manifests separate.
 
 ### Decide and plan
 
+- [`system-investigate`](plugins/yarstack/skills/system-investigate/SKILL.md)
+  validates suspected behavior or design and recommends the smallest safe next
+  step from repository, runtime, and current public evidence.
 - [`alternatives-explore`](plugins/yarstack/skills/alternatives-explore/SKILL.md)
   tests one non-incremental alternative.
 - [`architecture-refine`](plugins/yarstack/skills/architecture-refine/SKILL.md)
