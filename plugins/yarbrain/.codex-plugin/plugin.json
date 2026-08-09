@@ -1,0 +1,35 @@
+{
+  "name": "yarbrain",
+  "version": "0.1.0",
+  "description": "A reviewable Markdown second brain for Codex and Claude Code.",
+  "author": {
+    "name": "Yar Kravtsov",
+    "url": "https://github.com/yarlson"
+  },
+  "homepage": "https://github.com/yarlson/yarstack",
+  "repository": "https://github.com/yarlson/yarstack",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "claude-code",
+    "memory",
+    "knowledge-management"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Yarbrain",
+    "shortDescription": "A reviewable Markdown second brain",
+    "longDescription": "Capture session evidence, reconcile durable knowledge, recall relevant context, and promote proven procedures.",
+    "developerName": "Yar Kravtsov",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Initialize my Yarbrain knowledge vault.",
+      "Recall relevant knowledge before I start this task.",
+      "Capture and reconcile what this session taught us."
+    ]
+  }
+}

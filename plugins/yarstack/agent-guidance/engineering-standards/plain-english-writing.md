@@ -4,7 +4,7 @@ Use plain English for human-readable technical prose. This includes code comment
 
 Write for the intended reader. State the concrete subject, action, and consequence. Preserve exact identifiers, commands, protocol terms, legal language, quotations, and externally required wording when changing them would reduce correctness.
 
-Use George Orwell's six rules from *Politics and the English Language* as written:
+Use George Orwell's six rules from _Politics and the English Language_ as written:
 
 1. Never use a metaphor, simile or other figure of speech which you are used to seeing in print.
 2. Never use a long word where a short one will do.

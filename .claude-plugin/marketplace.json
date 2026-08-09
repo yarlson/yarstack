@@ -11,6 +11,12 @@
       "source": "./plugins/yarstack",
       "category": "Productivity",
       "strict": true
+    },
+    {
+      "name": "yarbrain",
+      "source": "./plugins/yarbrain",
+      "category": "Productivity",
+      "strict": true
     }
   ]
 }

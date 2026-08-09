@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "yarbrain",
+  "displayName": "Yarbrain",
+  "version": "0.1.0",
+  "description": "A reviewable Markdown second brain for Codex and Claude Code.",
+  "author": {
+    "name": "Yar Kravtsov",
+    "url": "https://github.com/yarlson"
+  },
+  "homepage": "https://github.com/yarlson/yarstack",
+  "repository": "https://github.com/yarlson/yarstack",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "claude-code",
+    "memory",
+    "knowledge-management"
+  ]
+}

@@ -8,11 +8,11 @@
 
 ## Package invariants
 
-- Keep the installable package self-contained under `plugins/yarstack/`. Marketplace installs are cached copies; runtime paths must not traverse outside the plugin root.
+- Keep each installable package self-contained under `plugins/<plugin-name>/`. Marketplace installs are cached copies; runtime paths must not traverse outside the owning plugin root.
 - Follow [`SKILL_FORMAT.md`](SKILL_FORMAT.md) when adding or changing skills.
 - Keep Codex metadata in `.codex-plugin/plugin.json`, Claude metadata in `.claude-plugin/plugin.json`, and their marketplace schemas separate.
-- Keep shared identity, author, repository, and version values aligned between manifests.
-- Do not change `0.1.0` or any later explicit version unless the user requests a release/version change. When changing it, update both manifests together.
+- Keep each plugin's shared identity, author, repository, and version values aligned between its manifests.
+- Do not change `0.1.0` or any later explicit version unless the user requests a release/version change. When changing it, update both manifests for that plugin together.
 - Do not add a plugin-root `CLAUDE.md`; Claude Code does not load it as plugin context.
 - Do not declare skills, hooks, agents, MCP servers, apps, assets, or capabilities before the corresponding package content and behavior exist.
 
@@ -22,6 +22,14 @@
 - Preserve policy fragment contents and assembly order unless the user explicitly requests prompt changes.
 - Preserve installer idempotency, existing symlinks, preflight rejection of dangling symlinks, and backups before replacing differing files.
 - Keep guidance installation explicit. Do not convert it into an automatic hook, startup action, or implicit plugin side effect.
+
+## Yarbrain invariants
+
+- Keep the canonical vault and all mutable knowledge outside the installed or cached plugin root.
+- Do not choose, create, import, or configure a vault during plugin installation. Require an explicit `wiki-initialize` action and preserve existing vault contents.
+- Keep lifecycle hooks lightweight. They may load a bounded index or enqueue session locators, but must not copy transcript bodies, call a model or network service, or change canonical semantic notes.
+- Preserve episodes as evidence. Search before semantic writes, keep proposed changes reviewable, and do not activate a generated skill without explicit approval.
+- Test Yarbrain with a temporary `YARBRAIN_CONFIG` and vault. Never use the real user configuration or vault.
 
 ## Change discipline
 

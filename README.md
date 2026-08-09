@@ -16,6 +16,10 @@ of explicit workflows and engineering standards that define what the agent must
 inspect, what it may change, how it should verify the result, and where it must
 stop.
 
+The same marketplace also publishes Yarbrain as a separate plugin. Yarbrain
+keeps durable agent knowledge in a user-controlled Markdown vault without
+mixing that state into Yarstack's engineering workflows.
+
 ## What Yarstack is built for
 
 ### Planning that can be implemented
@@ -113,6 +117,23 @@ That sequence is available, not mandatory. A small bug may need only
 `security-review`, and `rollout-readiness-review`. The task determines the
 workflow.
 
+## Yarbrain
+
+Yarbrain separates what happened from what is currently believed and from what
+an agent knows how to do:
+
+- immutable episode notes preserve session evidence;
+- canonical notes hold reconciled current knowledge;
+- approved `SKILL.md` files hold repeatable procedures.
+
+Session hooks only enqueue transcript locators and load a bounded index. The
+`wiki-capture`, `wiki-reconcile`, `wiki-recall`, `procedure-promote`, and
+`wiki-maintain` workflows do the deliberate work. Proposed memory and skill
+changes stay in an inbox until they are reviewed.
+
+Run `wiki-initialize` after installation to choose the Markdown vault. Yarbrain
+does not create or select a vault as an installation side effect.
+
 ## Install
 
 ### Codex
@@ -120,6 +141,7 @@ workflow.
 ```sh
 codex plugin marketplace add yarlson/yarstack
 codex plugin add yarstack@yarstack
+codex plugin add yarbrain@yarstack
 ```
 
 ### Claude Code
@@ -127,10 +149,11 @@ codex plugin add yarstack@yarstack
 ```sh
 claude plugin marketplace add yarlson/yarstack
 claude plugin install yarstack@yarstack
+claude plugin install yarbrain@yarstack
 ```
 
-The same self-contained package supplies the shared skills to both hosts while
-keeping their native manifests separate.
+Both self-contained packages keep their Codex and Claude Code manifests
+separate.
 
 ## Choose a skill
 
@@ -278,16 +301,17 @@ Run `/reload-plugins` or restart Claude Code.
 make validate
 ```
 
-The command runs `plugin-scanner lint` and `plugin-scanner verify` for the Codex
-package, then runs `claude plugin validate --strict` for the Claude Code plugin
-and marketplace.
+The command runs `plugin-scanner lint` and `plugin-scanner verify` for both
+Codex packages, then runs `claude plugin validate --strict` for both Claude Code
+plugins and the marketplace.
 
 ## Repository layout
 
 ```text
 .agents/plugins/marketplace.json   Codex marketplace
 .claude-plugin/marketplace.json    Claude Code marketplace
-plugins/yarstack/                  Shared installable package
+plugins/yarstack/                  Engineering workflow package
+plugins/yarbrain/                  Markdown second-brain package
 Makefile                           Local and CI entrypoints
 ```
 
