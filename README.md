@@ -119,22 +119,54 @@ workflow.
 
 ## Yarbrain
 
-Yarbrain separates what happened from what is currently believed and from what
-an agent knows how to do:
+[Yarbrain](plugins/yarbrain/README.md) is a separate plugin for a review-first
+second brain. It separates what happened from what is currently believed and
+from what an agent knows how to do:
 
 - immutable episode notes preserve session evidence;
 - canonical notes hold reconciled current knowledge;
 - approved `SKILL.md` files hold repeatable procedures.
 
-Session hooks only enqueue transcript locators and load a bounded index. The
-`wiki-capture`, `wiki-reconcile`, `wiki-recall`, `procedure-promote`, and
-`wiki-maintain` workflows do the deliberate work. Proposed memory and skill
-changes stay in an inbox until they are reviewed.
+The Markdown vault is the source of truth. Search indexes and caches can be
+rebuilt. Proposed memory and skill changes stay in an inbox until they are
+reviewed.
 
-Run `wiki-initialize` after installation to choose the Markdown vault. Yarbrain
-does not create or select a vault as an installation side effect.
+| Skill                                                                     | Use it to                                                                                |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [`wiki-initialize`](plugins/yarbrain/skills/wiki-initialize/SKILL.md)     | Create or adopt a vault at a path you approve.                                           |
+| [`wiki-capture`](plugins/yarbrain/skills/wiki-capture/SKILL.md)           | Turn a completed session into one episode and reviewable candidates.                     |
+| [`wiki-reconcile`](plugins/yarbrain/skills/wiki-reconcile/SKILL.md)       | Search existing notes and propose a merge, split, supersession, conflict, or new note.   |
+| [`wiki-recall`](plugins/yarbrain/skills/wiki-recall/SKILL.md)             | Read at most five relevant notes, episodes, or approved procedures before a task.        |
+| [`procedure-promote`](plugins/yarbrain/skills/procedure-promote/SKILL.md) | Turn a repeated, verified procedure into a proposed Agent Skill.                         |
+| [`wiki-maintain`](plugins/yarbrain/skills/wiki-maintain/SKILL.md)         | Check links, provenance, duplicates, stale knowledge, pending evidence, and skill drift. |
+
+After installation, ask the agent:
+
+```text
+Use wiki-initialize to create my Yarbrain vault at <path>.
+```
+
+Yarbrain stores the selected path in `$XDG_CONFIG_HOME/yarbrain/config.json`,
+or `~/.config/yarbrain/config.json` when `XDG_CONFIG_HOME` is unset. Set
+`YARBRAIN_CONFIG` to use another config file. Initialization preserves existing
+vault files and creates only missing structure.
+
+Until a vault is configured, Yarbrain hooks do nothing. After configuration:
+
+- `SessionStart` loads at most 12,000 characters from `INDEX.md` and reports
+  the pending-session count;
+- `PreCompact` and `SessionEnd` enqueue session IDs and transcript locators;
+- hooks do not copy transcript bodies, call a model or network service, or
+  change canonical notes.
+
+Capture and reconciliation remain explicit agent workflows. Yarbrain does not
+let new evidence replace current knowledge without review, and it does not
+activate a proposed procedure without approval.
 
 ## Install
+
+Install either plugin or both. They share a marketplace but keep separate
+runtime state and responsibilities.
 
 ### Codex
 
@@ -275,13 +307,14 @@ the installed content is already current.
 ## Upgrade
 
 Marketplace installs are cached by version. Refresh the marketplace after a new
-Yarstack release.
+repository release, then run the relevant plugin update commands below.
 
 ### Codex
 
 ```sh
 codex plugin marketplace upgrade yarstack
 codex plugin add yarstack@yarstack
+codex plugin add yarbrain@yarstack
 ```
 
 Start a new Codex thread to load the updated plugin.
@@ -291,11 +324,12 @@ Start a new Codex thread to load the updated plugin.
 ```sh
 claude plugin marketplace update yarstack
 claude plugin update yarstack@yarstack
+claude plugin update yarbrain@yarstack
 ```
 
 Run `/reload-plugins` or restart Claude Code.
 
-## Validate the package
+## Validate the packages
 
 ```sh
 make validate
