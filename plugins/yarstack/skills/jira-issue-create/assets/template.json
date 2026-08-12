@@ -1,0 +1,72 @@
+{
+  "type": "doc",
+  "version": 1,
+  "content": [
+    {
+      "type": "heading",
+      "attrs": { "level": 2 },
+      "content": [{ "type": "text", "text": "Context" }]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Description of why or what needs to be done.",
+          "marks": [{ "type": "em" }]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2 },
+      "content": [{ "type": "text", "text": "Acceptance criteria" }]
+    },
+    {
+      "type": "orderedList",
+      "attrs": { "order": 1 },
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "List of important issue requirements.",
+                  "marks": [{ "type": "em" }]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2 },
+      "content": [{ "type": "text", "text": "Engineering notes" }]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Information for the engineer who picks up this issue.",
+                  "marks": [{ "type": "em" }]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -273,6 +273,9 @@ separate.
   evidence from graphical interfaces.
 - [`spec-update`](plugins/yarstack/skills/spec-update/SKILL.md) corrects a
   semantic contract when current work cannot determine correctness.
+- [`jira-issue-create`](plugins/yarstack/skills/jira-issue-create/SKILL.md)
+  creates user-approved Jira issues with heading-based Context, Acceptance
+  criteria, and Engineering notes sections.
 - [`jira-issue-refine`](plugins/yarstack/skills/jira-issue-refine/SKILL.md)
   turns a draft or existing Jira issue into a clear, evidence-backed delivery
   contract before engineering handoff.
