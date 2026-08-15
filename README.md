@@ -228,13 +228,10 @@ separate.
   independent `code-review` through Claude Opus against the repository's
   default branch, then verifies the findings locally.
 - [`code-review`](plugins/yarstack/skills/code-review/SKILL.md) reviews
-  correctness, performance, compatibility, lifecycle, and maintainability.
+  changes through adaptive context tracks, risk-focused reviewer lanes,
+  adversarial challenge, and verified findings.
 - [`crap-index-assess`](plugins/yarstack/skills/crap-index-assess/SKILL.md)
   assesses method-level change risk from complexity and automated test coverage.
-- [`go-review`](plugins/yarstack/skills/go-review/SKILL.md) adds Go-specific
-  correctness and lifecycle analysis.
-- [`macos-swift-review`](plugins/yarstack/skills/macos-swift-review/SKILL.md)
-  adds Swift, SwiftUI, and macOS-specific analysis.
 - [`security-review`](plugins/yarstack/skills/security-review/SKILL.md) traces a
   focused trust boundary or exploit path.
 - [`dependency-review`](plugins/yarstack/skills/dependency-review/SKILL.md)

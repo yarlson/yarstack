@@ -54,11 +54,18 @@ The complete draft shown at this checkpoint must be the exact content later sent
 Write a small ES-module script in a scratch directory. Import the builders from `scripts/adf_helpers.mjs` by absolute path and emit one ADF JSON file per issue. Node.js 18 or later is required.
 
 ```js
-import { doc, para, text, acItem, bulletList, listItem } from '<skill-base-dir>/scripts/adf_helpers.mjs';
-import { writeFileSync } from 'node:fs';
+import {
+  doc,
+  para,
+  text,
+  acItem,
+  bulletList,
+  listItem,
+} from "<skill-base-dir>/scripts/adf_helpers.mjs";
+import { writeFileSync } from "node:fs";
 
 // Build one doc(...) per issue.
-writeFileSync('<scratch-dir>/<issue>.json', JSON.stringify(adfDoc, null, 2));
+writeFileSync("<scratch-dir>/<issue>.json", JSON.stringify(adfDoc, null, 2));
 ```
 
 Run the script with `node <scratch-dir>/gen_issues.mjs`. Do not copy the helper or write generated files into the skill directory.
