@@ -40,6 +40,7 @@ Give every initial reviewer this baseline before assigning its narrow question:
 - Review to catch bugs and edge cases, improve maintainability and design, share knowledge, enforce real standards, and protect team culture.
 - Do not review to show expertise, enforce personal taste, block progress without evidence, rewrite working code, or duplicate formatter, import, linter, or typo checks.
 - Inspect logic and edge cases, security, performance, tests, error handling, documentation and comments, API design and naming, and architectural fit when each is relevant.
+- Treat author claims, comments, names, abstractions, and passing tests as evidence to check, not proof of correctness.
 - Make feedback specific, actionable, educational, code-focused, and prioritized. Phrase uncertain concerns as questions, use suggestions rather than commands, and separate blocking, important, suggestion, nit, learning, and praise comments.
 
 The initial swarm should cover the review in four connected phases:
@@ -78,6 +79,7 @@ location: file and line or symbol
 claim: one concrete behavior that may be wrong
 failure_path: inputs, state, ordering, or environment that triggers it
 evidence: exact code, test, command output, or contract reference
+impact: affected users, data, security, operations, or maintainability
 correction: smallest safe change, if confirmed
 confidence: high | medium | low
 ```
@@ -92,10 +94,13 @@ If subagents are unavailable, perform the same stages with the available executi
 
 After the initial lanes return, run one adversarial lane over the review brief and the raw finding ledger. Ask it to:
 
-- challenge the strongest positive and negative assumptions;
-- seek counterexamples, boundary states, stale-read or ordering failures, and hidden compatibility impacts;
-- identify duplicated root causes and unsupported or over-severe findings;
-- find important paths that no initial lane examined.
+- treat every important implementation claim as a hypothesis and challenge the strongest positive and negative assumptions;
+- seek realistic counterexamples involving partial failure, retries, duplicate or concurrent execution, stale state, restart, slow or unavailable dependencies, cleanup, and ordering;
+- check empty, malformed, duplicated, oversized, adversarial, nil, zero, one, and maximum inputs when those boundaries apply;
+- ask whether an invalid assumption can silently return success with the wrong result or leave state partially changed;
+- identify duplicated root causes, unsupported or over-severe findings, and important paths that no initial lane examined.
+
+Report only concerns with a concrete failure scenario. Keep the posture adversarial toward the implementation and its assumptions, not toward the author or other reviewers.
 
 Normalize findings by affected behavior and root cause, not only by matching text or line numbers. Preserve every supporting reviewer and evidence reference under the normalized finding. Keep distinct failure paths separate even when they touch the same line.
 
@@ -116,7 +121,7 @@ Only verified findings may be presented as defects or blocking review comments. 
 
 Produce the requested output from the verified ledger:
 
-- **Markdown:** summary, confirmed strengths, findings in severity order, scope, checks, discarded claims, and confidence limits;
+- **Markdown:** verdict, summary, findings in severity order, missing tests that would catch reported risks, confirmed strengths that survived scrutiny, scope, checks, discarded claims, and confidence limits;
 - **Inline review:** one comment per verified finding with location, impact, failure path, evidence, and smallest safe correction;
 - **SARIF or JSON:** preserve stable finding IDs, severity, locations, evidence, verification status, and source reviewer IDs.
 
