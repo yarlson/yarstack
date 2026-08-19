@@ -1,19 +1,30 @@
 ## Code Comment Policy
 
-Use comments only to clarify the current code: invariants, constraints, non-obvious behavior, edge cases, safety or protocol rules, ownership, lifecycle, concurrency, ordering, or reasons an obvious approach is unsafe.
+Make the code clear without comments. Improve its names, structure, or control flow before adding an explanation.
 
-Prefer clear names and simple control flow over comments. Do not use comments as:
+Write a comment only at the user's request or when the language or repository requires one. Examples include documentation for exported symbols, docstrings required by a linter, and annotations established by the file format. Ask the user before writing any other comment.
 
-- decision logs or implementation history
-- change summaries, PR explanations, or prose narratives
-- apologies or commentary about removed code
-- restatements of syntax or function names
-- product commentary or future speculation
-- TODOs without an owner or concrete completion condition
-- “temporary” notes without a clear removal condition
+A comment is not justified because:
 
-A useful comment should explain what must remain true, what external contract forces the behavior, what edge case is intentional, or what would break if the code changed.
+- the code took effort to write or seems subtle or clever
+- you learned something while doing the work
+- a future maintainer might question the implementation
+- an approved plan included the proposed comment
 
-Before finalizing, review every touched comment. Remove stale, historical, obvious, or duplicated text; update comments that no longer match the code; and add a comment only when simplification cannot make the behavior clear.
+Do not use comments for:
+
+- past decisions, implementation history, or explanations of how the code changed
+- change summaries, pull request explanations, or narrative accounts
+- apologies or notes about deleted code
+- descriptions already clear from the syntax or names
+- product opinions or guesses about future needs
+- TODOs that lack an owner or a specific completion condition
+- temporary notices that lack a specific removal condition
+
+Follow the surrounding source style. Keep a comment-free file free of comments.
+
+When changing code, correct comments that become inaccurate. Remove comments that are stale, historical, obvious, or repetitive.
+
+List each new comment separately in the change report.
 
 Comments document the present system, not the journey that produced it.
