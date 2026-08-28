@@ -108,8 +108,9 @@ Parallel option: subagents may independently check acceptance coverage, phase de
 4. Use `phase-review` after validation to catch structural regressions introduced by the phase.
 5. Invoke specialist reviews only when their triggers apply: `test-gap-review`, `security-review`, `dependency-review`, `docs-drift-review`, and the relevant language or platform review.
 6. Fix only verified in-scope defects and rerun affected checks before starting the next phase. Use `plan-update` if evidence proves the remaining plan mechanics are wrong.
-7. After all phases, use `code-review` on the complete diff, map every Jira criterion to final evidence, and run the authoritative repository checks.
-8. Review every changed file and the final diff. Confirm every addition serves the Jira requirement and no unrelated change entered the scope.
+7. After all phases, use `code-review` on the complete diff, fix only verified in-scope findings through the owning phase, and rerun its validation and review gates.
+8. Use `change-cleanup-review` on the complete current change after final code review and any review-driven fixes. Apply only material cleanup findings, rerun affected checks, map every Jira criterion to final evidence, and run the authoritative repository checks.
+9. Review every changed file and the final diff. Confirm every addition serves the Jira requirement and no unrelated change entered the scope.
 
 Parallel option: implement separate phases concurrently only when the plan proves that their dependencies and write scopes are disjoint. After writes stop, run independent specialist reviews in parallel. The orchestrator or owning implementation agent serializes fixes and reruns the affected phase gates.
 
@@ -118,7 +119,7 @@ Parallel option: implement separate phases concurrently only when the plan prove
 1. Use `pr-draft` after local implementation, validation, and review are complete. Its shipping authority comes from the explicit full-delivery request; do not broaden the staged paths.
 2. Use the prepared issue-linked branch, stage explicit paths, inspect the staged diff, commit with repository conventions, push with an upstream, and open a draft PR against the verified base.
 3. Follow the repository PR template. Otherwise state `Problem`, `Fix`, and `Tests`, map each claim to the diff, and link the Jira issue without copying sensitive issue content.
-4. Use `text-improve` on the title and body and `slop-cop` on the full PR presentation. Preserve verified facts when improving the prose, and apply only material, evidence-backed `slop-cop` findings.
+4. Use `text-improve` on the title and body and `change-cleanup-review` on the full PR presentation. Preserve verified facts when improving the prose, and apply only material, evidence-backed cleanup findings.
 5. Let checks that run on drafts finish and repair failures before changing PR state when practical. Mark the PR ready only when the pushed head is locally validated, the PR accurately describes it, and the full-delivery request authorizes the transition.
 6. Account for reviewer triggers: if an automated reviewer runs only on ready PRs, do not claim review completion from the draft state. Mark ready, then observe its actual review on the current change.
 
@@ -145,10 +146,11 @@ Parallel option: assign independent failed jobs to read-only subagents for diagn
    - `reject` for an incorrect, unsafe, unsupported, duplicate, or scope-expanding suggestion.
 3. Do not implement optional suggestions merely to satisfy the bot. Give each optional or rejected thread a concise evidence-based response when remote closure is authorized.
 4. For each `fix`, add or strengthen a focused regression test when proportionate, demonstrate the defect when feasible, make the smallest correction, and rerun affected and required checks.
-5. Commit and push a fix before replying that it is fixed. Reply with the commit or concrete evidence, then resolve the thread. Resolve rejected or declined threads only after recording the rationale.
-6. Inspect thread resolution through GitHub's thread-aware API or tooling; issue comments and top-level review summaries do not prove that inline threads are resolved.
-7. Wait for CodeRabbit's post-push review or use the repository-supported way to trigger another review on the new head. Audit all threads again because a fix can create a new finding. Do not rely on an approval emoji, a summary comment, or a passing check alone.
-8. Repeat only when a new commit, check result, review, or thread provides new evidence. If the reviewer is unavailable or keeps the workflow pending without new evidence, exhaust safe repository-supported retries, then report the external blocker instead of claiming success.
+5. After each batch of review fixes, use `change-cleanup-review` on the complete current change. Apply only material cleanup findings and rerun affected and required checks.
+6. Commit and push a fix before replying that it is fixed. Reply with the commit or concrete evidence, then resolve the thread. Resolve rejected or declined threads only after recording the rationale.
+7. Inspect thread resolution through GitHub's thread-aware API or tooling; issue comments and top-level review summaries do not prove that inline threads are resolved.
+8. Wait for CodeRabbit's post-push review or use the repository-supported way to trigger another review on the new head. Audit all threads again because a fix can create a new finding. Do not rely on an approval emoji, a summary comment, or a passing check alone.
+9. Repeat only when a new commit, check result, review, or thread provides new evidence. If the reviewer is unavailable or keeps the workflow pending without new evidence, exhaust safe repository-supported retries, then report the external blocker instead of claiming success.
 
 Parallel option: classify independent review threads with read-only subagents. Serialize overlapping fixes, and keep replies and thread resolution with the orchestrator after the relevant commit is remote.
 

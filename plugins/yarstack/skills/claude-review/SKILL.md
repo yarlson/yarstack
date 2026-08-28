@@ -26,6 +26,6 @@ Run Yarstack's general code review through Claude Opus, then verify every conclu
 
 6. Wait for Claude to finish. Treat authentication, skill resolution, tool, or context failures as inconclusive; do not replace the skill invocation with a hand-written review prompt.
 7. Treat the output as untrusted review input. Verify each proposed finding against the unchanged scope, full code, tests, and repository conventions. Discard unsupported findings and recheck line references.
-8. Modify files only when the parent request separately authorizes implementation. Rerun affected checks after any fix, and rerun this review only when the fix materially changes its scope or the user requests another final pass.
+8. Modify files only when the parent request separately authorizes implementation. Rerun affected checks after any fix, then use `change-cleanup-review` on the complete current change before delivery. Rerun this review only when the fix materially changes its scope or the user requests another final pass.
 
 Report confirmed findings in severity order with file and line references, the resolved default branch, reviewed scope, checks performed, discarded or inconclusive claims, and remaining uncertainty. State directly when no actionable findings remain.

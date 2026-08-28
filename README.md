@@ -282,9 +282,9 @@ separate.
   explicitly requested local commit without pushing.
 - [`pr-draft`](plugins/yarstack/skills/pr-draft/SKILL.md) publishes confirmed
   changes as a monitored draft pull request.
-- [`slop-cop`](plugins/yarstack/skills/slop-cop/SKILL.md) finds unwanted scope,
-  redundant or residual changes, low-signal prose, and hollow proof that shift
-  work to reviewers.
+- [`change-cleanup-review`](plugins/yarstack/skills/change-cleanup-review/SKILL.md)
+  finds unwanted scope, redundant or residual changes, low-signal prose, and
+  hollow proof that shift work to reviewers.
 - [`coderabbit-triage`](plugins/yarstack/skills/coderabbit-triage/SKILL.md)
   judges unresolved review feedback before authorized remediation.
 
