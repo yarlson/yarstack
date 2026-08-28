@@ -35,6 +35,12 @@ Assert prerequisites separately when their failure would make later assertions m
 
 Avoid real external services, arbitrary sleeps, timing assumptions, shared global state, and brittle snapshots unless the behavior requires them. Use the smallest realistic substitute at the system boundary; do not mock internal details merely to increase isolation.
 
+### Tautological tests considered harmful
+
+Do not derive an expected result from the same logic, constants, mapping, template, schema, or dependency as the code under test. Such a test can pass when the shared assumption is wrong because it only proves that the implementation agrees with itself.
+
+Derive expected values independently from the behavior contract or a small fixed example. Assert observable output, state, and side effects. An arranged mock returning its arranged value, a getter returning a value just passed to its setter, or a round trip through the same implementation path does not by itself prove behavior beyond that wiring. Keep such an assertion only when the wiring or round trip is part of the contract and the expected outcome comes from an independent source.
+
 ### Test prompts and policies honestly
 
 Sentence or substring presence does not prove that an agent follows a prompt or policy. Test the actual contract:

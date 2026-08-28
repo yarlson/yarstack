@@ -15,7 +15,7 @@ Own general repository-document quality in an explicit audit-only or authorized 
 4. Classify evidence-backed findings as `keep`, `update`, `merge`, `split`, `move`, `archive`, or `remove`.
 5. In audit-only mode, return prioritized findings without edits.
 6. In edit mode, change only the confirmed document set and preserve repository structure and voice unless that structure is the requested defect.
-7. Use `english-text-review` on changed prose and apply its material findings without changing verified facts, required terminology, or intentional voice.
+7. Use `text-improve` on changed prose without changing verified facts, required terminology, or intentional voice.
 8. Require explicit authority before archiving, removing, or materially expanding the document set.
 
 Do not invent features, commands, architecture, benchmarks, screenshots, promises, or roadmap items; impose a generic template; or broaden a focused request.

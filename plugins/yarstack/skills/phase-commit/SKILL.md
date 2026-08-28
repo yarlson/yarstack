@@ -14,7 +14,7 @@ Create one isolated local commit without changing history or external state.
 3. Stop when scope is ambiguous or includes sensitive, unexpectedly generated, or otherwise unsafe paths.
 4. Stage only explicit paths with `git add -- <paths>`; never use broad staging commands or globs.
 5. Review the staged path list and diff against the requested unit.
-6. Draft the commit subject and body using repository conventions, then use `english-text-review` and apply its material findings without changing technical meaning.
+6. Draft the commit subject and body using repository conventions, then use `text-improve` without changing technical meaning.
 7. Commit without bypassing hooks or changing signing policy.
 8. Verify the created commit content and remaining worktree.
 

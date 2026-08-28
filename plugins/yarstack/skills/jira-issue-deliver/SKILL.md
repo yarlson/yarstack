@@ -118,7 +118,7 @@ Parallel option: implement separate phases concurrently only when the plan prove
 1. Use `pr-draft` after local implementation, validation, and review are complete. Its shipping authority comes from the explicit full-delivery request; do not broaden the staged paths.
 2. Use the prepared issue-linked branch, stage explicit paths, inspect the staged diff, commit with repository conventions, push with an upstream, and open a draft PR against the verified base.
 3. Follow the repository PR template. Otherwise state `Problem`, `Fix`, and `Tests`, map each claim to the diff, and link the Jira issue without copying sensitive issue content.
-4. Use `english-text-review` on the title and body and `slop-cop` on the full PR presentation. Apply only material, evidence-backed findings.
+4. Use `text-improve` on the title and body and `slop-cop` on the full PR presentation. Preserve verified facts when improving the prose, and apply only material, evidence-backed `slop-cop` findings.
 5. Let checks that run on drafts finish and repair failures before changing PR state when practical. Mark the PR ready only when the pushed head is locally validated, the PR accurately describes it, and the full-delivery request authorizes the transition.
 6. Account for reviewer triggers: if an automated reviewer runs only on ready PRs, do not claim review completion from the draft state. Mark ready, then observe its actual review on the current change.
 

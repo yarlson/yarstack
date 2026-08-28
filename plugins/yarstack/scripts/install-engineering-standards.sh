@@ -32,7 +32,7 @@ trap cleanup EXIT
   printf '\n'
   cat "$GUIDANCE_DIR/tests-as-product-contracts.md"
   printf '\n'
-  cat "$GUIDANCE_DIR/plain-english-writing.md"
+  cat "$GUIDANCE_DIR/plain-language-writing.md"
   printf '\n'
   cat "$GUIDANCE_DIR/code-comment-policy.md"
   printf '\n'

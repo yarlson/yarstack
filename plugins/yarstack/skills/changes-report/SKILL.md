@@ -23,7 +23,7 @@ Before inspecting changes, record the resolved start, exclusive end, timezone, a
 4. Apply `changes-explain` to identify changed behavior, ownership, boundaries, external effects, compatibility, operations, and risk. Separate observed behavior, documented intent, and inference.
 5. Reconcile overlapping evidence into product changes. Combine commits and pull requests that serve the same user, operator, or business outcome. Split one pull request when it contains distinct outcomes. Do not use commits, pull requests, files, or authors as the report's organizing structure.
 6. Explain why each change was made when evidence supports it and what it means for users, operators, developers, or the business. Include implementation detail only when a reader needs it to understand the effect, constraint, risk, or evidence limit. Never invent a rationale.
-7. Apply `english-text-review` to the complete draft. Remove jargon, vague abstractions, repeated meaning, needless qualifiers, and low-level narration while preserving technical precision.
+7. Use `text-improve` on the complete draft. Remove jargon, vague abstractions, repeated meaning, needless qualifiers, and low-level narration while preserving technical precision.
 
 Keep the work read-only. Redact secrets and sensitive content. Report missing branches, unavailable pull request context, shallow history, or other coverage gaps as limits rather than silently claiming completeness.
 

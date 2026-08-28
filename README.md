@@ -257,8 +257,8 @@ separate.
   repository documentation against implemented behavior.
 - [`docs-drift-review`](plugins/yarstack/skills/docs-drift-review/SKILL.md) finds
   documentation made stale by a code or configuration change.
-- [`english-text-review`](plugins/yarstack/skills/english-text-review/SKILL.md)
-  reviews technical prose for plain-English clarity.
+- [`text-improve`](plugins/yarstack/skills/text-improve/SKILL.md)
+  rewrites technical prose for plain-language clarity.
 - [`marketing-claims-review`](plugins/yarstack/skills/marketing-claims-review/SKILL.md)
   checks persuasive claims against shipped-product evidence.
 

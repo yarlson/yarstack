@@ -15,7 +15,7 @@ Own claim substantiation, positioning, comparisons, and first-visitor clarity re
 4. Test whether a first-time visitor can identify the product, intended user, problem, mechanism, difference, limitations, and next action.
 5. For each problematic claim, cite evidence and recommend `keep`, `rewrite`, `move`, `remove`, `qualify`, or `prove`.
 6. Rewrite only when authorized, preserving distinctions between shipped, partial, experimental, planned, and unsupported behavior.
-7. After an authorized rewrite, use `english-text-review` and apply material findings without weakening substantiation, necessary qualifications, or intentional voice.
+7. After an authorized rewrite, use `text-improve` to improve the prose without weakening substantiation, necessary qualifications, or intentional voice.
 
 Use `docs-review` for repository-document structure and discoverability, and `docs-drift-review` only for drift caused by the current change. Comparative claims requiring external competitor evidence remain unverified unless authoritative evidence is available and its use is authorized.
 
