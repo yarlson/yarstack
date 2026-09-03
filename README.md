@@ -30,13 +30,46 @@ rollout order, and acceptance evidence. Yarstack separates architecture
 discussion, technical research, plan creation, and plan correction so each has
 one clear job.
 
-### Investigations that end in a decision
+### Start with a question or a design
 
-`system-investigate` owns a read-only investigation from an initial hypothesis
-to an evidence-backed verdict. It traces repository and runtime behavior,
-coordinates independent evidence gathering when useful, checks current public
-sources when they can change the conclusion, and recommends the smallest safe
-next step without starting implementation.
+Most work starts in one of two places. Either something exists and you need to
+understand how it behaves, or something does not exist yet and you need to
+decide how to build it. Yarstack gives each its own skill.
+
+`system-investigate` answers questions about behavior that already exists. It
+treats your prompt as a hypothesis, traces the code and runtime evidence, checks
+current public sources when they can change the conclusion, and ends with a
+verdict and the smallest safe next step. It changes nothing. Use it when you ask
+"why does this happen", "is this really how it works", or "what is the smallest
+change that fixes this".
+
+```text
+Use system-investigate: why do retried webhook deliveries create duplicate invoices?
+```
+
+`system-design` proposes how to build something new: a greenfield product or a
+new capability in an existing codebase. It fixes the requirements and scale
+first, starts from one process and one datastore, and adds a component only
+when a named requirement fails without it. It reports each component with the
+requirement it serves, the concerns it deferred and what would trigger them, and
+the simpler alternative it rejected.
+
+```text
+Use system-design: add per-workspace usage limits to the billing service.
+Ten workspaces today, one engineer, ship in two weeks.
+```
+
+Give `system-design` the numbers you know: users, load, data volume, team size,
+and deadline. Where you leave a value out, it assumes the smallest plausible one
+and says so. If the result is bigger than you expected, ask which requirement
+each component serves.
+
+The two skills hand off to each other. `system-investigate` stops and points to
+`system-design` when the question is about behavior that does not exist yet.
+`system-design` uses `system-investigate` when it must understand the code it
+extends. Both stop before `architecture-refine`, which settles the decisions
+only you can make, and `plan-create`, which turns an accepted design into
+implementation phases.
 
 ### Correctness before completion
 
@@ -104,6 +137,7 @@ to edit, commit, push, or change external systems.
 ## A typical change
 
 ```text
+system-design        propose the smallest design that meets stated requirements
 architecture-refine  settle the decisions that change the design
 plan-create          turn settled decisions into ordered implementation phases
 phase-implement      implement one phase and stop
@@ -195,6 +229,9 @@ separate.
 - [`system-investigate`](plugins/yarstack/skills/system-investigate/SKILL.md)
   validates suspected behavior or design and recommends the smallest safe next
   step from repository, runtime, and current public evidence.
+- [`system-design`](plugins/yarstack/skills/system-design/SKILL.md) proposes
+  the smallest system or feature design that meets stated requirements, with
+  non-goals and growth triggers.
 - [`alternatives-explore`](plugins/yarstack/skills/alternatives-explore/SKILL.md)
   tests one non-incremental alternative.
 - [`architecture-refine`](plugins/yarstack/skills/architecture-refine/SKILL.md)

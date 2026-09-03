@@ -1,6 +1,6 @@
 ---
 name: system-investigate
-description: Investigate an underdefined product, codebase, architecture, integration, or operational question through read-only repository tracing, bounded runtime evidence, and current public research. Use when the user wants to validate suspected behavior, explain why it occurs, compare plausible designs, or recommend the smallest safe change before planning or implementation.
+description: Investigate an underdefined product, codebase, architecture, integration, or operational question through read-only repository tracing, bounded runtime evidence, and current public research. Use when the user wants to validate suspected behavior, explain why it occurs, compare plausible designs for existing behavior, or recommend the smallest safe change before planning or implementation; not for designing a new system or feature, which belongs to system-design.
 ---
 
 # System Investigation
@@ -10,10 +10,11 @@ Own one investigation from the user's question to an evidence-backed verdict and
 ## Establish the investigation
 
 1. Extract the question, suspected behavior, affected system, decision it informs, and requested terminal result.
-2. Write one explicit investigation goal and stopping condition. Use a persisted goal when the host supports it; mark it complete only after the evidence answers the question or proves a precise blocker.
-3. State the working hypothesis without treating it as fact. Record plausible alternatives that would materially change the conclusion.
-4. Keep the investigation read-only: do not edit code or durable configuration, commit, push, open or modify pull requests, install dependencies, or mutate live systems. Route a later request to act on the recommendation through the applicable planning or implementation workflow.
-5. Read all applicable repository instructions before repository-specific work.
+2. Stop and route to `system-design` when the question asks how to build behavior that does not exist yet, such as a greenfield system or a new capability. Investigate only behavior the repository, runtime, or public sources can show.
+3. Write one explicit investigation goal and stopping condition. Use a persisted goal when the host supports it; mark it complete only after the evidence answers the question or proves a precise blocker.
+4. State the working hypothesis without treating it as fact. Record plausible alternatives that would materially change the conclusion.
+5. Keep the investigation read-only: do not edit code or durable configuration, commit, push, open or modify pull requests, install dependencies, or mutate live systems. Route a later request to act on the recommendation through the applicable planning or implementation workflow.
+6. Read all applicable repository instructions before repository-specific work.
 
 ## Maintain autonomous progress
 
@@ -33,7 +34,7 @@ Own one investigation from the user's question to an evidence-backed verdict and
 
 1. Use one agent by default. Add a subagent only when its evidence track is independent and parallel work materially improves time or context isolation.
 2. Give each subagent one dedicated investigation goal, the minimum raw context it needs, explicit read-only scope, stopping condition, and expected evidence. Use a lower-cost host-supported model and low or moderate effort for bounded retrieval, scanning, and summarization. Keep ambiguous reasoning, source conflicts, and final synthesis with the owning agent. Have each subagent create a persisted goal when the host supports one. Delegation does not expand user authority.
-3. When current public context could materially change the conclusion, assign a separate research agent only when the research is necessary and independent; otherwise keep it with the owning agent. Have a research agent add, remove, and refine search terms as it learns and cover only relevant technology, architecture patterns, libraries or tools, business or domain problems, terminology, analogous products or competitors, best practices, and risks. Prefer primary and official sources.
+3. When current public context could materially change the conclusion, assign a separate research agent only when the research is necessary and independent; otherwise keep it with the owning agent. Have a research agent add, remove, and refine search terms as it learns and cover only the technology, library, tool, protocol, or platform facts that the question depends on. Do not research analogous products, competitors, or general best practices; they import requirements the user did not state. Prefer primary and official sources.
 4. Keep the owning agent responsible for the hypothesis, scope, user questions, source conflicts, and final synthesis.
 5. Verify subagent claims against cited repository, runtime, or public evidence. Agent agreement is not proof.
 6. Integrate all required results and stop subagent work before finalizing.
@@ -69,7 +70,7 @@ Own one investigation from the user's question to an evidence-backed verdict and
    - the behavior that must remain unchanged.
 4. Identify contract migration, mixed-version behavior, rollout, rollback, security, resource, and operational requirements only when they materially apply.
 5. Separate prerequisite work, intentional deferrals, and unrelated cleanup from the recommendation.
-6. Do not implement the recommendation or turn it into a full implementation plan. Use `plan-create` when the user separately requests an implementation-ready plan.
+6. Do not implement the recommendation, expand it into a system or feature design, or turn it into a full implementation plan. Use `system-design` for a new design and `plan-create` when the user separately requests an implementation-ready plan.
 
 ## Report the result
 
