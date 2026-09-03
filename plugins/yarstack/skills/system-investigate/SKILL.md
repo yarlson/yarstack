@@ -31,9 +31,9 @@ Own one investigation from the user's question to an evidence-backed verdict and
 
 ## Coordinate independent investigation
 
-1. Use one agent by default. Add subagents when at least two bounded evidence tracks can proceed independently, parallel work saves meaningful time, or an independent challenge improves confidence.
-2. Give each subagent one dedicated investigation goal, the minimum raw context it needs, explicit read-only scope, stopping condition, and expected evidence. Have it create a persisted goal when the host supports one. Delegation does not expand user authority.
-3. When current public context could materially change the conclusion, assign one separate research agent. Have it add, remove, and refine search terms as it learns and cover only relevant technology, architecture patterns, libraries or tools, business or domain problems, terminology, analogous products or competitors, best practices, and risks. Prefer primary and official sources.
+1. Use one agent by default. Add a subagent only when its evidence track is independent and parallel work materially improves time or context isolation.
+2. Give each subagent one dedicated investigation goal, the minimum raw context it needs, explicit read-only scope, stopping condition, and expected evidence. Use a lower-cost host-supported model and low or moderate effort for bounded retrieval, scanning, and summarization. Keep ambiguous reasoning, source conflicts, and final synthesis with the owning agent. Have each subagent create a persisted goal when the host supports one. Delegation does not expand user authority.
+3. When current public context could materially change the conclusion, assign a separate research agent only when the research is necessary and independent; otherwise keep it with the owning agent. Have a research agent add, remove, and refine search terms as it learns and cover only relevant technology, architecture patterns, libraries or tools, business or domain problems, terminology, analogous products or competitors, best practices, and risks. Prefer primary and official sources.
 4. Keep the owning agent responsible for the hypothesis, scope, user questions, source conflicts, and final synthesis.
 5. Verify subagent claims against cited repository, runtime, or public evidence. Agent agreement is not proof.
 6. Integrate all required results and stop subagent work before finalizing.
