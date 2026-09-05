@@ -26,8 +26,8 @@ Deliver one roadmap task through a verified GitHub merge and a saved task-status
 ## Select or resume the task
 
 1. Read the roadmap's outcomes, task order, shared decisions and acceptance requirements. Read the task index and frontmatter next. Keep the existing format and status names. Do not require a fixed folder layout or create a replacement schema.
-2. Check task-linked branches, worktrees, PRs and delivery records before selecting new work. Resume interrupted work only when it clearly belongs to this delivery. This includes a merged PR with a missing task update. Do not duplicate work that another delivery already owns.
-3. Select the first unfinished task with complete dependencies. Use this order:
+2. Check task status before inspecting branches, worktrees, PRs or delivery records. Skip `done` tasks immediately without revalidating their recorded completion evidence. Investigate delivery state only for a task marked `in_progress`; resume it when the work clearly belongs to that task, including when its PR merged but its task update is missing. Do not duplicate work that another delivery already owns.
+3. When no task is `in_progress`, select the first unfinished task with complete dependencies. Use this order:
    - Explicit roadmap or index order.
    - Explicit task order.
    - Natural task-ID or filename order, with this fallback stated to the user.
