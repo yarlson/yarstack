@@ -315,6 +315,9 @@ separate.
   contract before engineering handoff.
 - [`jira-issue-deliver`](plugins/yarstack/skills/jira-issue-deliver/SKILL.md)
   delivers an authorized Jira issue to a ready, green, reviewed pull request.
+- [`roadmap-task-deliver`](plugins/yarstack/skills/roadmap-task-deliver/SKILL.md)
+  selects the next eligible roadmap task, delivers and merges its green reviewed
+  PR, then updates the task and commits its status when stored in Git.
 - [`phase-commit`](plugins/yarstack/skills/phase-commit/SKILL.md) creates one
   explicitly requested local commit without pushing.
 - [`pr-draft`](plugins/yarstack/skills/pr-draft/SKILL.md) publishes confirmed
