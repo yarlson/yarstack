@@ -1,414 +1,368 @@
 # Yarstack
 
-![Yarstack pirate coins](assets/yarstack.png)
+**Give your coding agent a repeatable way to engineer changes.**
 
-Generating a diff is not the same as engineering a change. The hard parts are
-deciding what to change, keeping the design coherent, proving the behavior, and
-leaving the repository easier to work in.
+Yarstack is a plugin for **Codex and Claude Code** with reusable skills for
+investigating bugs, designing features, writing and testing code, reviewing
+changes, and delivering pull requests. Use it when you want to spend less time
+explaining how work should be done and more time deciding what to build.
 
-Yarstack packages those engineering disciplines as reusable workflows for
-Codex and Claude Code. It helps an agent plan before coding, implement in small
-steps, test the contract, review concrete risks, and deliver only when the
-evidence supports it.
+Each skill is a Markdown playbook: what the agent should inspect, what it may
+change, how to check the result, and when the job is done. Install the plugin,
+name a skill in your prompt, and use it in your existing repository.
 
-This is not a prompt that asks an agent to "be a senior engineer." It is a set
-of explicit workflows and engineering standards that define what the agent must
-inspect, what it may change, how it should verify the result, and where it must
-stop.
+<img src="assets/yarstack.png" alt="Yarstack pirate coins" width="560">
 
-The same marketplace also publishes Yarbrain as a separate plugin. Yarbrain
-keeps durable agent knowledge in a user-controlled Markdown vault without
-mixing that state into Yarstack's engineering workflows.
+[Get started](#get-started) · [Examples](#put-it-to-work) · [Skill catalog](#skill-catalog)
 
-## What Yarstack is built for
+## Why use it?
 
-### Planning that can be implemented
+AI coding gets harder when a task crosses files, touches existing behavior, or
+needs more proof than a passing happy-path test. Yarstack gives those tasks a
+repeatable process:
 
-A useful plan settles the decisions that change the implementation path. It
-names ownership, interfaces, dependencies, failure cases, compatibility needs,
-rollout order, and acceptance evidence. Yarstack separates architecture
-discussion, technical research, plan creation, and plan correction so each has
-one clear job.
+- **Start from the code you have.** Investigation traces callers, tests, and
+  runtime evidence before recommending a change. Design starts from the
+  existing system and your actual constraints.
+- **Keep the diff worth reviewing.** Implementation looks for existing code,
+  standard-library solutions, and native platform features before adding more.
+  Every addition needs a current reason to exist.
+- **Make “done” inspectable.** Plans name acceptance evidence. Implementation
+  checks behavior. Validation compares the result with the requirements and
+  calls out what remains unverified.
+- **Get reviews you can act on.** Code review follows concrete failure paths,
+  checks findings against the source, and separates verified defects from
+  unresolved concerns.
 
-### Start with a question or a design
+The workflows run through your agent and its available tools. Their instructions
+are [readable in this repository](plugins/yarstack/skills/), so you can inspect
+exactly what you are asking the agent to do.
 
-Most work starts in one of two places. Either something exists and you need to
-understand how it behaves, or something does not exist yet and you need to
-decide how to build it. Yarstack gives each its own skill.
+## Get started
 
-`system-investigate` answers questions about behavior that already exists. It
-treats your prompt as a hypothesis, traces the code and runtime evidence, checks
-current public sources when they can change the conclusion, and ends with a
-verdict and the smallest safe next step. It changes nothing. Use it when you ask
-"why does this happen", "is this really how it works", or "what is the smallest
-change that fixes this".
-
-```text
-Use system-investigate: why do retried webhook deliveries create duplicate invoices?
-```
-
-`system-design` proposes how to build something new: a greenfield product or a
-new capability in an existing codebase. It fixes the requirements and scale
-first, starts from one process and one datastore, and adds a component only
-when a named requirement fails without it. It reports each component with the
-requirement it serves, the concerns it deferred and what would trigger them, and
-the simpler alternative it rejected.
-
-```text
-Use system-design: add per-workspace usage limits to the billing service.
-Ten workspaces today, one engineer, ship in two weeks.
-```
-
-Give `system-design` the numbers you know: users, load, data volume, team size,
-and deadline. Where you leave a value out, it assumes the smallest plausible one
-and says so. If the result is bigger than you expected, ask which requirement
-each component serves.
-
-The two skills hand off to each other. `system-investigate` stops and points to
-`system-design` when the question is about behavior that does not exist yet.
-`system-design` uses `system-investigate` when it must understand the code it
-extends. Both stop before `architecture-refine`, which settles the decisions
-only you can make, and `plan-create`, which turns an accepted design into
-implementation phases.
-
-### The smallest change that works
-
-Before writing code, Yarstack has the agent stop at the first option that
-holds: the behavior does not need to exist, the codebase already has it, the
-standard library or platform already does it, an installed dependency covers
-it, or it fits in one clear line. Only then does it write new code, in the
-fewest files, deleting before adding. Validation at trust boundaries,
-data-loss handling, security, and accessibility are never cut to save lines.
-Tests start from one check that fails when the logic breaks, and reports stay
-short: what changed, what was left out and when to add it, what was checked.
-
-### Correctness before completion
-
-Code that works on the happy path is not enough. Yarstack makes normal paths,
-boundaries, partial failure, cleanup, cancellation, ordering, retries, stale
-state, and recovery part of the work when they apply. Validation checks the
-implemented change against its contract instead of trusting the implementation
-summary.
-
-### Tests as product contracts
-
-Tests should describe promised behavior, not mirror internal code. Yarstack
-supports test design before implementation, red-green-refactor while changing
-behavior, and a separate test-gap review to ask whether the final evidence is
-actually sufficient. Changes to engineering tooling and infrastructure use
-native checks unless their complexity or failure risk warrants focused
-automated tests.
-
-### Modules that contain decisions
-
-Yarstack treats module boundaries as an engineering tool, not a directory
-layout exercise. A module should own a coherent policy, representation, or
-protocol, hide the details callers do not need, and keep likely changes from
-spreading through unrelated code.
-
-### Names that make code predictable
-
-Clear names reduce the amount of code a reader must open. Yarstack asks agents
-to use consistent domain terms, match detail to scope, and name operations for
-the result they return or the action they perform.
-
-### English that says what happened
-
-Engineering work ends in prose: comments, errors, documentation, commits, pull
-requests, runbooks, and reports. Yarstack includes a plain-English standard and
-a dedicated review workflow because vague writing hides vague thinking.
-
-### Jira issues refined and delivered
-
-`jira-issue-refine` turns a draft or existing Jira issue into a clear, bounded
-delivery contract. It uses `system-investigate` to resolve discoverable facts
-and keeps unresolved decisions, dependencies, safety needs, and verification
-gaps visible. `jira-issue-deliver` can then own an explicitly authorized change
-from Jira intake through implementation, validation, a ready GitHub pull
-request, passing CI, and requested automated review. It stops before merging,
-deploying, releasing, or changing the Jira issue.
-
-## One engineering system, two parts
-
-Yarstack contains:
-
-- **Skills** for specific jobs such as planning, implementation, validation,
-  review, documentation, and delivery. Each skill has a defined scope,
-  evidence standard, authority boundary, and completion condition.
-- **Engineering standards** for the rules that should apply throughout the
-  work: small design, codebase-first decisions, correctness, tests, module
-  boundaries, contract evolution, state safety, naming, comments, and plain
-  English.
-
-Use a single skill for a focused task or compose several skills into a larger
-workflow. Repository instructions still take precedence. Reviews are read-only
-by default, and invoking one workflow does not grant another workflow permission
-to edit, commit, push, or change external systems.
-
-## A typical change
-
-```text
-system-design        propose the smallest design that meets stated requirements
-architecture-refine  settle the decisions that change the design
-plan-create          turn settled decisions into ordered implementation phases
-phase-implement      implement one phase and stop
-phase-validate       prove each acceptance criterion against current evidence
-phase-review         find structural regressions introduced by the change
-phase-commit         create one validated local commit when explicitly requested
-pr-draft             publish and monitor a draft pull request when authorized
-```
-
-That sequence is available, not mandatory. A small bug may need only
-`behavior-implement`. A risky infrastructure change may add `infra-review`,
-`security-review`, and `rollout-readiness-review`. The task determines the
-workflow.
-
-## Yarbrain
-
-[Yarbrain](plugins/yarbrain/README.md) is a separate plugin for a review-first
-second brain. It separates what happened from what is currently believed and
-from what an agent knows how to do:
-
-- immutable episode notes preserve session evidence;
-- canonical notes hold reconciled current knowledge;
-- approved `SKILL.md` files hold repeatable procedures.
-
-The Markdown vault is the source of truth. Search indexes and caches can be
-rebuilt. Proposed memory and skill changes stay in an inbox until they are
-reviewed.
-
-| Skill                                                                     | Use it to                                                                                |
-| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [`wiki-initialize`](plugins/yarbrain/skills/wiki-initialize/SKILL.md)     | Create or adopt a vault at a path you approve.                                           |
-| [`wiki-capture`](plugins/yarbrain/skills/wiki-capture/SKILL.md)           | Turn a completed session into one episode and reviewable candidates.                     |
-| [`wiki-reconcile`](plugins/yarbrain/skills/wiki-reconcile/SKILL.md)       | Search existing notes and propose a merge, split, supersession, conflict, or new note.   |
-| [`wiki-recall`](plugins/yarbrain/skills/wiki-recall/SKILL.md)             | Read at most five relevant notes, episodes, or approved procedures before a task.        |
-| [`procedure-promote`](plugins/yarbrain/skills/procedure-promote/SKILL.md) | Turn a repeated, verified procedure into a proposed Agent Skill.                         |
-| [`wiki-maintain`](plugins/yarbrain/skills/wiki-maintain/SKILL.md)         | Check links, provenance, duplicates, stale knowledge, pending evidence, and skill drift. |
-
-After installation, ask the agent:
-
-```text
-Use wiki-initialize to create my Yarbrain vault at <path>.
-```
-
-Yarbrain stores the selected path in `$XDG_CONFIG_HOME/yarbrain/config.json`,
-or `~/.config/yarbrain/config.json` when `XDG_CONFIG_HOME` is unset. Set
-`YARBRAIN_CONFIG` to use another config file. Initialization preserves existing
-vault files and creates only missing structure.
-
-Until a vault is configured, Yarbrain hooks do nothing. After configuration:
-
-- `SessionStart` loads at most 12,000 characters from `INDEX.md` and reports
-  the pending-session count;
-- `PreCompact` and `SessionEnd` enqueue session IDs and transcript locators;
-- hooks do not copy transcript bodies, call a model or network service, or
-  change canonical notes.
-
-Capture and reconciliation remain explicit agent workflows. Yarbrain does not
-let new evidence replace current knowledge without review, and it does not
-activate a proposed procedure without approval.
-
-## Install
-
-Install either plugin or both. They share a marketplace but keep separate
-runtime state and responsibilities.
+You need Codex or Claude Code with plugin support. Choose your host and run these
+commands in your terminal.
 
 ### Codex
 
 ```sh
 codex plugin marketplace add yarlson/yarstack
 codex plugin add yarstack@yarstack
-codex plugin add yarbrain@yarstack
 ```
+
+Start a new Codex thread after installation. See the
+[Codex plugin command reference](https://learn.chatgpt.com/docs/developer-commands#codex-plugin)
+for host setup and command details.
 
 ### Claude Code
 
 ```sh
 claude plugin marketplace add yarlson/yarstack
 claude plugin install yarstack@yarstack
-claude plugin install yarbrain@yarstack
 ```
 
-Both self-contained packages keep their Codex and Claude Code manifests
-separate.
+Run `/reload-plugins` in Claude Code or start a new session. See
+[Claude Code's plugin guide](https://code.claude.com/docs/en/discover-plugins)
+for installation options.
 
-## Choose a skill
+### Try your first skill
 
-### Decide and plan
+Open a repository with local changes and ask your agent:
 
-- [`system-investigate`](plugins/yarstack/skills/system-investigate/SKILL.md)
-  validates suspected behavior or design and recommends the smallest safe next
-  step from repository, runtime, and current public evidence.
-- [`system-design`](plugins/yarstack/skills/system-design/SKILL.md) proposes
-  the smallest system or feature design that meets stated requirements, with
-  non-goals and growth triggers.
-- [`alternatives-explore`](plugins/yarstack/skills/alternatives-explore/SKILL.md)
-  tests one non-incremental alternative.
-- [`architecture-refine`](plugins/yarstack/skills/architecture-refine/SKILL.md)
-  settles the architecture decisions needed for the next deliverable.
-- [`technical-spike`](plugins/yarstack/skills/technical-spike/SKILL.md) resolves
-  one blocking external or version-specific uncertainty.
-- [`plan-create`](plugins/yarstack/skills/plan-create/SKILL.md) creates an
-  implementation-ready phased plan.
-- [`plan-update`](plugins/yarstack/skills/plan-update/SKILL.md) corrects plan
-  mechanics when implementation evidence proves them wrong.
-- [`test-design`](plugins/yarstack/skills/test-design/SKILL.md) designs
-  reproducible tests when behavioral risk warrants dedicated test code.
+```text
+Use Yarstack's code-review skill to review my uncommitted changes.
+```
 
-### Implement and prove
+The review workflow traces the affected code, examines relevant risks, and
+verifies findings before reporting them. Expect file locations, concrete failure
+scenarios, and suggested corrections, with missing evidence called out. Reviews
+are read-only by default.
 
-- [`behavior-implement`](plugins/yarstack/skills/behavior-implement/SKILL.md)
-  changes behavior through red-green-refactor when focused tests are
-  proportionate.
-- [`phase-implement`](plugins/yarstack/skills/phase-implement/SKILL.md)
-  implements exactly one selected plan phase.
-- [`phase-validate`](plugins/yarstack/skills/phase-validate/SKILL.md) checks a
-  phase against every acceptance criterion and required failure case.
-- [`phase-review`](plugins/yarstack/skills/phase-review/SKILL.md) reviews a
-  validated phase for structural regressions.
-- [`test-gap-review`](plugins/yarstack/skills/test-gap-review/SKILL.md) asks
-  whether the available tests and checks prove the contract.
+Use the same prompt pattern for any skill below: **name the skill, describe the
+task, and give the constraints that matter.**
 
-### Review risk
+## Put it to work
 
-- [`claude-review`](plugins/yarstack/skills/claude-review/SKILL.md) runs an
-  independent `code-review` through Claude Opus against the repository's
-  default branch, then verifies the findings locally.
-- [`code-review`](plugins/yarstack/skills/code-review/SKILL.md) reviews
-  changes through adaptive context tracks, risk-focused reviewer lanes,
-  adversarial challenge, and verified findings.
-- [`crap-index-assess`](plugins/yarstack/skills/crap-index-assess/SKILL.md)
-  assesses method-level change risk from complexity and automated test coverage.
-- [`security-review`](plugins/yarstack/skills/security-review/SKILL.md) traces a
-  focused trust boundary or exploit path.
-- [`dependency-review`](plugins/yarstack/skills/dependency-review/SKILL.md)
-  checks provenance, pinning, and reproducibility.
-- [`ci-review`](plugins/yarstack/skills/ci-review/SKILL.md) audits whether CI
-  protects real contracts.
-- [`infra-review`](plugins/yarstack/skills/infra-review/SKILL.md) reviews
-  infrastructure targeting, state, cost, availability, and recovery risk.
-- [`rollout-readiness-review`](plugins/yarstack/skills/rollout-readiness-review/SKILL.md)
-  checks deployment, rollback, recovery, and production failure visibility.
+### Find out why a bug happens
 
-### Understand and document
+```text
+Use Yarstack's system-investigate skill: why do retried webhook deliveries
+create duplicate invoices?
+```
 
-- [`changes-explain`](plugins/yarstack/skills/changes-explain/SKILL.md) explains
-  a confirmed diff through behavior, boundaries, flow, and risk.
-- [`changes-report`](plugins/yarstack/skills/changes-report/SKILL.md) reports a
-  period of repository changes by product outcome.
-- [`repo-context-document`](plugins/yarstack/skills/repo-context-document/SKILL.md)
-  maintains adopted current-state documentation under `docs/context/`.
-- [`critical-journey-document`](plugins/yarstack/skills/critical-journey-document/SKILL.md)
-  records one actor pursuing one goal, linked to current evidence.
-- [`docs-review`](plugins/yarstack/skills/docs-review/SKILL.md) audits general
-  repository documentation against implemented behavior.
-- [`docs-drift-review`](plugins/yarstack/skills/docs-drift-review/SKILL.md) finds
-  documentation made stale by a code or configuration change.
-- [`text-improve`](plugins/yarstack/skills/text-improve/SKILL.md)
-  rewrites technical prose for plain-language clarity.
-- [`marketing-claims-review`](plugins/yarstack/skills/marketing-claims-review/SKILL.md)
-  checks persuasive claims against shipped-product evidence.
+This asks the agent to test the suspected explanation against the code and
+available runtime evidence, then recommend the smallest safe next step. It stops
+before editing. Once the cause and intended fix are clear:
 
-### Verify interfaces and deliver
+```text
+Use Yarstack's behavior-implement skill to fix the duplicate-invoice bug.
+Add a regression test showing that retrying the same event creates one invoice.
+```
 
-- [`cli-control`](plugins/yarstack/skills/cli-control/SKILL.md) verifies CLI and
-  TUI behavior in a real terminal.
-- [`ui-control`](plugins/yarstack/skills/ui-control/SKILL.md) gathers direct
-  evidence from graphical interfaces.
-- [`spec-update`](plugins/yarstack/skills/spec-update/SKILL.md) corrects a
-  semantic contract when current work cannot determine correctness.
-- [`jira-issue-create`](plugins/yarstack/skills/jira-issue-create/SKILL.md)
-  creates user-approved Jira issues with heading-based Context, Acceptance
-  criteria, and Engineering notes sections.
-- [`jira-issue-refine`](plugins/yarstack/skills/jira-issue-refine/SKILL.md)
-  turns a draft or existing Jira issue into a clear, evidence-backed delivery
-  contract before engineering handoff.
-- [`jira-issue-deliver`](plugins/yarstack/skills/jira-issue-deliver/SKILL.md)
-  delivers an authorized Jira issue to a ready, green, reviewed pull request.
-- [`roadmap-task-deliver`](plugins/yarstack/skills/roadmap-task-deliver/SKILL.md)
-  selects the next eligible roadmap task, delivers and merges its green reviewed
-  PR, then updates the task and commits its status when stored in Git.
-- [`phase-commit`](plugins/yarstack/skills/phase-commit/SKILL.md) creates one
-  explicitly requested local commit without pushing.
-- [`pr-draft`](plugins/yarstack/skills/pr-draft/SKILL.md) publishes confirmed
-  changes as a monitored draft pull request.
-- [`change-cleanup-review`](plugins/yarstack/skills/change-cleanup-review/SKILL.md)
-  finds unwanted scope, redundant or residual changes, low-signal prose, and
-  hollow proof that shift work to reviewers.
-- [`coderabbit-triage`](plugins/yarstack/skills/coderabbit-triage/SKILL.md)
-  judges unresolved review feedback before authorized remediation.
+For product behavior, `behavior-implement` starts with a failing test, implements
+the fix, and reruns the relevant checks. Tooling and infrastructure changes use
+native checks first when dedicated tests would add little evidence.
 
-## Install the engineering standards
+### Design a feature without growing the system unnecessarily
 
-Skills work as soon as the plugin is installed. The shared engineering
-standards are optional global guidance. Preview the exact assembled text first:
+```text
+Use Yarstack's system-design skill: add per-workspace usage limits to our
+billing service. Ten workspaces today, one engineer, ship in two weeks.
+```
+
+The design starts inside the existing system. Each proposed component must serve
+a stated requirement. The result includes the data flow, tradeoffs, excluded
+scope, and the conditions that would justify a larger design.
+
+When you accept the design, turn it into work:
+
+```text
+Use Yarstack's plan-create skill to turn the agreed design into a plan at
+docs/usage-limits-plan.md, with ordered phases and acceptance checks.
+```
+
+Then work through one phase at a time:
+
+```text
+Use Yarstack's phase-implement skill to implement phase 1 of docs/usage-limits-plan.md.
+Use Yarstack's phase-validate skill to check phase 1 against the plan.
+Use Yarstack's phase-review skill to review phase 1 for structural regressions.
+```
+
+Send these as separate requests as each step finishes. Use `architecture-refine`
+when a design decision is still open. A focused bug fix can start directly with
+`behavior-implement`; a phased plan is useful when the work needs one.
+
+### Check a specific risk
+
+Name the question you need answered:
+
+| Your question | Skill |
+| --- | --- |
+| Can this change let one tenant access another tenant's data? | [`security-review`](plugins/yarstack/skills/security-review/SKILL.md) |
+| Do these tests prove retries and partial failure behave correctly? | [`test-gap-review`](plugins/yarstack/skills/test-gap-review/SKILL.md) |
+| Can we roll this change out and recover if it fails? | [`rollout-readiness-review`](plugins/yarstack/skills/rollout-readiness-review/SKILL.md) |
+| Does CI actually check the behavior we depend on? | [`ci-review`](plugins/yarstack/skills/ci-review/SKILL.md) |
+| What does this branch change, and why? | [`changes-explain`](plugins/yarstack/skills/changes-explain/SKILL.md) |
+
+For example: “Use Yarstack's security-review skill to check tenant isolation in
+this branch.”
+
+### Take an issue through to a pull request
+
+Use `jira-issue-refine` to turn a vague ticket into a bounded task with acceptance
+criteria. With explicit delivery authority, `jira-issue-deliver` can take that
+issue through implementation, validation, commits, pushes, CI fixes, and requested
+automated review to a ready GitHub pull request. It stops before merging,
+deploying, releasing, or changing the Jira issue.
+
+For already completed local work, use `pr-draft` to publish a draft PR and follow
+its checks. These workflows need access to the relevant services and explicit
+authority for their writes. The skill does not provide accounts or credentials.
+
+## Optional: engineering standards across your work
+
+Skills define how to do a particular job. The bundled
+[engineering standards](plugins/yarstack/agent-guidance/engineering-standards/)
+define expectations across jobs: inspect existing code first, sketch a small
+design, preserve contracts, handle state changes safely, test observable behavior,
+and write clear names and explanations.
+
+**Installing the plugin makes the skills available. Installing global standards
+is a separate, optional step.** To preview them, clone this repository and run:
 
 ```sh
+git clone https://github.com/yarlson/yarstack.git
+cd yarstack
 plugins/yarstack/scripts/install-engineering-standards.sh --print
 ```
 
-Install it only when you want Yarstack to replace the global guidance used by
-Codex and Claude Code:
+If you want to use that text as your global agent guidance, run from the clone:
 
 ```sh
 make install-system-prompt
 ```
 
-The installer writes to `~/.codex/AGENTS.md`, `~/.agents/AGENTS.md`, and
-`~/.claude/CLAUDE.md`. It preserves symlinks, rejects dangling symlinks, creates
-timestamped backups before replacing differing files, and makes no change when
-the installed content is already current.
+This replaces the contents of `~/.codex/AGENTS.md`, `~/.agents/AGENTS.md`, and
+`~/.claude/CLAUDE.md`. The installer backs up differing files before replacing
+them, preserves existing symlinks, rejects dangling symlinks, and leaves matching
+content unchanged.
 
-## Upgrade
+Repository instructions still take precedence. Skills and standards guide the
+agent's work; your host's permissions control its access. Invoking a review does
+not authorize edits, commits, pushes, or external writes.
 
-Marketplace installs are cached by version. Refresh the marketplace after a new
-repository release, then run the relevant plugin update commands below.
+## Optional: carry knowledge between sessions with Yarbrain
+
+[Yarbrain](plugins/yarbrain/README.md) is a separate plugin in the same
+marketplace. Use it to keep useful findings and procedures in a Markdown vault
+you control, ready to recall during later work.
+
+It keeps session evidence, current knowledge, and approved procedures separate.
+New knowledge and proposed skills stay reviewable before they become part of
+what the agent relies on.
+
+After adding the marketplace, install Yarbrain for your host:
+
+```sh
+codex plugin add yarbrain@yarstack
+```
+
+Or, for Claude Code:
+
+```sh
+claude plugin install yarbrain@yarstack
+```
+
+Start a new Codex thread or reload Claude Code's plugins, then ask:
+
+```text
+Use Yarbrain's wiki-initialize skill to create my vault at <path>.
+```
+
+Initialization requires Python 3 and an explicitly chosen vault path. It
+preserves existing vault files. After setup, use `wiki-capture` to save session
+evidence and propose knowledge, `wiki-reconcile` to review it against existing
+notes, and `wiki-recall` to retrieve relevant knowledge for a new task.
+
+Hooks load a bounded index and queue session locators. Capture and reconciliation
+remain explicit workflows; hooks do not copy transcript bodies, call a model or
+network service, or change canonical notes. Yarstack works independently of
+Yarbrain.
+
+## Skill catalog
+
+Start with the skill that matches your task. Each link opens its full
+instructions, including scope, required evidence, and completion conditions.
+
+<details>
+<summary><strong>Browse all Yarstack skills</strong></summary>
+
+### Investigate, design, and plan
+
+| Skill | Use it to |
+| --- | --- |
+| [`system-investigate`](plugins/yarstack/skills/system-investigate/SKILL.md) | Explain existing behavior and recommend a next step from evidence. |
+| [`system-design`](plugins/yarstack/skills/system-design/SKILL.md) | Design a system or feature around current requirements and constraints. |
+| [`architecture-refine`](plugins/yarstack/skills/architecture-refine/SKILL.md) | Settle open architecture decisions before planning. |
+| [`alternatives-explore`](plugins/yarstack/skills/alternatives-explore/SKILL.md) | Explore substantially different approaches and a way to test the recommendation. |
+| [`technical-spike`](plugins/yarstack/skills/technical-spike/SKILL.md) | Resolve one blocking external or version-specific technical uncertainty. |
+| [`plan-create`](plugins/yarstack/skills/plan-create/SKILL.md) | Turn settled decisions into ordered implementation phases. |
+| [`plan-update`](plugins/yarstack/skills/plan-update/SKILL.md) | Correct a plan when implementation evidence reveals a defect. |
+| [`test-design`](plugins/yarstack/skills/test-design/SKILL.md) | Design reproducible tests matched to behavioral risk. |
+
+### Implement and verify
+
+| Skill | Use it to |
+| --- | --- |
+| [`behavior-implement`](plugins/yarstack/skills/behavior-implement/SKILL.md) | Change behavior through a focused failing-test, implementation, and refactoring cycle. |
+| [`phase-implement`](plugins/yarstack/skills/phase-implement/SKILL.md) | Implement one selected phase from a plan. |
+| [`phase-validate`](plugins/yarstack/skills/phase-validate/SKILL.md) | Check a phase against its acceptance criteria and fix required gaps. |
+| [`phase-review`](plugins/yarstack/skills/phase-review/SKILL.md) | Review a validated phase for structural regressions. |
+| [`go-code-reduce`](plugins/yarstack/skills/go-code-reduce/SKILL.md) | Find or apply maintainable Go code reductions while preserving behavior. |
+| [`cli-control`](plugins/yarstack/skills/cli-control/SKILL.md) | Verify CLI or TUI behavior in a real terminal. |
+| [`ui-control`](plugins/yarstack/skills/ui-control/SKILL.md) | Verify browser, desktop, or Electron behavior through the interface. |
+
+### Review a change or a specific risk
+
+| Skill | Use it to |
+| --- | --- |
+| [`code-review`](plugins/yarstack/skills/code-review/SKILL.md) | Run an adaptive multi-agent review and verify its findings. |
+| [`claude-review`](plugins/yarstack/skills/claude-review/SKILL.md) | Run an independent Claude Opus review, then check the findings locally. |
+| [`test-gap-review`](plugins/yarstack/skills/test-gap-review/SKILL.md) | Assess whether tests and checks actually prove the intended behavior. |
+| [`security-review`](plugins/yarstack/skills/security-review/SKILL.md) | Trace a focused trust boundary or exploit path. |
+| [`dependency-review`](plugins/yarstack/skills/dependency-review/SKILL.md) | Check dependency provenance, version pinning, and reproducibility. |
+| [`ci-review`](plugins/yarstack/skills/ci-review/SKILL.md) | Audit CI workflows and the checks they provide. |
+| [`infra-review`](plugins/yarstack/skills/infra-review/SKILL.md) | Review infrastructure targeting, state, availability, cost, and recovery risks. |
+| [`rollout-readiness-review`](plugins/yarstack/skills/rollout-readiness-review/SKILL.md) | Check deployment, rollback, recovery, and failure visibility. |
+| [`crap-index-assess`](plugins/yarstack/skills/crap-index-assess/SKILL.md) | Assess method-level change risk using complexity and test coverage. |
+| [`change-cleanup-review`](plugins/yarstack/skills/change-cleanup-review/SKILL.md) | Find unnecessary changes and weak verification before human review. |
+| [`coderabbit-triage`](plugins/yarstack/skills/coderabbit-triage/SKILL.md) | Judge unresolved CodeRabbit feedback before acting on it. |
+
+### Explain and document
+
+| Skill | Use it to |
+| --- | --- |
+| [`changes-explain`](plugins/yarstack/skills/changes-explain/SKILL.md) | Explain a diff through behavior, design, and risk. |
+| [`changes-report`](plugins/yarstack/skills/changes-report/SKILL.md) | Report changes that entered a branch during a date or period. |
+| [`repo-context-document`](plugins/yarstack/skills/repo-context-document/SKILL.md) | Maintain implemented-system documentation under `docs/context/`. |
+| [`critical-journey-document`](plugins/yarstack/skills/critical-journey-document/SKILL.md) | Document one actor pursuing one goal, linked to evidence. |
+| [`docs-review`](plugins/yarstack/skills/docs-review/SKILL.md) | Audit or improve repository documentation against actual behavior. |
+| [`docs-drift-review`](plugins/yarstack/skills/docs-drift-review/SKILL.md) | Find documentation made inaccurate by the current change. |
+| [`text-improve`](plugins/yarstack/skills/text-improve/SKILL.md) | Rewrite technical prose for clarity while preserving meaning. |
+| [`marketing-claims-review`](plugins/yarstack/skills/marketing-claims-review/SKILL.md) | Check or rewrite product claims against shipped capabilities. |
+| [`spec-update`](plugins/yarstack/skills/spec-update/SKILL.md) | Correct a product, architecture, API, or behavior contract. |
+
+### Refine issues and deliver work
+
+| Skill | Use it to |
+| --- | --- |
+| [`jira-issue-refine`](plugins/yarstack/skills/jira-issue-refine/SKILL.md) | Turn a vague issue into a bounded delivery task with acceptance criteria. |
+| [`jira-issue-create`](plugins/yarstack/skills/jira-issue-create/SKILL.md) | Create Jira issues from approved drafts through `acli`. |
+| [`jira-issue-deliver`](plugins/yarstack/skills/jira-issue-deliver/SKILL.md) | Deliver an authorized Jira issue to a ready PR with passing checks and requested automated review complete. |
+| [`roadmap-task-deliver`](plugins/yarstack/skills/roadmap-task-deliver/SKILL.md) | Deliver the next eligible roadmap task through PR merge and task-status update. |
+| [`phase-commit`](plugins/yarstack/skills/phase-commit/SKILL.md) | Create one explicitly requested local commit. |
+| [`pr-draft`](plugins/yarstack/skills/pr-draft/SKILL.md) | Publish completed work as an authorized draft PR and follow CI. |
+
+</details>
+
+<details>
+<summary><strong>Browse Yarbrain skills</strong></summary>
+
+| Skill | Use it to |
+| --- | --- |
+| [`wiki-initialize`](plugins/yarbrain/skills/wiki-initialize/SKILL.md) | Create or adopt a vault at a path you choose. |
+| [`wiki-capture`](plugins/yarbrain/skills/wiki-capture/SKILL.md) | Preserve a session as evidence and propose knowledge or procedures. |
+| [`wiki-reconcile`](plugins/yarbrain/skills/wiki-reconcile/SKILL.md) | Compare proposed knowledge with existing notes before updating them. |
+| [`wiki-recall`](plugins/yarbrain/skills/wiki-recall/SKILL.md) | Retrieve up to five relevant notes, episodes, or approved procedures. |
+| [`procedure-promote`](plugins/yarbrain/skills/procedure-promote/SKILL.md) | Propose a skill from a repeated, verified procedure. |
+| [`wiki-maintain`](plugins/yarbrain/skills/wiki-maintain/SKILL.md) | Check vault structure, stale knowledge, duplication, and skill drift. |
+
+</details>
+
+## Update
+
+Refresh the marketplace and update the plugins you have installed.
 
 ### Codex
 
 ```sh
 codex plugin marketplace upgrade yarstack
 codex plugin add yarstack@yarstack
-codex plugin add yarbrain@yarstack
 ```
 
-Start a new Codex thread to load the updated plugin.
+If you also use Yarbrain, run `codex plugin add yarbrain@yarstack`. Start a new
+Codex thread to load the updated plugins.
 
 ### Claude Code
 
 ```sh
 claude plugin marketplace update yarstack
 claude plugin update yarstack@yarstack
-claude plugin update yarbrain@yarstack
 ```
 
-Run `/reload-plugins` or restart Claude Code.
+If you also use Yarbrain, run `claude plugin update yarbrain@yarstack`. Run
+`/reload-plugins` or restart Claude Code.
 
-## Validate the packages
+## Work on Yarstack
+
+Each plugin is self-contained under `plugins/yarstack/` or `plugins/yarbrain/`.
+Codex and Claude Code use separate manifests and marketplace catalogs. See
+[AGENTS.md](AGENTS.md) for repository rules and [SKILL_FORMAT.md](SKILL_FORMAT.md)
+for skill conventions.
+
+Run the repository checks before submitting changes:
 
 ```sh
 make validate
 ```
 
-The command runs `plugin-scanner lint` and `plugin-scanner verify` for both
-Codex packages, then runs `claude plugin validate --strict` for both Claude Code
-plugins and the marketplace.
-
-## Repository layout
-
-```text
-.agents/plugins/marketplace.json   Codex marketplace
-.claude-plugin/marketplace.json    Claude Code marketplace
-plugins/yarstack/                  Engineering workflow package
-plugins/yarbrain/                  Markdown second-brain package
-Makefile                           Local and CI entrypoints
-```
-
-## Security
+This runs the Yarbrain Python tests, `plugin-scanner lint` and
+`plugin-scanner verify` for both Codex packages, and
+`claude plugin validate --strict` for both Claude Code plugins and the marketplace.
+The command requires Python 3, `pipx`, and the Claude Code CLI; the Makefile pins
+the scanner version.
 
 Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
-
-## License
 
 [MIT](LICENSE) © 2026 Yar Kravtsov.
