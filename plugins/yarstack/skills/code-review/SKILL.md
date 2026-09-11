@@ -62,7 +62,7 @@ Create one handoff packet per reviewer with:
 - read-only and safe-execution limits;
 - expected evidence format and a stopping condition.
 
-Choose dimensions from the actual change. Examples include correctness, lifecycle, compatibility, performance, security, tests, dependencies, CI, infrastructure, rollout, documentation drift, UI behavior, and language or framework-specific failure modes. Do not create a separate permanent skill for a language dimension; assign it as a bounded reviewer lane when the change warrants it. Every lane must use the shared review standard above, even when its technical focus differs.
+Choose dimensions from the actual change. Examples include correctness, lifecycle, compatibility, performance, security, tests, dependencies, CI, infrastructure, rollout, documentation drift, UI behavior, over-building such as reinvented standard-library or platform behavior and one-consumer abstractions, and language or framework-specific failure modes. Do not create a separate permanent skill for a language dimension; assign it as a bounded reviewer lane when the change warrants it. Every lane must use the shared review standard above, even when its technical focus differs.
 
 For a language or framework lane, derive checks from the code in scope rather than applying an unrelated catalogue. Examples of useful prompts include mutable default or class state and overly broad exception handling in Python; unsafe `any`, unchecked async failures, and prop mutation in TypeScript or React; and equivalent hazards for the detected language. Report only a concrete failure path, not a style preference.
 

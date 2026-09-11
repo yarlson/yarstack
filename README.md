@@ -71,6 +71,17 @@ extends. Both stop before `architecture-refine`, which settles the decisions
 only you can make, and `plan-create`, which turns an accepted design into
 implementation phases.
 
+### The smallest change that works
+
+Before writing code, Yarstack has the agent stop at the first option that
+holds: the behavior does not need to exist, the codebase already has it, the
+standard library or platform already does it, an installed dependency covers
+it, or it fits in one clear line. Only then does it write new code, in the
+fewest files, deleting before adding. Validation at trust boundaries,
+data-loss handling, security, and accessibility are never cut to save lines.
+Tests start from one check that fails when the logic breaks, and reports stay
+short: what changed, what was left out and when to add it, what was checked.
+
 ### Correctness before completion
 
 Code that works on the happy path is not enough. Yarstack makes normal paths,

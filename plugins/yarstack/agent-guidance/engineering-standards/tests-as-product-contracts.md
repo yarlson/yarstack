@@ -23,13 +23,7 @@ Do not force a table when a few direct tests make the contracts easier to unders
 
 ### Verify observable behavior
 
-Cover the smallest useful set of contracts:
-
-- the normal path
-- important input boundaries
-- meaningful failure paths and preserved state
-- cleanup and resource ownership
-- externally visible side effects
+Start with one check that fails when the changed logic breaks. Add a case only for an input boundary, failure path, cleanup obligation, or external side effect that the change introduces or alters. Do not add one case per category by habit, and do not test a trivial change that existing checks already cover.
 
 Assert prerequisites separately when their failure would make later assertions misleading. Prefer explicit expected values over clever generation and failure messages that identify the broken contract.
 

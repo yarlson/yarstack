@@ -85,7 +85,7 @@ Parallel option: after the current agent resolves the issue key and access path,
 4. Record the files, interfaces, dependencies, tests, documentation, and current behavior that constrain the change.
 5. Inspect installed tool versions before relying on version-specific behavior. Search official vendor documentation or release notes when correctness depends on recent public behavior, such as stacked-PR support or a new `gh` release. Prefer primary sources and distinguish source facts from inference.
 6. Stop discovery when the edit surface, verification surface, constraints, and unresolved risks are clear. Do not inventory unrelated modules or generated and vendored content.
-7. Before editing, report the existing pattern, how the change will follow it, and any necessary deviation.
+7. Before editing, state any intentional deviation from the existing pattern and why it is necessary.
 
 Parallel option: split independent product areas, modules, or version-specific research among read-only subagents. Keep the end-to-end flow synthesis with the orchestrator.
 
@@ -163,12 +163,12 @@ Keep the final audit with the current agent or orchestrator. Start it only after
 Report:
 
 - the Jira issue and delivered behavior;
-- why the implementation is the smallest safe approach;
+- what was deliberately left out and the condition that would justify adding it;
 - the delivery worktree path and recorded base commit;
 - changed files and commits;
 - criterion-level test and validation evidence;
 - the PR URL, ready state, current head, and required checks;
 - every automated review disposition, reply, and resolution;
-- quality risks considered, intentionally deferred cleanup, remaining risk, and genuine external blockers.
+- remaining risk and genuine external blockers.
 
 Do not report completion from cached output, a draft PR, an older commit, pending required CI, an unfinished requested review, or an unresolved actionable thread.

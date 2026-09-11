@@ -76,7 +76,7 @@ Deliver one roadmap task through a verified GitHub merge and a saved task-status
 3. Trace the affected user, API, event or CLI flow through validation, policy, persistence, external effects and observable completion. Record the owners, interfaces, dependencies, tests and current behavior that constrain this task and later tasks.
 4. Map each requirement to its input or state, expected result, failure behavior, owner and evidence. Separate requirements from historical notes and suggestions. A prerequisite's completion label does not replace source evidence.
 5. Check installed tools before relying on behavior that depends on their version. Use official sources when needed. Distinguish facts from inference. Stop discovery when the required edits, checks and remaining risks are clear.
-6. Before editing, state the existing pattern, how the change follows it and any necessary deviation. Do not inventory unrelated modules or generated or vendored output.
+6. Before editing, state any intentional deviation from the existing pattern and why it is necessary. Do not inventory unrelated modules or generated or vendored output.
 
 ## Create the implementation plan
 

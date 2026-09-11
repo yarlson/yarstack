@@ -7,11 +7,11 @@ description: Implement behavior through a red-green-refactor cycle when focused 
 
 Own the implementation cycle for one coherent observable behavior.
 
-Keep the implementation simple and limited to current requirements. Reuse an existing source of truth when the same rule or knowledge would otherwise be maintained in more than one place, but do not combine unrelated behavior merely because the code looks similar. Add abstractions, flexibility, and configuration only when a concrete current need justifies them.
+Before writing, stop at the first option that holds: the behavior is not needed, the codebase already has it, the standard library or platform already does it, an installed dependency does it, or it fits in one clear line. Otherwise write the minimum that works in the fewest files, deleting before adding. Keep one source of truth per rule, but do not merge unrelated behavior that merely looks alike. Never cut trust-boundary validation, data-loss handling, security, accessibility, or anything explicitly requested.
 
 ## Workflow
 
-1. Read the requested behavior, repository instructions, and closest implementation and test patterns.
+1. Read the requested behavior, repository instructions, the closest implementation and test patterns, and the callers of any code you will change.
 2. Confirm that focused automated tests are proportionate. For engineering tooling and infrastructure, use this workflow only when native checks cannot credibly prove important behavior, concrete complexity or failure risk warrants regression coverage, and a focused deterministic test boundary fits the task. Otherwise leave this skill and use direct implementation with the applicable native checks.
 3. Identify the observable outcome, important side effects, and state preserved on failure. At each dependency boundary, name the supported contract that makes the outcome reliable. Do not base a guarantee on undocumented or incidental behavior, or claim more than the contract supports.
 4. Choose the smallest reliable mechanism with complexity and maintenance cost proportionate to the behavior. If no supported mechanism can meet the requirement without material scope growth, stop before implementation, explain the gap, and ask for direction instead of silently approximating the outcome.

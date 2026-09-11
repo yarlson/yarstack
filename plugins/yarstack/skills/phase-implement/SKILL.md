@@ -7,7 +7,7 @@ description: Implement exactly one selected phase from an authoritative reposito
 
 Own phase scope and orchestrate only the work required to implement it.
 
-Keep the implementation simple and limited to current requirements. Reuse an existing source of truth when the same rule or knowledge would otherwise be maintained in more than one place, but do not combine unrelated behavior merely because the code looks similar. Add abstractions, flexibility, and configuration only when a concrete current need justifies them.
+Before writing, stop at the first option that holds: the behavior is not needed, the codebase already has it, the standard library or platform already does it, an installed dependency does it, or it fits in one clear line. Otherwise write the minimum that works in the fewest files, deleting before adding. Keep one source of truth per rule, but do not merge unrelated behavior that merely looks alike. Never cut trust-boundary validation, data-loss handling, security, accessibility, or anything explicitly requested.
 
 ## Workflow
 
@@ -17,7 +17,7 @@ Keep the implementation simple and limited to current requirements. Reuse an exi
 4. Use `behavior-implement` for product behavior. For engineering tooling and infrastructure, use it only when native checks cannot credibly prove important behavior, concrete complexity or failure risk warrants regression coverage, and a focused deterministic test boundary fits the task. Otherwise implement through the repository-native path and run its applicable checks without adding test infrastructure.
 5. Implement only the phase and prerequisites required for it to work.
 6. Run phase-required and focused checks, fixing only scoped implementation failures.
-7. Report implemented behavior, changed scope, checks, alternative evidence, and remaining blockers.
+7. Report what changed, what was deliberately left out and the condition that would justify adding it, checks and alternative evidence, and remaining blockers.
 
 Do not perform independent post-implementation validation, structural review, final closeout, commits, pushes, releases, later phases, or unrelated cleanup. Those remain separate gates unless the user explicitly requests them.
 
