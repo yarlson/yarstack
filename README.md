@@ -1,5 +1,7 @@
 # Yarstack
 
+![Yarstack pirate coins](assets/yarstack.png)
+
 **Give your coding agent a repeatable way to engineer changes.**
 
 Yarstack is a plugin for **Codex and Claude Code** with reusable skills for
@@ -10,8 +12,6 @@ explaining how work should be done and more time deciding what to build.
 Each skill is a Markdown playbook: what the agent should inspect, what it may
 change, how to check the result, and when the job is done. Install the plugin,
 name a skill in your prompt, and use it in your existing repository.
-
-<img src="assets/yarstack.png" alt="Yarstack pirate coins" width="560">
 
 [Get started](#get-started) · [Examples](#put-it-to-work) · [Skill catalog](#skill-catalog)
 
