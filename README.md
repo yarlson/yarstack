@@ -262,6 +262,7 @@ which checks it must run, and when it should stop.
 | [`phase-validate`](plugins/yarstack/skills/phase-validate/SKILL.md) | Check a phase against its acceptance criteria and fix what fails to meet them. |
 | [`phase-review`](plugins/yarstack/skills/phase-review/SKILL.md) | Check a validated phase for new problems in code structure. |
 | [`go-code-reduce`](plugins/yarstack/skills/go-code-reduce/SKILL.md) | Reduce Go code without changing its behavior or making it harder to maintain. |
+| [`skill-optimize`](plugins/yarstack/skills/skill-optimize/SKILL.md) | Reduce an existing skill's context cost without weakening its behavior or outcome. |
 | [`cli-control`](plugins/yarstack/skills/cli-control/SKILL.md) | Verify CLI or TUI behavior in a real terminal. |
 | [`ui-control`](plugins/yarstack/skills/ui-control/SKILL.md) | Verify browser, desktop, or Electron behavior through the interface. |
 

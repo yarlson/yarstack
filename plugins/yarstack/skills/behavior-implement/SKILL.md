@@ -1,28 +1,27 @@
 ---
 name: behavior-implement
-description: Implement behavior through a red-green-refactor cycle when focused automated tests are proportionate. Use for product behavior changes and for engineering tooling and infrastructure only when native checks are insufficient and concrete complexity or failure risk warrants dedicated tests.
+description: Implement one observable behavior through proportionate red-green-refactor testing. Use for product changes, and for tooling or infrastructure only when native checks cannot cover a concrete complexity or failure risk with a focused deterministic test.
 ---
 
 # Test-Driven Implementation
 
-Own the implementation cycle for one coherent observable behavior.
+Implement and prove one coherent observable behavior.
 
-Before writing, stop at the first option that holds: the behavior is not needed, the codebase already has it, the standard library or platform already does it, an installed dependency does it, or it fits in one clear line. Otherwise write the minimum that works in the fewest files, deleting before adding. Keep one source of truth per rule, but do not merge unrelated behavior that merely looks alike. Never cut trust-boundary validation, data-loss handling, security, accessibility, or anything explicitly requested.
+Before coding, stop at the first sufficient option: no change, existing code, the standard library or platform, an installed dependency, or one clear line. Otherwise make the minimum change, deleting before adding. Keep one source of truth without joining unrelated behavior. Never trade away validation, data-loss prevention, security, accessibility, or explicit requirements.
 
 ## Workflow
 
-1. Read the requested behavior, repository instructions, the closest implementation and test patterns, and the callers of any code you will change.
-2. Confirm that focused automated tests are proportionate. For engineering tooling and infrastructure, use this workflow only when native checks cannot credibly prove important behavior, concrete complexity or failure risk warrants regression coverage, and a focused deterministic test boundary fits the task. Otherwise leave this skill and use direct implementation with the applicable native checks.
-3. Identify the observable outcome, important side effects, and state preserved on failure. At each dependency boundary, name the supported contract that makes the outcome reliable. Do not base a guarantee on undocumented or incidental behavior, or claim more than the contract supports.
-4. Choose the smallest reliable mechanism with complexity and maintenance cost proportionate to the behavior. If no supported mechanism can meet the requirement without material scope growth, stop before implementation, explain the gap, and ask for direction instead of silently approximating the outcome.
-5. Use `test-design` when selecting the test level, cases, fixtures, or test boundary is non-trivial; otherwise extend the existing test pattern directly.
-6. Write the smallest focused test and confirm it fails because the behavior is missing or wrong. Treat the test as maintained product code. Reuse existing focused helpers, extract cohesive repeated setup without hiding scenario values, and prefer named table-driven cases only when they share one execution path.
-7. Change the minimum production code needed to pass without weakening the assertion.
-8. Refactor only as needed for clarity, rerunning the focused test after each behavior-preserving change.
-9. Use `crap-index-assess` when the request targets CRAP or the repository's configured CRAP check covers changed methods. Treat the result as maintainability evidence, not a replacement for behavioral tests.
-10. Run relevant surrounding tests and repository-required checks.
+1. Read the behavior contract, repository instructions, closest implementation and test patterns, and callers of code you may change.
+2. Confirm focused tests are proportionate. For tooling and infrastructure, leave this workflow for direct implementation with native checks unless they cannot prove material behavior, a concrete risk warrants regression coverage, and a focused deterministic boundary fits.
+3. Define the observable result, side effects, failure-preserved state, and supported dependency contracts. Make no guarantee beyond their documented behavior.
+4. Choose the smallest reliable mechanism. If meeting the contract requires material scope growth, explain the gap and ask for direction instead of approximating the outcome.
+5. Use `test-design` when the test boundary, level, cases, or fixtures are non-trivial; otherwise extend the existing pattern.
+6. Write the smallest focused test in repository style and confirm it fails because the behavior is missing or wrong. Keep scenario values visible.
+7. Write the minimum production code needed to pass without weakening the assertion; refactor only for needed clarity, rerunning the test after each behavior-preserving change.
+8. Use `crap-index-assess` when requested or when the repository's CRAP check covers changed methods; treat it as supporting evidence, not a substitute for behavioral tests.
+9. Run relevant surrounding tests and repository-required checks.
 
-After selecting this workflow, if an in-scope automated test proves impractical, state before editing why, what concrete evidence will replace it, and the residual risk. Do not add disproportionate infrastructure; stop when the required harness would materially expand scope.
+If an in-scope test proves impractical, state before editing why, what concrete evidence will replace it, and the residual risk. Do not add a harness that materially expands scope.
 
 Do not apply this workflow to purely non-behavioral documentation, formatting, metadata, or mechanical generated-state changes.
 
