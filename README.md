@@ -279,6 +279,7 @@ which checks it must run, and when it should stop.
 | [`infra-review`](plugins/yarstack/skills/infra-review/SKILL.md) | Review infrastructure changes for mistakes in deployment targets, state, cost, availability, or recovery. |
 | [`rollout-readiness-review`](plugins/yarstack/skills/rollout-readiness-review/SKILL.md) | Check deployment and recovery procedures, including rollback and how operators detect failures. |
 | [`crap-index-assess`](plugins/yarstack/skills/crap-index-assess/SKILL.md) | Assess which methods are risky to change using code complexity and test coverage. |
+| [`tech-debt-audit`](plugins/yarstack/skills/tech-debt-audit/SKILL.md) | Find, verify, and rank technical debt across a repository or subsystem. |
 | [`change-cleanup-review`](plugins/yarstack/skills/change-cleanup-review/SKILL.md) | Find unnecessary changes and checks that do not prove their claims before human review. |
 | [`coderabbit-triage`](plugins/yarstack/skills/coderabbit-triage/SKILL.md) | Judge unresolved CodeRabbit feedback before acting on it. |
 
