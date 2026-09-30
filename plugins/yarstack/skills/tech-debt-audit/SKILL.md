@@ -1,73 +1,102 @@
 ---
 name: tech-debt-audit
-description: Audit a whole repository or subsystem for technical debt through parallel read-only investigation lanes, adversarial verification, and cost-based ranking, and produce an evidence-backed debt register. Use when the user wants to find, size, or prioritize existing debt across a codebase; not for reviewing one change, which belongs to code-review.
+description: Audit a whole repository or subsystem for technical debt with at most four non-overlapping read-only subagents, lead verification, and interest-over-principal ranking, and produce an evidence-backed debt register. Use when the user wants to find, size, or prioritize existing debt across a codebase; not for reviewing one change, which belongs to code-review.
 ---
 
 # Tech Debt Audit
 
-Produce a ranked debt register a team can turn into work items. Debt is a property of existing code that makes likely future changes slower, riskier, or more expensive. Keep the audit read-only: do not edit, format, commit, push, install, upgrade, or change generated state.
+Produce a verified, ranked debt register a team can turn into work items. Keep the audit read-only: do not edit, format, commit, push, install, upgrade, run migrations, or send repository data to external services.
 
-## Orient
+## Definition
 
-1. Confirm the target repository or subsystem, excluded paths, and the output location. Skip vendored, generated, and build output except for dependency analysis.
-2. Read repository instructions, README, contributing guides, ADRs, and architecture docs. Identify languages, frameworks, runtimes, build system, test runner, CI, and deploy target.
-3. Find the native quality commands and note which exist. Run only trusted read-only ones.
-4. Collect global signals:
-   - churn hotspots from `git log --since="12 months ago" --name-only`;
-   - co-change pairs that cross module boundaries;
-   - size and function count of the hottest files;
-   - large files that are stale, and large files that are hot;
-   - counts of `TODO`, `FIXME`, `HACK`, `@deprecated`, and lint or type suppressions per directory;
-   - single-author hotspots from `git shortlog`.
-5. Write a short context brief: system purpose, module map, main flows, hotspots, and available checks. Stop discovery when modules, hot paths, and verification commands are known.
+Technical debt is a set of design or implementation constructs that are expedient in the short term but make future changes more costly or impossible. Its impact is limited to internal qualities, mainly maintainability and evolvability.
+
+- **Principal** is the effort to remove the debt. **Interest** is the extra cost the debt adds to each change that touches it: slower delivery, more defects, more risk.
+- Debt in code that rarely changes charges little interest. Rank messy code that changes often above ugly code that is stable.
+- A defect that produces wrong behavior today is a bug, not debt. So is an exploitable security issue. A missing feature, a style preference, or "not the latest trend" is not debt unless you can show a cost.
+- Record the origin as `deliberate` only when a comment, ADR, commit message, or issue shows it. Otherwise use `inadvertent` or `unknown`.
+
+## Budget
+
+- Launch at most four subagents, in one wave. Do not relaunch them, chain them, or let them spawn subagents. For a repository under about 20k lines or with a single module, use at most two, and do the remaining lanes yourself.
+- Use subagents only when the host supports them and the user permits it. Otherwise run the lanes in sequence and label the result as degraded.
+- Use a lower-cost model at low or moderate effort for lanes. Keep deduplication, verification, and ranking with the lead.
+- Cap each lane at about 40 file reads and 15 findings. When a lane reaches the cap, it stops and reports what it did not cover.
+
+## Build the shared inventory
+
+The lead does this once, and every lane receives the result. Lanes must not repeat any step.
+
+1. Confirm the target, excluded paths, and output location. Read repository instructions, README, contributing guides, ADRs, and architecture docs. Skip vendored, generated, and build output except for dependency analysis.
+2. Record languages, modules with one-line purposes, entry points, and the build, test, lint, and CI commands. Run only trusted read-only commands.
+3. Find the top 30 files by commit count over the last 12 months, or over the full history if it is shorter: `git log --since="12 months ago" --name-only --format= | sort | uniq -c | sort -rn`.
+4. Mark as hotspots the 10–15 files with both high churn and high complexity. Measure complexity with size and nesting depth, or with a complexity tool that is already installed.
+5. List co-change pairs that cross module boundaries, and single-author hotspots from `git shortlog`.
+6. Count `TODO`, `FIXME`, `HACK`, `XXX`, `@deprecated`, and lint or type suppressions per directory, and keep the 20 most informative lines.
+7. Note which lint rules are disabled, which coverage reports exist, and which dependency manifests exist.
+
+Keep the inventory under about 1,500 tokens. Stop discovery once modules, hotspots, and checks are known.
 
 ## Investigate
 
-Give each lane the context brief, its question, the read-only rules, and the finding shape below. Run lanes in parallel as subagents when the host supports them and the user permits it; otherwise run them in sequence and label the result as degraded. Ask each lane for at most 15 ranked findings, with depth on hotspots rather than breadth over cold code.
+Split lanes by debt type, not by directory. Each debt type belongs to exactly one lane. Merge lanes when you use fewer agents, and record any skipped lane with the reason.
 
-Select lanes from the repository. Skip a lane that does not apply and record why.
+- **Code and design:** code-level smells, duplication and drifted clones (including generated-code sprawl), dead code, mode flags, hidden mutable state, competing patterns for one concern, and swallowed or inconsistent error handling. Use `crap-index-assess` when complexity and coverage data exist.
+- **Architecture and data:** boundaries that routine changes cross (use the co-change evidence), dependency cycles, domain logic bound to frameworks or storage, schema and data-model debt, public contract drift, and non-idempotent or partial-write paths.
+- **Tests and delivery:** risky code with no tests, tautological or flaky tests, skipped tests with no condition, disabled lint rules, checks that do not gate, and local and CI commands that disagree. Delegate test sufficiency to `test-gap-review` and CI topology to `ci-review`.
+- **Dependencies, config, and knowledge:** end-of-life or unmaintained dependencies and runtimes, configuration sprawl, infrastructure debt, docs or ADRs that contradict behavior, stale agent instruction or prompt files, hard-coded model IDs, and triage of the self-admitted debt markers from the inventory. Delegate provenance to `dependency-review`, infrastructure to `infra-review`, and doc repair to `docs-review`.
 
-- **Design:** module boundaries that routine changes cross (use co-change evidence), dependency cycles, domain logic bound to frameworks or storage, catch-all packages, shallow wrappers, single-implementation interfaces, competing patterns for one concern, and duplicated domain rules.
-- **Complexity:** high complexity or deep nesting in hotspots, mode flags, hidden mutable state, dead code, permanent feature flags, and drifted copy-paste clones. Use `crap-index-assess` when complexity and coverage data exist.
-- **Reliability:** swallowed errors, missing timeouts or cancellation, unbounded retries, leaked resources, non-idempotent handlers on at-least-once paths, partial writes without transactions or reconciliation, and race-prone shared state.
-- **Tests:** risky code with no tests, tautological or over-mocked tests, flaky patterns such as sleeps, wall-clock time, real network, and ordering dependencies, skipped tests with no condition, and slow feedback paths. Delegate sufficiency questions to `test-gap-review`.
-- **Dependencies and runtime:** end-of-life runtimes, frameworks, and base images checked against current vendor dates, deprecated APIs with announced removal, unmaintained or duplicate libraries, drifted forks, and known vulnerabilities from tools already present. Delegate provenance and pinning to `dependency-review`.
-- **Build and operations:** local and CI commands that disagree, non-gating checks, undocumented setup, missing observability on critical paths, unvalidated configuration sprawl, manual release steps, and migrations without rollback. Delegate CI topology to `ci-review` and infrastructure to `infra-review`.
-- **Security posture:** unvalidated trust-boundary input, scattered or missing authorization, tenant isolation by convention, and broad credentials. Report only a concrete input-to-sink path, describe the class of problem rather than an exploit, and delegate deep paths to `security-review`.
-- **AI integration:** agent instruction files that contradict code, commands, or each other; generated-code sprawl such as near-duplicate functions, mixed idioms in one module, unused abstractions, and narrating comments; hard-coded or retired model IDs; unversioned prompts without evaluations; model calls without timeouts, retries, or budgets; model output used as trusted input; and tool servers with broader permissions than they need.
-- **Knowledge:** documentation that contradicts behavior, undocumented public contracts, single-owner hotspots, and superseded ADRs. Delegate documentation repair scope to `docs-review`.
+Give each lane the inventory, its owned debt types, the read-only rules, the budget, and these rules:
 
-Require each finding in this shape:
+- Start from the hotspots. Do not survey cold code.
+- Report a root cause once. If a pattern appears 20 times, report it as one finding with an occurrence count and up to three example locations.
+- For something another lane owns, add one line to `handoff_notes` and do not investigate it.
+- Report concrete security paths as out-of-scope observations, describe the class of problem rather than an exploit, and point to `security-review`.
+- Base interest on observed churn, bug-fix commits, co-change breadth, and dependents.
+- Every finding needs evidence.
+
+Require findings in this shape, plus `not_covered` and `handoff_notes` for each lane:
 
 ```yaml
 id: <lane>-<n>
 title: <one concrete line>
-location: [path:line]
-evidence: <short code, command output, or git statistic>
-impact: <what becomes slower, riskier, or costlier, and for whom>
-interest: <how the cost grows: per change, per incident, per release, or by a date>
-likelihood: high | medium | low        # cost lands within six months
-blast_radius: local | module | cross-module | system | external
-fix_sketch: <smallest credible fix in one to three sentences>
-fix_cost: S | M | L | XL
-confidence: confirmed | plausible | inconclusive
+type: <owned debt type>
+locations: [path:line]          # up to three examples
+occurrences: <count>
+evidence: <code, command output, or git statistic>
+impact: <which changes become slower or riskier, and for whom>
+interest: high | medium | low
+principal: S | M | L | XL       # S < 1 day, M ≤ 1 week, L ≤ 1 month, XL > 1 month
+contagion: yes | no             # spreads through copying or dependents
+origin: deliberate | inadvertent | unknown
+fix_sketch: <smallest safe step in one or two sentences>
+confidence: high | medium | low
+fingerprint: <type>:<path or module>:<root-cause slug>
 ```
 
-No evidence means no finding. Style preferences and "not the latest trend" are not debt without a shown cost.
+## Verify and rank
 
-## Verify
-
-Send each finding with high likelihood, cross-module or wider blast radius, or a security lane to an independent verifier with only the finding and repository access. Batch the remaining findings by lane. The verifier tries to disprove the claim: reproduce the evidence, look for mitigations elsewhere such as middleware, framework guarantees, database constraints, other tests, or CI gates, and check for a documented deliberate trade-off. Mark each finding `confirmed`, `downgraded` with new ratings, or `rejected` with the reason. Never treat agreement between lanes as evidence.
-
-## Synthesize
-
-1. Merge duplicates by root cause, keeping the strongest evidence, and group related findings into themes.
-2. Score each surviving item as `(impact × likelihood × blast radius × interest) / fix cost` on a small integer scale, and show the inputs.
-3. Tag each item: `quick win` (small cost, high priority), `strategic` (large cost, high priority), `watch` (low likelihood now, with a dated trigger or condition), or `accept` (carrying costs less than fixing, with the reason).
-4. For each strategic item give the first safe step, the rollback point, and the check that proves progress.
+1. Merge findings with the same `fingerprint`. Then merge findings that share locations and a root cause, keeping the strongest evidence.
+2. Open the cited locations for every high-interest finding and for at least one in five of the others. Look for mitigations elsewhere, such as a framework guarantee, database constraint, middleware, test, or CI gate, and for a documented deliberate trade-off. Mark each finding `confirmed`, `downgraded` with new ratings, or `rejected` with the reason. Agreement between lanes is not evidence.
+3. Rank by interest ÷ principal. Raise contagious items and items in top hotspots.
+4. Group the ranked items:
+   - `pay now`: high interest, small or medium principal.
+   - `plan`: high interest, large principal. Give the first safe step, the rollback point, and the check that proves progress.
+   - `contain`: contagious items. Give a guardrail that stops the spread, such as a lint rule, a CI check, or an architecture test.
+   - `accept`: low interest. State why carrying the debt costs less than fixing it.
+5. Never invent currency or hour totals.
 
 ## Result
 
-Write the report to the agreed location, or return it inline when none was given. Include a summary of at most ten lines with the top themes and the first action; a hotspot map of churn × complexity; the debt register sorted by priority; one section per theme; the watch list with dates; rejected and accepted items with reasons; and the commands run, lanes skipped or failed, unavailable tools, and uncovered areas. Recommendations do not authorize implementation.
+Write the report to the agreed location, or return it inline. Include:
 
-Finish only when every lane has returned or has a recorded failure, every finding has a verification disposition, and every register entry has current locations and evidence.
+- a summary of at most eight lines covering the top themes and the first action;
+- the hotspot table;
+- the register sorted by group and rank;
+- themes that link item IDs;
+- at most five prevention guardrails, each tied to a contagious or recurring item;
+- rejected and accepted items with reasons;
+- commands run, skipped or failed lanes, missing evidence, and areas not covered;
+- out-of-scope bugs and security observations, one line each.
+
+Recommendations do not authorize implementation. Finish only when every lane has returned or has a recorded failure, every finding has a disposition, and every register entry has current locations and evidence.
