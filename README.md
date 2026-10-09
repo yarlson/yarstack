@@ -245,6 +245,7 @@ which checks it must run, and when it should stop.
 | Skill | Use it to |
 | --- | --- |
 | [`system-investigate`](plugins/yarstack/skills/system-investigate/SKILL.md) | Explain existing behavior and recommend a change when the evidence supports it. |
+| [`bug-report-reproduce`](plugins/yarstack/skills/bug-report-reproduce/SKILL.md) | Reproduce a reported problem with synthetic data, prove the cause, and record a narrated walkthrough. |
 | [`system-design`](plugins/yarstack/skills/system-design/SKILL.md) | Design a system or feature around current requirements and constraints. |
 | [`architecture-refine`](plugins/yarstack/skills/architecture-refine/SKILL.md) | Settle open architecture decisions before planning. |
 | [`alternatives-explore`](plugins/yarstack/skills/alternatives-explore/SKILL.md) | Compare different ways to solve the problem and propose a test for the recommendation. |
