@@ -11,7 +11,7 @@ Produce one narrated MP4 that teaches how a feature works. Every narrated claim 
 
 ### 1. Set the scope
 
-Extract the project, feature, focus, audience, and output path from the request. Default to engineers who know the domain, a 3 to 5 minute length, and `~/Desktop/<feature>-explainer.mp4`. Ask only when the feature or project cannot be identified.
+Extract the project, feature, focus, audience, narration language, and output path from the request. Default to engineers who know the domain, English narration, a 3 to 5 minute length, and `~/Desktop/<feature>-explainer.mp4`. Ask only when the feature or project cannot be identified.
 
 ### 2. Investigate the feature
 
@@ -27,9 +27,11 @@ Narrate only facts from the sheet. Leave out inconclusive facts or present them 
 
 Select the first available provider:
 
-1. `elevenlabs`: `ELEVENLABS_API_KEY` is in the environment, or in a `.env` file that the user named or that exists in the working directory or project root. Validate it with `narrate.py --provider elevenlabs --check-key --env-file <path>` before you write narration that depends on it.
+1. `elevenlabs`: `ELEVENLABS_API_KEY` is in the environment, or in a `.env` file that the user named or that exists in the working directory or project root. Validate it with `narrate.py --provider elevenlabs --language <ISO 639-1 code> --check-key --env-file <path>` before you write narration that depends on it. The check also fails when the script's model does not support the narration language.
 2. `say` on macOS, or `espeak` when `espeak-ng` is installed.
 3. `silent`, which only sets the timing.
+
+The default voices speak English. For any other narration language, choose a voice for that language and pass it as `--voice`: an ElevenLabs voice ID, a voice from `say -v '?'`, or a voice from `espeak-ng --voices`.
 
 If no key is found, or the key fails validation, ask the user once. Offer three choices: give a key, use the best local voice, or make a silent video. Continue with the local voice only if the user agrees. Never print, log, or copy a key. ElevenLabs receives the narration text, so keep secrets, customer data, and internal hostnames out of the narration.
 
@@ -47,13 +49,13 @@ Plan 5 to 8 scenes. Give each scene one idea and split it into beats of 1 to 3 s
 4. Failure and recovery paths.
 5. Recap: the invariant again, now earned.
 
-Follow 3Blue1Brown style. Use a dark background and one visual metaphor for each idea. Build the picture step by step and use motion to show change. Give each color one meaning for the whole video. Keep text to short labels. Write narration as plain spoken English. Spell out identifiers that are hard to say, and leave file paths and long hashes on screen only.
+Follow 3Blue1Brown style. Use a dark background and one visual metaphor for each idea. Build the picture step by step and use motion to show change. Give each color one meaning for the whole video. Keep text to short labels. Write narration as plain speech in the narration language. Spell out identifiers that are hard to say, and leave file paths and long hashes on screen only.
 
 Save the narration as `narration.json` in scene order: `{"S1Problem": ["beat", ...], ...}`.
 
 ### 6. Generate the audio
 
-Copy `scripts/scenekit.py` from this skill's directory into the scratch directory. Run `scripts/narrate.py narration.json --provider <provider>` there. It writes one clip per beat and `audio/durations.json`. Clip names hash the text, so an edited beat regenerates only its own clip.
+Copy `scripts/scenekit.py` from this skill's directory into the scratch directory. Run `scripts/narrate.py narration.json --provider <provider> --language <code>` there, with `--voice` when step 3 requires it. It writes one clip per beat and `audio/durations.json`. Clip names hash the text, model, and voice, so an edited beat regenerates only its own clip.
 
 ### 7. Write the scenes
 
