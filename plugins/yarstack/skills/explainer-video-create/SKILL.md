@@ -69,7 +69,7 @@ Copy `scripts/scenekit.py` from this skill's directory into the scratch director
 
 ### 7. Write the scenes
 
-Write `scenes.py` with `from manim import *` and `from scenekit import *`. Give each scene class the same name as its `narration.json` key, subclass `Narrated`, and wrap the animations for beat `i` in `with self.beat(i):`. Keep the animations in each beat shorter than the clip, because the beat waits until the clip ends. Call `self.clear_all()` between visual sections.
+Write `scenes.py` with `from manim import *` and `from scenekit import *`. Give each scene class the same name as its `narration.json` key, subclass `Narrated`, and wrap the animations for beat `i` in `with self.beat(i):`. Keep the animations in each beat shorter than the clip, because the beat waits until the clip ends. Call `self.clear_all()` between visual sections. Draw arrows with `arrow()` and animate them with `grow_arrow()`, because manim's `Arrow` and `GrowArrow` scale the tip and the line width with the arrow's length.
 
 When a scene must show the real product interface, record it instead of animating it. Give that scene one beat for each recorded step.
 

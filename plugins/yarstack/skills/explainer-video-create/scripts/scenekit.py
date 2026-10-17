@@ -3,14 +3,28 @@
 Copy this file next to the scene file. Each scene subclasses Narrated and wraps
 the animations for beat i in `with self.beat(i):`. The beat plays its narration
 clip and waits until the clip ends, so keep each beat's animations shorter than
-its clip.
+its clip. Draw arrows with arrow() and animate them with grow_arrow(): manim's
+Arrow and GrowArrow scale the tip and the line width with the arrow's length.
 """
 
 import json
 from contextlib import contextmanager
 from pathlib import Path
 
-from manim import ORIGIN, RIGHT, WHITE, AnimationGroup, Arrow, FadeOut, RoundedRectangle, Scene, Text, VGroup, config
+from manim import (
+    ORIGIN,
+    RIGHT,
+    WHITE,
+    AnimationGroup,
+    Arrow,
+    FadeOut,
+    RoundedRectangle,
+    Scene,
+    Text,
+    UpdateFromAlphaFunc,
+    VGroup,
+    config,
+)
 
 ROOT = Path(__file__).parent
 AUDIO = ROOT / "audio"
@@ -26,6 +40,8 @@ WARN = "#FF862F"
 DIM = "#BBBBBB"
 FONT = "Avenir Next"
 MONO = "Menlo"
+ARROW_TIP = 0.22
+ARROW_WIDTH = 4
 
 config.background_color = BACKGROUND
 
@@ -44,13 +60,25 @@ def card(label, color=NOTE, w=1.25, h=0.62, size=24):
     return VGroup(box, txt(label, size, color)).arrange(ORIGIN)
 
 
+def arrow(start, end, color=DIM, buff=0.12):
+    return Arrow(
+        start, end, buff=buff, color=color, stroke_width=ARROW_WIDTH, tip_length=ARROW_TIP,
+        max_tip_length_to_length_ratio=1, max_stroke_width_to_length_ratio=1000,
+    )
+
+
+def grow_arrow(shape, **kwargs):
+    start, end, color = shape.get_start(), shape.get_end(), shape.get_color()
+
+    def extend(mob, alpha):
+        mob.become(arrow(start, start + (end - start) * max(alpha, 0.01), color, buff=0))
+
+    return UpdateFromAlphaFunc(shape, extend, **kwargs)
+
+
 def flow(names, width=2.25, gap=0.22, color=DIM, size=20):
     boxes = VGroup(*[card(name, color, w=width, h=0.7, size=size) for name in names]).arrange(RIGHT, buff=gap)
-    arrows = VGroup(*[
-        Arrow(boxes[i].get_right(), boxes[i + 1].get_left(), buff=0.03, stroke_width=3, color=color,
-              max_tip_length_to_length_ratio=0.5)
-        for i in range(len(boxes) - 1)
-    ])
+    arrows = VGroup(*[arrow(boxes[i].get_right(), boxes[i + 1].get_left(), color, buff=0.03) for i in range(len(boxes) - 1)])
     return VGroup(boxes, arrows)
 
 
