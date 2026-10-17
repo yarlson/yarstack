@@ -15,6 +15,7 @@
 - Do not change `0.1.0` or any later explicit version unless the user requests a release/version change. When changing it, update both manifests for that plugin together.
 - Do not add a plugin-root `CLAUDE.md`; Claude Code does not load it as plugin context.
 - Do not declare skills, hooks, agents, MCP servers, apps, assets, or capabilities before the corresponding package content and behavior exist.
+- Keep every procedure in a skill. Agents under `plugins/<plugin-name>/agents/` load only in Claude Code, because Codex plugins cannot ship agents. Use an agent as a worker that applies skills, and keep each skill usable without it.
 
 ## Engineering guidance
 

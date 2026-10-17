@@ -18,7 +18,7 @@ Technical debt is a set of design or implementation constructs that are expedien
 
 ## Budget
 
-- Launch at most four subagents, in one wave. Do not relaunch them, chain them, or let them spawn subagents. For a repository under about 20k lines or with a single module, use at most two, and do the remaining lanes yourself.
+- Launch at most four subagents, in one wave. Do not relaunch them, chain them, or let them spawn subagents. Use the `yarstack:reviewer` agent for each lane when the host provides it. For a repository under about 20k lines or with a single module, use at most two, and do the remaining lanes yourself.
 - Use subagents only when the host supports them and the user permits it. Otherwise run the lanes in sequence and label the result as degraded.
 - Use a lower-cost model at low or moderate effort for lanes. Keep deduplication, verification, and ranking with the lead.
 - Cap each lane at about 40 file reads and 15 findings. When a lane reaches the cap, it stops and reports what it did not cover.

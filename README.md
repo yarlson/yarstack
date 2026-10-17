@@ -240,6 +240,11 @@ skills. You can use Yarstack without installing Yarbrain.
 Each link opens the skill's instructions. They define what the agent may change,
 which checks it must run, and when it should stop.
 
+In Claude Code, skills that delegate review or research work run it in the
+bundled [`yarstack:reviewer`](plugins/yarstack/agents/reviewer.md) agent. It has
+no file-editing tools and cannot start other agents. Codex does not load agents
+from plugins, so in Codex these skills use Codex's own subagents.
+
 <details>
 <summary><strong>Browse all Yarstack skills</strong></summary>
 

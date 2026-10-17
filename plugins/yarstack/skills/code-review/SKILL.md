@@ -68,7 +68,7 @@ For a language or framework lane, derive checks from the code in scope rather th
 
 ## Run independent reviewers
 
-Launch the planned reviewers in parallel when the host supports subagents. Keep their work independent: do not pass one reviewer's conclusions to another initial reviewer, share mutable worktrees, or ask several reviewers to answer the same broad question.
+Launch the planned reviewers in parallel when the host supports subagents. Use the `yarstack:reviewer` agent for every delegated lane, including the context tracks and the adversarial lane, when the host provides it. Keep their work independent: do not pass one reviewer's conclusions to another initial reviewer, share mutable worktrees, or ask several reviewers to answer the same broad question.
 
 Require each reviewer to return zero or more raw findings in this shape:
 

@@ -31,7 +31,7 @@ When several valid approaches remain, choose the smallest reversible one that pr
 
 ## Coordinate subagents only when useful
 
-Use one agent by default. Add subagents only for independent bounded work that benefits from parallelism or independent challenge. Give each one explicit context, scope, authority, and expected evidence; delegation never expands user authority. Serialize overlapping writes and all commits, pushes, PR state changes, replies, and thread resolution. The current agent owns the contract, plan, shared state, integration, remote mutations, and final claims, and verifies delegated results against source evidence.
+Use one agent by default. Add subagents only for independent bounded work that benefits from parallelism or independent challenge. Give each one explicit context, scope, authority, and expected evidence; delegation never expands user authority. Run delegated read-only reviews in the `yarstack:reviewer` agent when the host provides it. Serialize overlapping writes and all commits, pushes, PR state changes, replies, and thread resolution. The current agent owns the contract, plan, shared state, integration, remote mutations, and final claims, and verifies delegated results against source evidence.
 
 ## Read the Jira issue
 

@@ -55,7 +55,7 @@ Deliver one roadmap task through a verified GitHub merge and a saved task-status
 
 1. Use one agent by default. Add subagents only when delegation is permitted and independent work saves meaningful time or provides a useful independent check.
 2. Keep task selection, requirements, planning, shared state, remote changes and completion claims with the current agent. Give each subagent a concrete task, necessary context, read or write limits and an expected result. Delegation does not expand authority.
-3. Run independent reads in parallel. Run writes in parallel only when their dependencies and paths do not overlap. Assign one writer to each shared artifact. Apply overlapping fixes in sequence. Keep task-status edits, commits, pushes, review replies and merges with the current agent.
+3. Run independent reads in parallel, in the `yarstack:reviewer` agent when the host provides it. Run writes in parallel only when their dependencies and paths do not overlap. Assign one writer to each shared artifact. Apply overlapping fixes in sequence. Keep task-status edits, commits, pushes, review replies and merges with the current agent.
 4. Check subagent results against source or remote evidence. Integrate required results before final validation or merge. Stop all writers before those stages. Subagents can report missing evidence but must not interrupt the user directly.
 
 ## Prepare an isolated delivery worktree
