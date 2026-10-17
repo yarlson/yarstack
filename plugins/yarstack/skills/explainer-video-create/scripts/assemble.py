@@ -72,10 +72,10 @@ def concat(videos, output):
         lines = []
         for video in videos:
             padded = Path(tmp) / video.name
-            fade_out = stream_seconds(video, "v") - FADE_SECONDS
-            fades = f"fade=t=in:st=0:d={FADE_SECONDS},fade=t=out:st={fade_out:.3f}:d={FADE_SECONDS}"
-            ffmpeg("-i", str(video), "-vf", f"{fit},{fades}", "-af", "apad", "-shortest", "-c:v", "libx264", "-crf", "18",
-                   "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2", str(padded))
+            seconds = stream_seconds(video, "v")
+            fades = f"fade=t=in:st=0:d={FADE_SECONDS},fade=t=out:st={seconds - FADE_SECONDS:.3f}:d={FADE_SECONDS}"
+            ffmpeg("-i", str(video), "-vf", f"{fit},{fades}", "-af", f"apad,atrim=duration={seconds:.3f}", "-c:v", "libx264",
+                   "-crf", "18", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2", str(padded))
             lines.append(f"file '{padded}'")
         listing.write_text("\n".join(lines) + "\n")
         ffmpeg("-f", "concat", "-safe", "0", "-i", str(listing), "-c", "copy", "-movflags", "+faststart", str(output))

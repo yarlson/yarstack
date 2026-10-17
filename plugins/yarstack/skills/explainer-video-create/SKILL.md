@@ -11,14 +11,14 @@ Produce one narrated MP4 that teaches how a feature works. Every narrated claim 
 
 ### 1. Set the scope
 
-Extract the project, feature, focus, audience, narration language, and output path from the request. Default to engineers who know the domain, English narration, a 3 to 5 minute length, and `~/Desktop/<feature>-explainer.mp4`. Ask only when the feature or project cannot be identified.
+Extract the project, feature, focus, audience, narration language, and output path from the request. Default to engineers who know the domain, English narration, a 3 to 5 minute length, and `~/Desktop/<feature>-explainer.mp4`, or the scratch directory when `~/Desktop` does not exist. Ask only when the feature or project cannot be identified.
 
 ### 2. Investigate the feature
 
 Run `system-investigate` on the feature in read-only mode. Record a short fact sheet in the scratch directory:
 
 - each mechanism, state change, rule, and failure path the video will show, with a `file:line` reference;
-- one concrete example from repository history, such as a real commit, PR, or log line;
+- one concrete example from repository history, such as a real commit, PR, or log line, when one exists;
 - facts that the evidence does not settle.
 
 Narrate only facts from the sheet. Leave out inconclusive facts or present them as open questions.
@@ -27,7 +27,7 @@ Narrate only facts from the sheet. Leave out inconclusive facts or present them 
 
 Select the first available provider:
 
-1. `elevenlabs`: `ELEVENLABS_API_KEY` is in the environment, or in a `.env` file that the user named or that exists in the working directory or project root. Validate it with `narrate.py --provider elevenlabs --language <ISO 639-1 code> --check-key --env-file <path>` before you write narration that depends on it. The check also fails when the script's model does not support the narration language.
+1. `elevenlabs`: `ELEVENLABS_API_KEY` is in the environment, or in a `.env` file that the user named or that exists in the working directory or project root. Validate it with `narrate.py --provider elevenlabs --language <ISO 639-1 code> --check-key`, adding `--env-file <path>` when the key is in a file, before you write narration that depends on it. The check also fails when the script's model does not support the narration language.
 2. `say` on macOS, or `espeak` when `espeak-ng` is installed.
 3. `silent`, which only sets the timing.
 
@@ -35,7 +35,7 @@ The default voices speak English. For any other narration language, choose a voi
 
 If no key is found, or the key fails validation, ask the user once. Offer three choices: give a key, use the best local voice, or make a silent video. Continue with the local voice only if the user agrees. Never print, log, or copy a key. ElevenLabs receives the narration text, so keep secrets, customer data, and internal hostnames out of the narration.
 
-The default ElevenLabs voice is Jack John (`7EzWGsX10sAS4c9m9cPf`), a voice from the ElevenLabs voice library. If the account cannot use it, add it from the voice library or pass another voice. When the user names an ElevenLabs voice, find its id with `narrate.py --provider elevenlabs --list-voices --env-file <path>` and pass it as `--voice`. The script uses Eleven v4 at stability 1.0 and style 0. Lower values make the voice over-act explanatory text. Keep the voice's own pace. Pass `--speed` only when the user asks for a faster or slower voice. Eleven v4 ignores the speed voice setting, so the script changes the tempo of each clip after synthesis.
+The default ElevenLabs voice is Jack John (`7EzWGsX10sAS4c9m9cPf`), a voice from the ElevenLabs voice library. If the account cannot use it, pass another voice from `narrate.py --provider elevenlabs --list-voices`, or ask the user to add Jack John from the voice library; do not change the account yourself. When the user names an ElevenLabs voice, find its id with `--list-voices` and pass it as `--voice`. The script uses Eleven v4 at stability 1.0 and style 0. Lower values make the voice over-act explanatory text. Keep the voice's own pace. Pass `--speed` only when the user asks for a faster or slower voice. Eleven v4 ignores the speed voice setting, so the script changes the tempo of each clip after synthesis.
 
 ### 4. Prepare tools
 

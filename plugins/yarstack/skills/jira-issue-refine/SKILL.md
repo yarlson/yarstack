@@ -52,19 +52,10 @@ Use only the sections that help the reader, but make the following information e
 
 Keep criteria direct and independently checkable. Avoid vague verbs such as “improve,” “support,” “handle,” or “work correctly” unless the issue defines the observable result. Remove repeated context, stale discussion, and instructions that constrain implementation without protecting a contract or risk.
 
-## Validate the refined contract
-
-Before finishing, confirm that:
-
-1. Every required behavior has observable acceptance evidence.
-2. The issue contains no contradictory requirements or hidden product decisions.
-3. Repository ownership is supported, explicitly uncertain, or clearly multi-repository.
-4. The likely implementation and verification path is feasible without an unstated essential capability.
-5. Dependencies, ordering, safety, compatibility, rollback, and recovery are stated when material.
-6. The issue represents one coherent delivery or explains why inseparable work must remain together.
-7. Facts, assumptions, options, and unresolved blockers remain distinguishable.
-8. The refined issue stays concise and does not prescribe code beyond a required external contract or safety constraint.
+When the issue will be created with `jira-issue-create`, fit the content into its three sections: put required behavior in Context or Acceptance criteria, and non-goals in Engineering notes.
 
 ## Report the result
 
-Return the Jira-ready issue text first. Then list decisive evidence, unresolved decisions or blockers, and any suggested issue splits. If the user authorized a Jira write, show the final text before writing unless the user explicitly requested autonomous creation or update. Never claim that the issue is ready while a material behavior decision or delivery blocker remains hidden.
+Return the Jira-ready issue text first. Then list the decisive evidence, the unresolved decisions or blockers, and any suggested issue splits. If the user authorized a Jira write, show the final text before writing unless the user explicitly requested autonomous creation or update.
+
+Finish when every required behavior has observable acceptance evidence; no requirements contradict each other; ownership is supported, explicitly uncertain, or multi-repository; the implementation and verification path needs no unstated capability; material dependencies, safety, compatibility, rollback, and recovery are stated; and facts, assumptions, options, and blockers stay distinguishable. Never claim that the issue is ready while a material behavior decision or delivery blocker remains hidden.

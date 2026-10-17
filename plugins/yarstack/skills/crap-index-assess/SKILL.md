@@ -1,6 +1,6 @@
 ---
 name: crap-index-assess
-description: Assess method-level change risk with the Change Risk Anti-Patterns (CRAP) index and recommend focused testing or complexity reduction. Use when a repository configures CRAP measurement, cyclomatic complexity and automated test coverage data are available, or a user asks what CRAP means, how to calculate or interpret it, or how to reduce a CRAP score.
+description: Assess method-level change risk with the Change Risk Anti-Patterns (CRAP) index and recommend focused testing or complexity reduction. Use when the user asks what CRAP means or how to calculate, interpret, or reduce a CRAP score, or when the repository's configured CRAP check covers changed methods; not as a general quality verdict or merge gate.
 ---
 
 # CRAP Index Assessment

@@ -11,13 +11,15 @@ Turn one reported problem into a reproduction, a proven cause, and visual eviden
 
 ### 1. Read the report
 
-Read the report and its attachments through the available connector. Record:
+Read the report and its attachments through the available connector. If you cannot read the report, ask the user to paste it. Record:
 
 - the symptom in the reporter's words and in observable terms;
 - exact messages, errors, outputs, and screenshots;
 - the affected area, environment, input shape, and plan already agreed in the report.
 
 Do not write to the report's source. Draft any reply for the user to send.
+
+Record `git status --short` before you change anything. Cleanup in step 8 restores this state.
 
 ### 2. Trace the symptom to the code
 
@@ -35,7 +37,9 @@ Ask which environment to use only when the report and repository do not settle i
 
 ### 5. Prove the behavior with a focused test
 
-Before any recording, write one temporary test at the narrowest unit that owns the behavior. Control inputs, timing, and external replies at the system boundary. Assert the observed sequence of states, including repeated paths. A passing test that shows the reported sequence is the proof; the recording only shows it.
+Before any recording, write one temporary test at the narrowest unit that owns the behavior. Control inputs, timing, and external replies at the system boundary. Assert the observed sequence of states, including repeated paths. A passing test that shows the reported sequence proves the symptom; the recording only shows it.
+
+To prove the cause, change only the suspected cause, for example one input condition or a temporary one-line patch, and show that the symptom goes away. Revert the change. If the symptom stays, the hypothesis is wrong: test the alternative from step 2.
 
 ### 6. Reproduce the symptom
 
@@ -43,11 +47,13 @@ Reproduce in the repository's existing isolated harness or fixtures, with extern
 
 ### 7. Record a narrated walkthrough
 
-Produce one MP4 that clicks through the reproduction while a voice explains each step. Require `ffmpeg` and `ffprobe`. Keep working files in the scratch directory, and write the final video to `~/Desktop/<symptom>-walkthrough.mp4` unless the user names a path.
+Produce one MP4 that clicks through the reproduction while a voice explains each step. Require `ffmpeg` and `ffprobe`. Keep working files in the scratch directory, and write the final video to `~/Desktop/<symptom>-walkthrough.mp4` unless the user names a path. When `~/Desktop` does not exist, use the scratch directory.
 
-1. **Choose the voice.** Use `../explainer-video-create/scripts/narrate.py` from this skill's directory. Select the first available provider: `elevenlabs` when `ELEVENLABS_API_KEY` is in the environment or a known `.env` file and passes `--check-key`, then `say` on macOS or `espeak` with `espeak-ng`, then `silent`. If no key works, ask the user once whether to give a key, use the local voice, or make a silent video. Never print or copy a key.
+When the symptom has no browser surface, or the repository has no browser automation that can record video, skip the recording. Say so, and give the test output and a terminal transcript as the evidence.
+
+1. **Choose the voice.** Use `../explainer-video-create/scripts/narrate.py` from this skill's directory. Narrate in the user's language; `<code>` below is its ISO 639-1 code, such as `en`. Select the first available provider: `elevenlabs` when `narrate.py --provider elevenlabs --check-key --language <code>` passes, adding `--env-file <path>` when the key is in a `.env` file instead of the environment; then `say` on macOS or `espeak` with `espeak-ng`; then `silent`. If no key works, ask the user once whether to give a key, use the local voice, or make a silent video. Never print or copy a key.
 2. **Write the beats.** Save `narration.json` as `{"Walkthrough": ["beat", ...]}`. Give each beat one user action or one visible state change, in 1 or 2 spoken sentences. A typical order: what the reporter sees, the action that triggers the problem, the symptom while it lasts, the resolution, and the cause from step 2 in plain words. Narrate only facts from the trace and the test. Keep file paths, hostnames, customer data, and identifiers that are hard to say out of the narration, because a text-to-speech service may receive it.
-3. **Generate the audio first.** Run `narrate.py narration.json --provider <provider>` in the scratch directory. It writes one clip per beat and `audio/durations.json`, which sets how long the recording holds each beat.
+3. **Generate the audio first.** Run `narrate.py narration.json --provider <provider>` in the scratch directory. For `elevenlabs`, add `--language <code>` and any `--env-file` from step 1. It writes one clip per beat and `audio/durations.json`, which sets how long the recording holds each beat.
 4. **Script the recording.** Write a temporary script with the repository's own browser automation that can record video. Open the reproduction so that the video shows only the affected feature. In the script:
    - record at the viewport size, so the video is not scaled;
    - inject `scripts/cursor.js` from this skill into every page, because headless recordings show no pointer;
@@ -64,7 +70,7 @@ Copy the recording script to the scratch directory, then delete the temporary te
 
 ### 9. Fix only on request
 
-When the user asks for a fix, work in a separate git worktree. Use `behavior-implement` with a regression test that fails on the default branch and passes with the fix, run the repository's lint, type, and affected test suites, and use `pr-draft` to open the pull request.
+When the user asks for a fix, work in a separate git worktree. Use `behavior-implement` with a regression test that fails on the default branch and passes with the fix, and run the repository's lint, type, and affected test suites. Use `pr-draft` to open a pull request only when the user also authorizes the commit, push, and pull request.
 
 ## Result
 

@@ -51,7 +51,7 @@ The complete draft shown at this checkpoint must be the exact content later sent
 
 ### 4. Generate ADF description files
 
-Write a small ES-module script in a scratch directory. Import the builders from `scripts/adf_helpers.mjs` by absolute path and emit one ADF JSON file per issue. Node.js 18 or later is required.
+Write a small ES-module script in a scratch directory. Import the builders from `scripts/adf_helpers.mjs` by absolute path and emit one ADF JSON file per issue. Build each description with `doc()`, which fixes the three headings and their order. Node.js 18 or later is required.
 
 ```js
 import {
@@ -70,7 +70,7 @@ writeFileSync("<scratch-dir>/<issue>.json", JSON.stringify(adfDoc, null, 2));
 
 Run the script with `node <scratch-dir>/gen_issues.mjs`. Do not copy the helper or write generated files into the skill directory.
 
-Use `assets/template.json` as the target structure. Keep the three headings and their order. Do not add ADF `panel` nodes.
+Do not add ADF `panel` nodes.
 
 Confirm that each output file exists and that a JSON parser accepts it.
 
@@ -88,10 +88,11 @@ After it succeeds, create the remaining issues in one command chain with `&&`, w
 - Pass the raw ADF document to `--description-file`; do not wrap it in another object.
 - Pass the epic key directly to `--parent`.
 - Treat the issue as created only when the command prints `✓ Work item <KEY> created`.
+- After a failure, a timeout, or a lost response, the issue may exist anyway. Before you run a create command again, search for it, for example `acli jira workitem search --jql 'project = <KEY> AND summary ~ "\"<summary>\"" AND created >= -1d' --fields "key,summary"`, and create only the issues that are missing.
 
 ### 6. Verify and report
 
-- When a parent was set, run `acli jira workitem search --jql "parent = <EPIC>" --fields "key,summary,status"`. Do not request the unsupported `type` field.
+- When a parent was set, run `acli jira workitem search --jql "parent = <EPIC>" --fields "key,summary,status,issuetype"`. The issue-type field is `issuetype`, not `type`.
 - Inspect one created issue as JSON. Confirm that its description has the three top-level headings in order and no `panel` nodes.
 - Report every created issue key and URL, plus any judgment calls.
 

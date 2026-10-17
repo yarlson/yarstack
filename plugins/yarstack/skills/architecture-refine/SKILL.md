@@ -1,23 +1,25 @@
 ---
 name: architecture-refine
-description: Refine underdefined product or system architecture through focused interactive decisions. Use when the user wants architecture sparring before a formal implementation plan or contract update.
+description: Settle open product or system architecture decisions with the user, one question at a time, before a plan or contract update. Use when a design has choices that only the user can make, such as tradeoffs in ownership, persistence, deployment, or migration; not for proposing a complete design, which belongs to system-design.
 ---
 
-# Architecture Sparring
+# Architecture Refinement
 
-Resolve only the architecture decisions needed for the user's stated next step.
+Settle only the architecture decisions that the user's next step needs, and record each decision with its reason.
 
-## Interaction Loop
+## Interaction loop
 
-1. Inspect the relevant repository evidence and known constraints.
-2. Identify the highest-leverage unresolved architecture decision.
-3. Ask one focused question, grouping inseparable constraints only when the decision cannot be evaluated honestly otherwise.
-4. Offer two or three concrete options with material tradeoffs.
-5. Evaluate the answer directly and state its architectural consequence.
-6. Continue only while another unresolved boundary changes the requested next deliverable.
+1. Read the relevant code, documents, and constraints. Find facts yourself. Ask the user only about choices.
+2. List the open decisions. Take first the decision that other decisions depend on or that costs most to reverse, such as a storage model, a public contract, or a tenancy boundary.
+3. Ask one question. Put several constraints in one question only when the decision cannot be judged without all of them.
+4. Give two or three concrete options with their main tradeoffs. Recommend one and give the reason.
+5. Evaluate the user's answer and state its consequence for the design. If the answer conflicts with a constraint or an earlier decision, say so before you continue.
+6. Repeat while an open decision still changes the user's next deliverable.
 
-Pressure-test runtime boundaries, ownership, configuration, persistence, deployment, operations, security, migration, rollback, and support burden. Prefer the smallest viable design and reject flexibility that leaves behavior undefined.
+Test each option against runtime boundaries, ownership, persistence, deployment, operations, security, migration, rollback, and support burden. Prefer the smallest design that works. Reject flexibility that leaves behavior undefined.
 
-Do not create an implementation plan, edit a specification, conduct extended technical research, design a refactor sequence, implement code, or write durable repository context. Use `plan-create`, `spec-update`, `technical-spike`, or `repo-context-document` for those outputs.
+Do not write a plan, edit a specification, run extended research, implement code, or write repository context. Use `plan-create`, `spec-update`, `technical-spike`, or `repo-context-document` for those outputs.
 
-Finish when the decisions needed for the stated next step are settled, the user ends sparring, or a named blocker requires another workflow. Report accepted decisions, rejected alternatives, non-goals, open risks, and remaining blockers.
+## Result
+
+Finish when the decisions for the next step are settled, the user ends the session, or a named blocker needs another workflow. Report each accepted decision with its reason, the rejected options, the non-goals, the open risks, and the remaining blockers.

@@ -78,7 +78,7 @@ fingerprint: <type>:<path or module>:<root-cause slug>
 
 1. Merge findings with the same `fingerprint`. Then merge findings that share locations and a root cause, keeping the strongest evidence.
 2. Open the cited locations for every high-interest finding and for at least one in five of the others. Look for mitigations elsewhere, such as a framework guarantee, database constraint, middleware, test, or CI gate, and for a documented deliberate trade-off. Mark each finding `confirmed`, `downgraded` with new ratings, or `rejected` with the reason. Agreement between lanes is not evidence.
-3. Rank by interest ÷ principal. Raise contagious items and items in top hotspots.
+3. Rank by interest ÷ principal, scoring interest as high 3, medium 2, low 1, and principal as S 1, M 2, L 3, XL 4. Raise contagious items and items in top hotspots.
 4. Group the ranked items:
    - `pay now`: high interest, small or medium principal.
    - `plan`: high interest, large principal. Give the first safe step, the rollback point, and the check that proves progress.

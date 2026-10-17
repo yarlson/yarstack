@@ -11,9 +11,9 @@ Synthesize an implementation-ready plan rather than repeating discovery, archite
 
 1. Confirm the brief, authoritative repository evidence, applicable instructions, output location, and whether writing a repository plan file is authorized.
 2. Identify only decisions whose absence changes the implementation path. Resolve them with the user or record a blocker; keep safe assumptions explicit.
-3. Use `architecture-refine` for unresolved architecture decisions and `technical-spike` for blocking unfamiliar or version-sensitive behavior.
+3. Use `architecture-refine` for unresolved architecture decisions and `technical-spike` for blocking unfamiliar or version-sensitive behavior. When an autonomous delivery workflow calls this skill, follow that workflow's rule for open decisions instead of asking the user.
 4. Lock ownership boundaries, non-goals, compatibility, rollout order, validation gates, risks, and unresolved blockers.
-5. Divide work into implementation-sized phases ordered by real dependencies.
+5. Divide the work into phases ordered by real dependencies. Each phase must leave the build and tests passing and be small enough to validate and review alone.
 6. Give each phase a goal, concrete deliverables, dependencies, steps, acceptance evidence, and structural traps to avoid.
 7. Reread the plan for hidden assumptions, missing prerequisites, contradictory acceptance criteria, failure and recovery gaps, and duplicate ownership.
 

@@ -43,7 +43,7 @@ Separate requirements from context, suggestions, and out-of-scope ideas; do not 
 
 Honor a user-specified workspace, issue branch, remote, or base branch. Otherwise inspect registered worktrees, local and remote issue branches, and issue-linked PRs. Resume existing delivery state only when it unambiguously belongs to this issue; record its head, upstream, status, verified PR base, and current remote base commit without rebasing merely because the base advanced.
 
-For new work, resolve the PR remote and its current default branch from live remote evidence; do not assume `origin`, `main`, or `master`, or rely only on cached remote `HEAD`. Stop if the remote base state cannot be proved. Fetch and record the exact base commit, then create a short issue-keyed branch in a linked worktree at a repository-prescribed location or outside the repository. Set its upstream to the remote topic branch on first push.
+For new work, resolve the PR remote and its current default branch from live remote evidence, such as `git ls-remote --symref <remote> HEAD`; do not assume `origin`, `main`, or `master`, or rely only on cached remote `HEAD`. Stop if the remote base state cannot be proved. Fetch and record the exact base commit, then create a short issue-keyed branch in a linked worktree at a repository-prescribed location or outside the repository. Set its upstream to the remote topic branch on first push.
 
 Do not switch, pull, reset, stash, or update the primary checkout or its local default branch. Never overwrite, delete, unlock, prune, reset, or force-reuse a colliding branch, path, or worktree. Verify the selected worktree and run all delivery work there. Preserve it through final audit unless cleanup is explicitly required.
 
@@ -53,7 +53,7 @@ Read the nearest repository guidance and trace the affected flow end to end. Fin
 
 ## Create the implementation plan
 
-Use `plan-create` to turn the criterion map and repository evidence into a proportional authoritative plan. Use one phase unless real dependencies require more, and map every criterion to a phase and validation gate. Use `architecture-refine` or `technical-spike` only for a decision or external uncertainty that changes the implementation path. Write a repository plan file only when authorized and conventional.
+Use `plan-create` to turn the criterion map and repository evidence into a proportional authoritative plan. Use one phase unless real dependencies require more, and map every criterion to a phase and validation gate. Settle a design decision that the issue leaves open with the smallest reversible option, and record it as an assumption; ask the user only under the rule in *Maintain autonomous progress*. Use `technical-spike` for an external uncertainty that changes the implementation path. Write a repository plan file only when authorized and conventional.
 
 ## Implement, validate, and review each phase
 
@@ -77,10 +77,11 @@ Do not rewrite published history, force-push, weaken tests, disable checks, or u
 
 For every pushed head:
 
-1. Record its SHA and inspect required checks for that exact commit.
+1. Record its SHA and inspect the required checks for that exact commit, for example with `gh pr checks <number> --required --watch --fail-fast` under the host's command timeout.
 2. Diagnose failures from job output before editing. Fix scoped defects; retry unchanged only when evidence indicates a transient failure.
 3. Route corrections through the owning phase and repeat invalidated validation, review, cleanup, commit, and push steps.
 4. Discard stale CI and review conclusions after each push.
+5. Stop after three fix cycles for the same failing check, and report it as a blocker with the diagnosis.
 
 ## Close CodeRabbit and other automated review
 

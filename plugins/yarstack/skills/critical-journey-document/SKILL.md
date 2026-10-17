@@ -1,24 +1,24 @@
 ---
 name: critical-journey-document
-description: Create one concise evidence-linked product journey record for one actor pursuing one goal. Use when product behavior needs traceable ownership, acceptance, telemetry, or service-flow documentation for a current decision or delivery gate.
+description: Create one concise evidence-linked product journey record for one actor pursuing one goal. Use when product behavior needs traceable ownership, acceptance, telemetry, or service-flow documentation for a current decision or delivery gate; not for implemented-system context under docs/context/, which belongs to repo-context-document.
 ---
 
 # Critical Journey Documentation
 
-Create one canonical journey record in the repository's established product-documentation location.
+Create one canonical record of how one actor reaches one goal, and show which steps the product implements today.
 
 ## Workflow
 
-1. Confirm what makes the journey critical, its actor, goal, trigger, scope, owner, risk, and canonical document location.
-2. Inspect existing requirements, code, contracts, tests, telemetry, and documentation; reuse repository identifiers and terminology.
-3. Split multiple actors or goals into separate records only when independently useful.
-4. Document the ordered journey, decisions, state changes, success, meaningful failures, recovery, ownership, and evidence links.
-5. Add acceptance, telemetry, blueprint, portfolio, coverage, or story-map sections only when a named consumer or delivery gate requires them.
-6. Record unresolved facts only when the task permits them and names the decision owner and resolution condition.
-7. Use `text-improve` on the completed record without changing agreed contracts, identifiers, or domain terms.
+1. Establish what makes the journey critical, and its actor, goal, trigger, scope, owner, and risk. Find the repository's established location for product documentation. If there is none, ask the user where the record goes; do not create a new documentation tree.
+2. Read the existing requirements, code, contracts, tests, telemetry, and documentation. Reuse the repository's identifiers and terms.
+3. Write separate records for several actors or goals only when each record is useful alone.
+4. Document the ordered steps, decisions, state changes, success, meaningful failures, recovery, and ownership. Mark each step as implemented, with a link to the code or test that shows it; specified only, with a link to the requirement; or unknown.
+5. Record each unresolved fact as an unknown, with its decision owner and the condition that resolves it. Do not fill it with a guess.
+6. Add acceptance, telemetry, service blueprint, or story-map sections only when a named consumer or delivery gate needs them. Acceptance sections describe product acceptance; `test-design` owns executable tests. Telemetry sections record agreed events; do not invent events.
+7. Use `text-improve` on the finished record without changing agreed contracts, identifiers, or domain terms.
 
-Acceptance sections describe product acceptance; `test-design` owns executable tests. Telemetry sections record agreed contracts rather than inventing events. `repo-context-document` owns implemented-system flows under `docs/context/`; `rollout-readiness-review` owns deployment readiness; `spec-update` owns semantic decisions.
+Use `repo-context-document` for implemented-system flows under `docs/context/`, `rollout-readiness-review` for deployment readiness, and `spec-update` for semantic decisions. Do not create a parallel canonical document, a mandatory identifier scheme, or a suite of artifacts by default.
 
-Do not create a parallel canonical document, mandatory identifier system, speculative telemetry, or an artifact suite by default.
+## Result
 
-Finish when the record has evidence links, named ownership, explicit unknowns, and only sections with current consumers.
+Finish when every step has a status and an evidence link or an owner for its unknown, and the record has only sections with current consumers. Report the record's path and the gaps between specified and implemented steps.

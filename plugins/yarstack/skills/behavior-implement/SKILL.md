@@ -1,28 +1,29 @@
 ---
 name: behavior-implement
-description: Implement one observable behavior through proportionate red-green-refactor testing. Use for product changes, and for tooling or infrastructure only when native checks cannot cover a concrete complexity or failure risk with a focused deterministic test.
+description: Implement one observable behavior or bug fix with red-green-refactor, writing a focused test that fails first, the minimum code that passes it, and then a behavior-preserving cleanup. Use for product behavior changes; for tooling or infrastructure, use it only when native checks such as linters, validators, dry runs, or plans cannot show the behavior.
 ---
 
 # Test-Driven Implementation
 
-Implement and prove one coherent observable behavior.
-
-Before coding, stop at the first sufficient option: no change, existing code, the standard library or platform, an installed dependency, or one clear line. Otherwise make the minimum change, deleting before adding. Keep one source of truth without joining unrelated behavior. Never trade away validation, data-loss prevention, security, accessibility, or explicit requirements.
+Implement one coherent observable behavior and prove it with a test that failed before the change and passes after it.
 
 ## Workflow
 
-1. Read the behavior contract, repository instructions, closest implementation and test patterns, and callers of code you may change.
-2. Confirm focused tests are proportionate. For tooling and infrastructure, leave this workflow for direct implementation with native checks unless they cannot prove material behavior, a concrete risk warrants regression coverage, and a focused deterministic boundary fits.
-3. Define the observable result, side effects, failure-preserved state, and supported dependency contracts. Make no guarantee beyond their documented behavior.
-4. Choose the smallest reliable mechanism. If meeting the contract requires material scope growth, explain the gap and ask for direction instead of approximating the outcome.
-5. Use `test-design` when the test boundary, level, cases, or fixtures are non-trivial; otherwise extend the existing pattern.
-6. Write the smallest focused test in repository style and confirm it fails because the behavior is missing or wrong. Keep scenario values visible.
-7. Write the minimum production code needed to pass without weakening the assertion; refactor only for needed clarity, rerunning the test after each behavior-preserving change.
-8. Use `crap-index-assess` when requested or when the repository's CRAP check covers changed methods; treat it as supporting evidence, not a substitute for behavioral tests.
-9. Run relevant surrounding tests and repository-required checks.
+1. Read the behavior contract, the repository instructions, the closest implementation and test patterns, and the callers of the code you will change.
+2. For tooling or infrastructure, prove the change with the native checks and skip the red test, unless those checks cannot show behavior that matters.
+3. Define the observable result, the side effects, and the state that must stay unchanged on failure. Rely only on the documented behavior of dependencies.
+4. Choose the smallest mechanism, and stop at the first option that works: no change, existing code, the standard library or platform, an installed dependency, or one clear line. Never drop validation, data-loss prevention, security, accessibility, or an explicit requirement to make the change smaller. If the contract needs much more scope than expected, explain the gap and ask for direction instead of building an approximation.
+5. Use `test-design` when the test level, cases, or fixtures are not obvious. Otherwise extend the existing test pattern.
+6. Write the smallest focused test in the repository's style, with the scenario values visible. Run it and confirm that it fails because the behavior is missing or wrong, not because of a setup, import, or compile error.
+7. Write the minimum production code that makes the test pass.
+8. For several cases, repeat steps 6 and 7 one case at a time.
+9. Refactor only where the new code needs it for clarity. Run the tests after each refactoring step.
+10. Run the surrounding tests and the checks that the repository requires. Use `crap-index-assess` when the user asks for it or the repository's CRAP check covers the changed methods.
 
-If an in-scope test proves impractical, state before editing why, what concrete evidence will replace it, and the residual risk. Do not add a harness that materially expands scope.
+Never edit the new test or an existing test to make it pass. If a test seems wrong or the contract seems impossible, stop and explain why.
 
-Do not apply this workflow to purely non-behavioral documentation, formatting, metadata, or mechanical generated-state changes.
+If a test is impractical for an in-scope behavior, say why before you edit, name the evidence that will replace it, and state the remaining risk. Do not build a test harness that grows the scope. Do not use this workflow for documentation, formatting, metadata, or generated-state changes that do not change behavior.
 
-Finish when the behavior is proven from a demonstrated red state, or the bounded exception is evidenced, and relevant regression checks pass.
+## Result
+
+Finish when the behavior passes a test that you saw fail first, or the exception is evidenced, and the regression checks pass. Report the failing run, the passing run, and the checks you ran.

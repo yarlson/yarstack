@@ -20,7 +20,7 @@ Produce the smallest design that satisfies today's stated requirements and name 
 2. Add a component, process, queue, cache, service boundary, framework, or dependency only when a stated requirement or measured constraint fails without it. Name that requirement next to the addition.
 3. Spend design effort on decisions that are expensive to reverse, such as the storage model, public contracts, and tenancy. Keep everything else deferrable.
 4. Reject additions justified by scalability, extensibility, flexibility, future-proofing, best practice, or how a larger organization solves the problem. Reject an abstraction with one consumer.
-5. Give each module one decision to own and one representation to hide. Do not split by technical layer or workflow step.
+5. Give each module one decision to own and one representation to hide. Do not split by technical layer or workflow step when one ordinary change would then touch every piece; a layer that hides a decision, such as a storage or protocol adapter, is a valid module.
 
 ## Check the design
 

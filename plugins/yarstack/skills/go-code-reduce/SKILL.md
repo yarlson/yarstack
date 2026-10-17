@@ -21,8 +21,8 @@ Reduce authored maintenance burden, not raw repository lines. Prefer deleting me
    - add a dependency only when it removes a meaningful subsystem after adapters, tooling, security, and update costs.
 
 4. Keep explicit code when the alternative adds indirection, reflection, modes, hidden allocation, a one-use helper, or a vocabulary maintainers must learn.
-5. Make one coherent reduction at a time. Preview automated rewrites such as `go fix -diff ./...`, apply only reviewed transformations, format changed Go files, and exclude unrelated modernization.
-6. Run focused tests and repository-native checks. Add race tests for concurrency changes, regeneration checks for generated code, and repeated benchmarks for performance-sensitive paths.
+5. Make one coherent reduction at a time. Preview automated rewrites with `go fix -diff ./...`; it exits non-zero when it finds fixes, so a non-zero exit with a diff is not a failure. List the available fixers with `go tool fix help`. Apply only reviewed transformations, format the changed Go files, and exclude unrelated modernization.
+6. Run focused tests and the repository's checks. Run `go test -race` on packages whose concurrency changed. For generated code, run the generator and confirm `git diff --exit-code` is clean. For performance-sensitive paths, run the benchmarks before and after with `-count=10`, and compare them with `benchstat` when it is installed.
 7. Compare only relevant before-and-after evidence. Separate authored production, test, and generated code; a valid reduction lowers authored code or duplication without materially increasing complexity, API surface, dependencies, or runtime cost.
 
 ## Go guardrails

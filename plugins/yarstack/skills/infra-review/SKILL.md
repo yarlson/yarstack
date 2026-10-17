@@ -5,19 +5,20 @@ description: Review infrastructure-as-code and rendered deployment configuration
 
 # Infrastructure Review
 
-Own pre-deployment infrastructure blast-radius analysis using non-mutating evidence.
+Find the infrastructure changes that can destroy, replace, expose, or disrupt something before anyone applies them, using only evidence that changes nothing.
 
 ## Workflow
 
-1. Confirm the comparison target, source-to-rendered path, tooling, and affected environment using safe redacted identifiers.
-2. Rank changed resources by blast radius and inspect full definitions and dependency ordering.
-3. Check targeting, replacement or destruction, state and migration safety, data protection, partial-apply recovery, availability, disruption, capacity, and material cost.
-4. Verify provider or tool semantics from local versions or authoritative sources before claiming replacement or destruction.
-5. Run only trusted repository-supported non-mutating plan, render, diff, or dry-run checks when authorized.
-6. Delegate exploit analysis to `security-review`, dependency provenance to `dependency-review`, CI mechanics to `ci-review`, and cross-cutting runtime readiness to `rollout-readiness-review`.
+1. Identify the comparison target, the path from source to rendered configuration, the tools and their versions, and the affected environment. Refer to environments with redacted identifiers.
+2. Rank the changed resources by blast radius, then read their full definitions and dependency order.
+3. Check targeting, replacement or destruction, state and migration safety, data protection, recovery from a partial apply, availability, disruption, capacity, and material cost.
+4. Prefer plan output that already exists, such as a plan from CI. Read replacements and deletions from the machine-readable plan, not from its summary. For Terraform or OpenTofu: `terraform show -json <planfile> | jq -r '.resource_changes[] | select(.change.actions | index("delete")) | "\(.address) \(.change.actions | join(","))"'` lists every resource that the plan deletes or replaces.
+5. Run a new plan, render, diff, or dry run only when it is authorized and the repository supports it. A local `terraform plan` needs cloud credentials and takes a state lock by default, which writes to the backend and blocks other runs.
+6. Before you claim that a change replaces or destroys a resource, confirm the provider's behavior for that attribute in its local version or its documentation.
+7. Delegate exploit analysis to `security-review`, dependency provenance to `dependency-review`, CI mechanics to `ci-review`, and cross-cutting runtime readiness to `rollout-readiness-review`.
 
-Report severity, exact location, redacted environment reference, concrete blast radius, failure path, smallest correction, evidence, and uncertainty. Describe confirmed public exposure, privilege escalation, secret leakage, unprotected destruction, unsafe state migration, or missing recovery as blocking findings; do not claim authority to block an operation.
+Never apply, deploy, install, upgrade, delete, destroy, or modify cloud state. Do not expose sensitive plan output or add policy frameworks for the review.
 
-Never apply, deploy, install, upgrade, delete, destroy, or modify cloud state. Do not expose sensitive plan output or add policy frameworks merely for the review.
+## Result
 
-Finish with findings or no-findings, scope, destructive effects, cost impact, checks, and confidence limits.
+Report each finding with its severity, exact location, redacted environment, concrete blast radius, failure path, smallest correction, evidence, and uncertainty. Mark confirmed public exposure, privilege escalation, secret leakage, unprotected destruction, unsafe state migration, and missing recovery as blocking findings; this is advice, not authority to block an operation. Also report the scope, the destructive effects, the cost impact, the checks run, and the confidence limits, or state that nothing was found.

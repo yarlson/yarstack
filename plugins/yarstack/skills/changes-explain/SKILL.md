@@ -5,17 +5,19 @@ description: Explain a pull request, commit range, branch, or local diff from a 
 
 # Explain Changes
 
-Translate a confirmed code comparison into system effects without inventing intent or exposing sensitive content.
+Translate one code comparison into its effects on the system, without inventing intent or exposing sensitive content.
 
 ## Workflow
 
-1. Confirm the comparison scope; stop or qualify the explanation when it cannot be isolated.
-2. Read the diff, full changed files, relevant surrounding code, tests, configuration, and linked in-scope brief.
-3. Group edits by changed behavior or responsibility rather than file mechanics.
-4. Explain previous and new behavior, affected owner or boundary, data and control flow, external interactions, and user, developer, runtime, or operational effects.
-5. Describe materially changed failure, compatibility, rollout, CI, verification, and residual-risk behavior.
-6. Distinguish observed evidence, documented intent, and inference.
+1. Fix the comparison. For a branch or pull request, compare against the merge base (`git diff <base>...<head>`, or `gh pr diff`), not the current tip of the base branch. For local work, include staged, unstaged, and untracked files. If the scope cannot be isolated, say so and qualify the explanation.
+2. Read the diff, the full changed files, the surrounding code they depend on, the tests, the configuration, and any linked brief that is in scope.
+3. Group the edits by changed behavior or responsibility, not by file.
+4. For each group, explain the previous and new behavior, the affected owner or boundary, the data and control flow, the external interactions, and the effects on users, developers, runtime, or operations.
+5. Describe changed failure handling, compatibility, rollout, CI, verification, and remaining risk where the change alters them.
+6. Mark what you observed in code, what the documentation or pull request says was intended, and what you infer.
 
-Keep the task read-only. Redact secrets and sensitive diff content. Use `code-review` for defect findings and `rollout-readiness-review` for operational-readiness judgment.
+Keep the task read-only. Redact secrets and sensitive diff content. Use `code-review` for defect findings and `rollout-readiness-review` for an operational-readiness judgment.
 
-Finish when every material change group is explained and evidence limitations are stated. Omit syntax trivia and empty sections.
+## Result
+
+Start with a short summary of the overall change, then explain each group. Omit syntax trivia and empty sections. Finish when every material group is explained and the evidence limits are stated.
