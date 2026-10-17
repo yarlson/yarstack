@@ -18,8 +18,8 @@
 
 ## Engineering guidance
 
-- Treat `plugins/yarstack/agent-guidance/engineering-standards/` as the canonical source for the installed system prompt.
-- Preserve policy fragment contents and assembly order unless the user explicitly requests prompt changes.
+- Treat `plugins/yarstack/agent-guidance/engineering-standards/standards.md` as the canonical source for the installed global guidance.
+- Preserve the guidance text unless the user explicitly requests prompt changes. When a rule changes, update its evidence entry in `plugins/yarstack/agent-guidance/engineering-standards/README.md`.
 - Preserve installer idempotency, existing symlinks, preflight rejection of dangling symlinks, and backups before replacing differing files.
 - Keep guidance installation explicit. Do not convert it into an automatic hook, startup action, or implicit plugin side effect.
 

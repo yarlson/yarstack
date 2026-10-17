@@ -3,44 +3,17 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-readonly GUIDANCE_DIR="$SCRIPT_DIR/../agent-guidance/engineering-standards"
+readonly GUIDANCE_FILE="$SCRIPT_DIR/../agent-guidance/engineering-standards/standards.md"
 readonly AGENT_HOME="${YARSTACK_AGENT_HOME:-${HOME:?HOME must be set}}"
-COMBINED_FILE="$(mktemp "${TMPDIR:-/tmp}/yarstack-engineering-standards.XXXXXX")"
-readonly SCRIPT_DIR COMBINED_FILE
+readonly SCRIPT_DIR
 
-cleanup() {
-  rm -f -- "$COMBINED_FILE"
-}
-trap cleanup EXIT
-
-{
-  cat "$GUIDANCE_DIR/engineering-quality-gate.md"
-  printf '\n'
-  cat "$GUIDANCE_DIR/existing-codebase-first.md"
-  printf '\n'
-  cat "$GUIDANCE_DIR/small-design-before-code.md"
-  printf '\n'
-  cat "$GUIDANCE_DIR/module-boundaries.md"
-  printf '\n'
-  cat "$GUIDANCE_DIR/contract-evolution.md"
-  printf '\n'
-  cat "$GUIDANCE_DIR/new-code-complexity-budget.md"
-  printf '\n'
-  cat "$GUIDANCE_DIR/state-change-safety.md"
-  printf '\n'
-  cat "$GUIDANCE_DIR/clear-naming.md"
-  printf '\n'
-  cat "$GUIDANCE_DIR/tests-as-product-contracts.md"
-  printf '\n'
-  cat "$GUIDANCE_DIR/plain-language-writing.md"
-  printf '\n'
-  cat "$GUIDANCE_DIR/code-comment-policy.md"
-  printf '\n'
-  cat "$GUIDANCE_DIR/implementation-change-report.md"
-} > "$COMBINED_FILE"
+if [[ ! -r "$GUIDANCE_FILE" ]]; then
+  echo "cannot read guidance file: $GUIDANCE_FILE" >&2
+  exit 1
+fi
 
 if [[ "${1:-}" == "--print" ]]; then
-  cat "$COMBINED_FILE"
+  cat "$GUIDANCE_FILE"
   exit 0
 fi
 if [[ $# -ne 0 ]]; then
@@ -64,7 +37,7 @@ done
 
 for destination in "${destinations[@]}"; do
   mkdir -p -- "$(dirname -- "$destination")"
-  if [[ -e "$destination" ]] && cmp -s "$COMBINED_FILE" "$destination"; then
+  if [[ -e "$destination" ]] && cmp -s "$GUIDANCE_FILE" "$destination"; then
     echo "unchanged: $destination"
     continue
   fi
@@ -74,10 +47,10 @@ for destination in "${destinations[@]}"; do
     echo "backed up: $backup"
   fi
   if [[ -L "$destination" ]]; then
-    cat "$COMBINED_FILE" > "$destination"
+    cat "$GUIDANCE_FILE" > "$destination"
     chmod 0644 "$destination"
   else
-    install -m 0644 "$COMBINED_FILE" "$destination"
+    install -m 0644 "$GUIDANCE_FILE" "$destination"
   fi
   echo "installed: $destination"
 done

@@ -165,9 +165,12 @@ relevant services. You must authorize commits, pushes, and other external writes
 
 Skills apply to individual tasks. You can also install the bundled
 [engineering standards](plugins/yarstack/agent-guidance/engineering-standards/)
-as global guidance. They tell the agent to inspect existing code, sketch a design
-before editing, preserve contracts, and test observable behavior. They also cover
-safe state changes, naming, and technical writing.
+as global guidance. They tell the agent to stay within its authority, read the
+code before changing it, add as little as possible, preserve contracts, handle
+failure paths, and prove behavior with checks that can fail. They also cover
+safe state changes, trust boundaries, naming, comments, and technical writing.
+The directory's README links each rule to its sources and says which rules rest
+on measured evidence and which on judgment.
 
 The plugin does not install these global instructions. To preview the exact
 text, clone this repository and run:
