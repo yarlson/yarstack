@@ -157,6 +157,10 @@ It finishes when the pull request is ready for review, its required checks pass,
 and requested automated review feedback is resolved. It does not merge, deploy,
 release, or change the Jira issue.
 
+Without a Jira issue, `plan-deliver` does the same work from an approved plan in
+the conversation or a file. It re-reads the agent instruction files before the
+first edit.
+
 For completed local changes, `pr-draft` publishes a draft pull request and
 monitors its CI checks. These workflows require authenticated access to the
 relevant services. You must authorize commits, pushes, and other external writes.
@@ -314,6 +318,7 @@ from plugins, so in Codex these skills use Codex's own subagents.
 | [`jira-issue-refine`](plugins/yarstack/skills/jira-issue-refine/SKILL.md) | Clarify an issue's scope and acceptance criteria before implementation. |
 | [`jira-issue-create`](plugins/yarstack/skills/jira-issue-create/SKILL.md) | Create Jira issues from approved drafts through `acli`. |
 | [`jira-issue-deliver`](plugins/yarstack/skills/jira-issue-deliver/SKILL.md) | Implement a Jira issue, resolve requested automated review feedback, and open a ready pull request with passing checks. |
+| [`plan-deliver`](plugins/yarstack/skills/plan-deliver/SKILL.md) | Implement an approved plan without a Jira issue, resolve requested automated review feedback, and open a ready pull request with passing checks. |
 | [`roadmap-task-deliver`](plugins/yarstack/skills/roadmap-task-deliver/SKILL.md) | Implement the next eligible roadmap task, merge its reviewed pull request after checks pass, and update the task status. |
 | [`phase-commit`](plugins/yarstack/skills/phase-commit/SKILL.md) | Create one explicitly requested local commit. |
 | [`pr-draft`](plugins/yarstack/skills/pr-draft/SKILL.md) | Commit and push completed work, open a draft pull request, and follow its CI checks. |
