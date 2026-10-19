@@ -15,7 +15,8 @@ This skill never merges, deploys, releases, or transitions Jira. Jira remains re
 
 Finish only when current evidence proves that:
 
-- the PR implements every in-scope acceptance criterion;
+- one PR implements every in-scope acceptance criterion;
+- `code-review` ran on the final complete diff, and each verified finding is fixed or recorded with a reason;
 - the PR is open and ready for review, not a draft;
 - the remote PR head matches the validated commit;
 - every required check for that head passed or has a neutral result allowed by repository rules;
@@ -53,7 +54,7 @@ Read the nearest repository guidance and trace the affected flow end to end. Fin
 
 ## Create the implementation plan
 
-Use `plan-create` to turn the criterion map and repository evidence into a proportional authoritative plan. Use one phase unless real dependencies require more, and map every criterion to a phase and validation gate. Settle a design decision that the issue leaves open with the smallest reversible option, and record it as an assumption; ask the user only under the rule in *Maintain autonomous progress*. Use `technical-spike` for an external uncertainty that changes the implementation path. Write a repository plan file only when authorized and conventional.
+Use `plan-create` to turn the criterion map and repository evidence into a proportional authoritative plan. Use one phase unless real dependencies require more, and map every criterion to a phase and validation gate. Deliver all phases in one branch and one PR, unless the user asked for separate PRs. Settle a design decision that the issue leaves open with the smallest reversible option, and record it as an assumption; ask the user only under the rule in *Maintain autonomous progress*. Use `technical-spike` for an external uncertainty that changes the implementation path. Write a repository plan file only when authorized and conventional.
 
 ## Implement, validate, and review each phase
 
@@ -65,7 +66,7 @@ For each dependency-ready phase:
 4. Invoke specialist reviews only when their triggers apply, including `test-gap-review`, `security-review`, `dependency-review`, and `docs-drift-review`.
 5. Fix only verified in-scope defects and rerun invalidated checks.
 
-Use `plan-update` only when evidence proves the plan mechanics wrong; do not use it to reinterpret Jira requirements or hide scope growth. After all phases, run `code-review`, apply only verified in-scope corrections through the owning phase, then run `change-cleanup-review` and the authoritative repository checks. Review every changed file and the final diff for criterion coverage and unwanted scope.
+Use `plan-update` only when evidence proves the plan mechanics wrong; do not use it to reinterpret Jira requirements or hide scope growth. After all phases, run `code-review` on the complete diff against the base. Per-phase reviews do not replace it. Give its lanes the goal and the diff, not the plan's design decisions as facts, so that they can challenge the design as well as the code. Apply only verified in-scope corrections through the owning phase, then run `change-cleanup-review` and the authoritative repository checks. Review every changed file and the final diff for criterion coverage and unwanted scope.
 
 ## Publish a draft and make it reviewable
 

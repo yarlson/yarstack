@@ -23,13 +23,13 @@ Gather two kinds of context. Two context agents may do this in parallel; for a s
 
 Merge them into one brief: the frozen scope, the changed behavior and paths, the files and symbols that need close reading, each risk hypothesis with the evidence that would confirm or refute it, the review dimensions that apply and those deliberately skipped, and the safe read-only checks. Keep observed facts, documented intent, and inference apart.
 
-When the change bundles groups that could each be understood, verified, and reverted alone, record that as a reviewability risk, because larger changes hide more defects from review. Size alone is not a defect.
+When the change bundles unrelated groups that could each be understood, verified, and reverted alone, record that as a reviewability risk, because larger changes hide more defects from review. Size alone is not a defect.
 
 ## Plan the lanes
 
 Choose the lanes from the brief at runtime, not from a fixed list:
 
-- always one general correctness lane, which reads each changed line against the code it replaces and follows every use of a changed value, condition, or call;
+- always one general correctness lane, which reads each changed line against the code it replaces and follows every use of a changed value, condition, or call. It reads the whole enclosing function of each hunk, because defects in unchanged lines of a touched function are in scope. For each deleted line, it names the behavior that the line enforced and finds where the new code keeps it. For each changed function, it reads the callers up to the entry point, including what they run after the call returns and every deadline, timeout, or cancellation that the call must fit;
 - one lane for each named risk in the brief, such as lifecycle, compatibility, performance, security, tests, dependencies, CI, infrastructure, rollout, documentation drift, UI behavior, over-building (reinvented standard-library or platform behavior, one-consumer abstractions), or a language-specific failure mode;
 - one adversarial lane after the others.
 
@@ -69,6 +69,7 @@ Give the adversarial lane the brief and the raw findings. Ask it to:
 - look for realistic counterexamples with partial failure, retries, duplicate or concurrent execution, stale state, restart, slow or unavailable dependencies, cleanup, and ordering;
 - check empty, malformed, duplicated, oversized, nil, zero, one, and maximum inputs where those boundaries apply;
 - ask whether a wrong assumption can return success with a wrong result or leave state half changed;
+- ask whether each fix acts where the defect starts or only narrows its window, and name the deeper change;
 - name duplicated root causes, unsupported or over-severe findings, and important paths that no lane examined.
 
 Group findings by affected behavior and root cause, not by matching text or lines. Keep every supporting lane and evidence reference. Keep distinct failure paths separate, even on the same line.

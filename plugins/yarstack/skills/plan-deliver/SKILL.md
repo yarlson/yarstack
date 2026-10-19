@@ -15,7 +15,8 @@ This skill never merges, deploys, releases, or creates or changes a Jira issue.
 
 Finish only when current evidence proves that:
 
-- the PR implements every in-scope plan deliverable and acceptance criterion;
+- one PR implements every in-scope plan deliverable and acceptance criterion;
+- `code-review` ran on the final complete diff, and each verified finding is fixed or recorded with a reason;
 - the PR is open and ready for review, not a draft;
 - the remote PR head matches the validated commit;
 - every required check for that head passed or has a neutral result allowed by repository rules;
@@ -48,6 +49,8 @@ Read the whole plan: goal, phases, deliverables, acceptance criteria, validation
 
 Treat the plan as authoritative. Do not re-plan. Use `plan-create` only when the input is a brief without phases or validation gates. Use `plan-update` only when evidence proves the plan mechanics wrong; do not use it to reinterpret requirements or hide scope growth.
 
+Deliver the whole plan in one branch and one PR, with one or more commits per phase. When the plan maps phases to separate or stacked PRs, still deliver one PR, unless the user asked for separate PRs, and record the deviation in the result.
+
 Keep the plan and any evaluation notes out of the worktree, branch, commits, and PR unless the user asks to commit them.
 
 ## Prepare an isolated delivery worktree
@@ -68,7 +71,7 @@ Trace the affected flow end to end and find the closest implementation and test 
 4. Invoke specialist reviews only when their triggers apply, including `test-gap-review`, `security-review`, `dependency-review`, and `docs-drift-review`.
 5. Fix only verified in-scope defects and rerun invalidated checks.
 
-After all phases, run `code-review`, apply only verified in-scope corrections through the owning phase, then run `change-cleanup-review` and the authoritative repository checks. Review every changed file and the final diff for criterion coverage and unwanted scope.
+After all phases, run `code-review` on the complete diff against the base. Per-phase reviews do not replace it. Give its lanes the goal and the diff, not the plan's design decisions as facts, so that they can challenge the design as well as the code. Apply only verified in-scope corrections through the owning phase, then run `change-cleanup-review` and the authoritative repository checks. Review every changed file and the final diff for criterion coverage and unwanted scope.
 
 ## Publish a draft and make it reviewable
 
