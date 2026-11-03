@@ -14,11 +14,12 @@ const contractVersion = 1
 
 // Exit codes tell the caller what to do next.
 const (
-	exitOK      = 0
-	exitCrash   = 2
-	exitFixCall = 3
-	exitRetry   = 4
-	exitSetup   = 5
+	exitOK       = 0
+	exitFindings = 1
+	exitCrash    = 2
+	exitFixCall  = 3
+	exitRetry    = 4
+	exitSetup    = 5
 )
 
 // errorCodes maps every public error code to its exit code. Adding a code is
@@ -52,6 +53,14 @@ type header struct {
 	V  int  `json:"v"`
 	OK bool `json:"ok"`
 }
+
+func okHeader() header { return header{V: contractVersion, OK: true} }
+
+// exitError ends a command that already wrote its result, such as check with
+// findings, with a non-zero exit code.
+type exitError struct{ code int }
+
+func (e *exitError) Error() string { return fmt.Sprintf("exit status %d", e.code) }
 
 // cliError is a failure the caller can act on. Code must be a key of
 // errorCodes; Fix names the next call that resolves the failure.

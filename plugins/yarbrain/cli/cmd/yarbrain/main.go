@@ -2,6 +2,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -19,7 +20,8 @@ func main() {
 // run executes one command and returns the process exit code. Every outcome
 // except --help, --version, and the hook is one JSON object on stdout.
 func run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
-	root := newRootCommand(stdin, stdout, stderr)
+	a := newApp(stdin, stdout, stderr)
+	root := newRootCommand(a)
 	root.SetArgs(args)
 
 	err := root.Execute()
@@ -27,7 +29,11 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 		return exitOK
 	}
 
-	failure := asCLIError(err)
+	if exit, ok := errors.AsType[*exitError](err); ok {
+		return exit.code
+	}
+
+	failure := asCLIError(a.classify(err))
 	if writeErr := writeError(stdout, failure); writeErr != nil {
 		_, _ = fmt.Fprintf(stderr, "yarbrain: %v (while reporting %v)\n", writeErr, failure)
 
@@ -37,7 +43,7 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	return failure.exitCode()
 }
 
-func newRootCommand(stdin io.Reader, stdout, stderr io.Writer) *cobra.Command {
+func newRootCommand(a *app) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "yarbrain",
 		Short: "Read and write a Yarbrain lesson vault",
@@ -53,15 +59,24 @@ func newRootCommand(stdin io.Reader, stdout, stderr io.Writer) *cobra.Command {
 				with("field", "command")
 		},
 	}
-	root.SetIn(stdin)
-	root.SetOut(stdout)
-	root.SetErr(stderr)
+	root.SetIn(a.stdin)
+	root.SetOut(a.stdout)
+	root.SetErr(a.stderr)
 	root.SetVersionTemplate("{{.Version}}\n")
 	root.SetFlagErrorFunc(func(_ *cobra.Command, err error) error {
 		return newError("bad_input", err.Error(), "Run the command with --help to see its flags.").
 			with("field", "flags")
 	})
 	root.CompletionOptions.DisableDefaultCmd = true
+
+	root.PersistentFlags().StringVar(&a.flagVault, "vault", "", "use this vault instead of the configured one")
+	root.PersistentFlags().StringVar(&a.flagConfig, "config", "", "read and write this config file")
+
+	root.AddCommand(
+		newInitCommand(a),
+		newStatusCommand(a),
+		newCheckCommand(a),
+	)
 
 	return root
 }
@@ -75,4 +90,21 @@ func rejectUnknownCommand(_ *cobra.Command, args []string) error {
 
 	return newError("bad_input", fmt.Sprintf("unknown command %q", args[0]), "Run `yarbrain --help` to list the commands.").
 		with("field", "command")
+}
+
+// exactArgs and noArgs replace Cobra's plain-text argument errors with
+// bad_input, for the same reason.
+func exactArgs(count int, names ...string) cobra.PositionalArgs {
+	return func(_ *cobra.Command, args []string) error {
+		if len(args) == count {
+			return nil
+		}
+
+		return newError("bad_input", fmt.Sprintf("expected %d argument(s): %v, got %d", count, names, len(args)),
+			"Run the command with --help to see its arguments.").with("field", "arguments")
+	}
+}
+
+func noArgs(cmd *cobra.Command, args []string) error {
+	return exactArgs(0)(cmd, args)
 }
