@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"os"
@@ -226,7 +227,12 @@ func TestShowRejectsPathsOutsideV02Notes(t *testing.T) {
 }
 
 func hookPayload(cwd string) string {
-	return `{"hook_event_name":"SessionStart","session_id":"s","cwd":"` + cwd + `","source":"startup"}`
+	raw, err := json.Marshal(map[string]string{"hook_event_name": "SessionStart", "session_id": "s", "cwd": cwd, "source": "startup"})
+	if err != nil {
+		panic(err)
+	}
+
+	return string(raw)
 }
 
 func TestSessionStartPrintsCountsForTheProject(t *testing.T) {
@@ -268,7 +274,7 @@ func TestSessionStartIsSilentWithoutAVaultOrLessons(t *testing.T) {
 
 func TestSessionStartReportsAMissingVaultAsANotice(t *testing.T) {
 	s := isolate(t)
-	require.NoError(t, os.WriteFile(s.config, []byte(`{"vault": "`+s.vault+`"}`), 0o644))
+	require.NoError(t, os.WriteFile(s.config, configJSON(t, s.vault), 0o644))
 
 	result := invokeWith(t, hookPayload(t.TempDir()), "hook", "session-start", "--contract", "1")
 

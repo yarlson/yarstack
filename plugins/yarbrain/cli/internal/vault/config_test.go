@@ -1,6 +1,7 @@
 package vault
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -19,30 +20,43 @@ func writeConfigFile(t *testing.T, path, content string) {
 	require.NoError(t, os.WriteFile(path, []byte(content), 0o644))
 }
 
+// configNaming encodes a config that names vault, escaped for every OS.
+func configNaming(t *testing.T, vault string) string {
+	t.Helper()
+
+	raw, err := json.Marshal(map[string]string{"vault": vault})
+	require.NoError(t, err)
+
+	return string(raw)
+}
+
 func TestResolutionKeepsTheV02Order(t *testing.T) {
 	home := t.TempDir()
 	xdg := t.TempDir()
+	vaults := t.TempDir()
 	explicit := filepath.Join(t.TempDir(), "explicit.json")
 	fromEnv := filepath.Join(t.TempDir(), "env.json")
 
-	writeConfigFile(t, filepath.Join(home, ".config", "yarbrain", "config.json"), `{"vault": "/vaults/home"}`)
-	writeConfigFile(t, filepath.Join(xdg, "yarbrain", "config.json"), `{"vault": "/vaults/xdg"}`)
-	writeConfigFile(t, fromEnv, `{"vault": "/vaults/env-config"}`)
-	writeConfigFile(t, explicit, `{"vault": "/vaults/flag-config"}`)
+	vault := func(name string) string { return filepath.Join(vaults, name) }
 
-	all := map[string]string{"YARBRAIN_VAULT": "/vaults/env", "YARBRAIN_CONFIG": fromEnv, "XDG_CONFIG_HOME": xdg}
+	writeConfigFile(t, filepath.Join(home, ".config", "yarbrain", "config.json"), configNaming(t, vault("home")))
+	writeConfigFile(t, filepath.Join(xdg, "yarbrain", "config.json"), configNaming(t, vault("xdg")))
+	writeConfigFile(t, fromEnv, configNaming(t, vault("env-config")))
+	writeConfigFile(t, explicit, configNaming(t, vault("flag-config")))
+
+	all := map[string]string{"YARBRAIN_VAULT": vault("env"), "YARBRAIN_CONFIG": fromEnv, "XDG_CONFIG_HOME": xdg}
 	cases := []struct {
 		name    string
 		locator Locator
 		want    string
 		source  string
 	}{
-		{"flag vault wins", Locator{FlagVault: "/vaults/flag", FlagConfig: explicit, Getenv: envOf(all), Home: home}, "/vaults/flag", "flag"},
-		{"YARBRAIN_VAULT next", Locator{FlagConfig: explicit, Getenv: envOf(all), Home: home}, "/vaults/env", "env"},
-		{"--config next", Locator{FlagConfig: explicit, Getenv: envOf(map[string]string{"YARBRAIN_CONFIG": fromEnv}), Home: home}, "/vaults/flag-config", "config"},
-		{"YARBRAIN_CONFIG next", Locator{Getenv: envOf(map[string]string{"YARBRAIN_CONFIG": fromEnv, "XDG_CONFIG_HOME": xdg}), Home: home}, "/vaults/env-config", "config"},
-		{"XDG_CONFIG_HOME next", Locator{Getenv: envOf(map[string]string{"XDG_CONFIG_HOME": xdg}), Home: home}, "/vaults/xdg", "config"},
-		{"~/.config last", Locator{Getenv: envOf(nil), Home: home}, "/vaults/home", "config"},
+		{"flag vault wins", Locator{FlagVault: vault("flag"), FlagConfig: explicit, Getenv: envOf(all), Home: home}, vault("flag"), "flag"},
+		{"YARBRAIN_VAULT next", Locator{FlagConfig: explicit, Getenv: envOf(all), Home: home}, vault("env"), "env"},
+		{"--config next", Locator{FlagConfig: explicit, Getenv: envOf(map[string]string{"YARBRAIN_CONFIG": fromEnv}), Home: home}, vault("flag-config"), "config"},
+		{"YARBRAIN_CONFIG next", Locator{Getenv: envOf(map[string]string{"YARBRAIN_CONFIG": fromEnv, "XDG_CONFIG_HOME": xdg}), Home: home}, vault("env-config"), "config"},
+		{"XDG_CONFIG_HOME next", Locator{Getenv: envOf(map[string]string{"XDG_CONFIG_HOME": xdg}), Home: home}, vault("xdg"), "config"},
+		{"~/.config last", Locator{Getenv: envOf(nil), Home: home}, vault("home"), "config"},
 	}
 
 	for _, tc := range cases {
@@ -94,7 +108,9 @@ func TestWriteConfigUsesTheV02FormatOnce(t *testing.T) {
 
 	raw, err := os.ReadFile(path)
 	require.NoError(t, err)
-	assert.Equal(t, "{\n  \"vault\": \""+vault+"\"\n}\n", string(raw))
+	quoted, err := json.Marshal(vault)
+	require.NoError(t, err)
+	assert.Equal(t, "{\n  \"vault\": "+string(quoted)+"\n}\n", string(raw))
 
 	again, err := WriteConfig(path, vault)
 	require.NoError(t, err)

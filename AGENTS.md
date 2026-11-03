@@ -36,7 +36,7 @@
 
 - Keep `Makefile` as direct command entrypoints. Do not put custom validators, test harnesses, dependency bootstrap frameworks, metadata reimplementations, or large shell programs in it.
 - Use `plugin-scanner lint` and `plugin-scanner verify` for Codex validation and `claude plugin validate --strict` for Claude validation. Do not invent parallel validation logic.
-- Keep `.github/workflows/validate.yml` calling `make validate`; do not duplicate Make targets in workflow YAML.
+- Keep `.github/workflows/validate.yml` calling `make validate`, plus `make -C plugins/yarbrain/cli test` on macOS and Windows; do not duplicate Make targets in workflow YAML.
 - Add dependencies, generated files, wrappers, configuration layers, or host-specific adapters only when a current capability requires them.
 - Prefer one shared implementation. Split by host only where the platform contracts actually differ.
 - Do not add placeholders, speculative abstractions, future-proofing, or unrelated repository polish.

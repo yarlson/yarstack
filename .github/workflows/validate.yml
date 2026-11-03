@@ -15,3 +15,20 @@ jobs:
           working_directory: plugins/yarbrain/cli
       - run: npm install --global @anthropic-ai/claude-code@2.1.206
       - run: make validate
+
+  yarbrain-cli:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@f5be966e4a917d54244728e6a5fdcd1d93a35e6c # v5.2.6
+        with:
+          working_directory: plugins/yarbrain/cli
+          install_args: go
+      # The Windows runner image has no GNU make.
+      - if: runner.os == 'Windows'
+        run: choco install make --no-progress --yes
+      - run: make -C plugins/yarbrain/cli test

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -25,6 +27,7 @@ func isolate(t *testing.T) sandbox {
 	s.vault = filepath.Join(s.home, "vault")
 
 	t.Setenv("HOME", s.home)
+	t.Setenv("USERPROFILE", s.home)
 	t.Setenv("YARBRAIN_CONFIG", s.config)
 	t.Setenv("XDG_CONFIG_HOME", "")
 	t.Setenv("YARBRAIN_VAULT", "")
@@ -33,6 +36,17 @@ func isolate(t *testing.T) sandbox {
 	t.Setenv("CLAUDE_EFFORT", "")
 
 	return s
+}
+
+// configJSON encodes a config file that names vault, escaping the path for
+// every OS.
+func configJSON(t *testing.T, vault string) []byte {
+	t.Helper()
+
+	raw, err := json.Marshal(map[string]string{"vault": vault})
+	require.NoError(t, err)
+
+	return raw
 }
 
 func (s sandbox) initVault(t *testing.T) {
@@ -69,7 +83,7 @@ func TestInitCreatesAVaultAndWritesTheConfig(t *testing.T) {
 
 	raw, err := os.ReadFile(s.config)
 	require.NoError(t, err)
-	assert.JSONEq(t, `{"vault": "`+s.vault+`"}`, string(raw))
+	assert.JSONEq(t, string(configJSON(t, s.vault)), string(raw))
 }
 
 func TestInitIsIdempotent(t *testing.T) {
@@ -126,6 +140,10 @@ func TestInitWithoutAnArgumentIsACallerError(t *testing.T) {
 }
 
 func TestInitIntoAReadOnlyDirectoryIsWriteDenied(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Windows ignores read-only permission bits on directories")
+	}
+
 	s := isolate(t)
 	locked := filepath.Join(s.home, "locked")
 	require.NoError(t, os.Mkdir(locked, 0o555))
@@ -154,7 +172,7 @@ func TestStatusWithoutAVaultTellsHowToCreateOne(t *testing.T) {
 
 func TestStatusReportsAMissingConfiguredVault(t *testing.T) {
 	s := isolate(t)
-	require.NoError(t, os.WriteFile(s.config, []byte(`{"vault": "`+s.vault+`"}`), 0o644))
+	require.NoError(t, os.WriteFile(s.config, configJSON(t, s.vault), 0o644))
 
 	result := invoke(t, "status")
 

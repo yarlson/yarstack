@@ -151,18 +151,30 @@ func TestRootContainsEveryPath(t *testing.T) {
 	dir := filepath.Join(outer, "vault")
 	_, err := Init(dir)
 	require.NoError(t, err)
-	require.NoError(t, os.Symlink(filepath.Join(outer, "secret.txt"), filepath.Join(dir, "lessons", "link.md")))
 
 	v := openVault(t, dir)
 
 	_, err = v.ReadFile("../secret.txt")
 	require.Error(t, err)
 
-	_, err = v.ReadFile("lessons/link.md")
-	require.Error(t, err, "a symlink that points outside the vault must not be followed")
-
 	require.Error(t, v.CreateFile("../escape.md", []byte("x")))
 	assert.NoFileExists(t, filepath.Join(outer, "escape.md"))
+}
+
+func TestRootDoesNotFollowASymlinkOutOfTheVault(t *testing.T) {
+	outer := t.TempDir()
+	require.NoError(t, os.WriteFile(filepath.Join(outer, "secret.txt"), []byte("outside"), 0o644))
+
+	dir := filepath.Join(outer, "vault")
+	_, err := Init(dir)
+	require.NoError(t, err)
+
+	if err := os.Symlink(filepath.Join(outer, "secret.txt"), filepath.Join(dir, "lessons", "link.md")); err != nil {
+		t.Skipf("this OS user cannot create symlinks: %v", err)
+	}
+
+	_, err = openVault(t, dir).ReadFile("lessons/link.md")
+	require.Error(t, err, "a symlink that points outside the vault must not be followed")
 }
 
 func TestCreateFileHasExactlyOneWinner(t *testing.T) {
