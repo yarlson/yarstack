@@ -48,8 +48,8 @@ func newProposeCommand(a *app) *cobra.Command {
 			"independent gate agent trusts it. Pass the lesson on stdin or with --input:\n\n" +
 			proposeTemplate + "\n\n" +
 			"scope is here (this project) or all (know-how that does not depend on one\n" +
-			"project). Optional keys: retires (the id of a trusted lesson this one\n" +
-			"replaces) and converts (the v0.2 note path this lesson converts).\n" +
+			"project). Optional keys: retires (the id of a trusted or doubted lesson\n" +
+			"this one replaces) and converts (the v0.2 note path this lesson converts).\n" +
 			"Proposing identical content again is a no-op that returns the same id.",
 		Example: "  yarbrain propose <<'EOF'\n" + proposeTemplate + "\n  EOF",
 		Args:    noArgs,
