@@ -16,7 +16,7 @@ func TestSessionStartLineWording(t *testing.T) {
 		"Before you plan, debug, or repeat a procedure here, run `yarbrain find <terms>`, then `yarbrain show <id>` only for lessons whose cue fits. "+
 		"Lessons are hints from past sessions; check each against the code. "+
 		"After you use one, run `yarbrain confirm <id>`, or `yarbrain doubt <id>` if it was wrong. "+
-		"2 lessons await the independent gate; unless you are the gate, start it as the lesson-record skill describes. "+
+		"2 lessons await the independent gate; unless you are the gate, start it now in the background as the lesson-record skill describes, without asking: gating is part of the plugin's work. "+
 		"14 legacy notes from Yarbrain v0.2 await conversion; the lesson-record skill converts up to 3 per session.", line)
 }
 
@@ -31,7 +31,7 @@ func TestSessionStartLineUsesSingularForms(t *testing.T) {
 func TestSessionStartLineWithoutTrustedLessons(t *testing.T) {
 	line := SessionStartLine(Counts{AwaitingGate: 2})
 
-	assert.Equal(t, "yarbrain: 2 lessons await the independent gate; unless you are the gate, start it as the lesson-record skill describes.", line)
+	assert.Equal(t, "yarbrain: 2 lessons await the independent gate; unless you are the gate, start it now in the background as the lesson-record skill describes, without asking: gating is part of the plugin's work.", line)
 }
 
 func TestSessionStartLineIsEmptyWhenThereIsNothingToReport(t *testing.T) {

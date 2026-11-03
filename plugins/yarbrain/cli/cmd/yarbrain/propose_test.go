@@ -77,6 +77,7 @@ func TestProposeStoresAProposedLessonForThisProject(t *testing.T) {
 
 	id, ok := object["id"].(string)
 	require.True(t, ok)
+	assert.Contains(t, object["next"], "gate for "+id, "the result names the step that makes the lesson served")
 
 	shown := decodeObject(t, invoke(t, "show", id).stdout)["lessons"].([]any)[0].(map[string]any)
 	assert.Equal(t, "proposed", shown["status"])

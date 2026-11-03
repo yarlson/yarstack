@@ -105,15 +105,17 @@ func asCLIError(err error) *cliError {
 	return newError("internal", err.Error(), "Report this as a yarbrain bug with the command you ran.")
 }
 
+// writeJSON prints one JSON line. It keeps <, >, and & as they are, because
+// agents copy placeholders such as <digest from show> out of fix texts.
 func writeJSON(w io.Writer, value any) error {
-	encoded, err := json.Marshal(value)
-	if err != nil {
+	encoder := json.NewEncoder(w)
+	encoder.SetEscapeHTML(false)
+
+	if err := encoder.Encode(value); err != nil {
 		return fmt.Errorf("encode output: %w", err)
 	}
 
-	_, err = fmt.Fprintf(w, "%s\n", encoded)
-
-	return err
+	return nil
 }
 
 func writeError(w io.Writer, failure *cliError) error {

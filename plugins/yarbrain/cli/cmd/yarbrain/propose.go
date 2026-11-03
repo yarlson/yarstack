@@ -35,6 +35,7 @@ type proposeResult struct {
 	Status  string `json:"status"`
 	Created bool   `json:"created"`
 	Digest  string `json:"digest"`
+	Next    string `json:"next,omitempty"`
 }
 
 func newProposeCommand(a *app) *cobra.Command {
@@ -150,7 +151,9 @@ func (a *app) storeProposal(draft lesson.Draft, identity project.Identity) (prop
 		switch outcome {
 		case lesson.OutcomeRepeat:
 			existing, _ := vault.Find(entries, match.ID)
-			result = proposeResult{ID: match.ID, Path: existing.Path, Status: string(match.Status), Digest: lesson.Digest(draft)}
+			result = proposeResult{
+				ID: match.ID, Path: existing.Path, Status: string(match.Status), Digest: lesson.Digest(draft), Next: gateStep(match.ID, match.Status),
+			}
 
 			return nil
 		case lesson.OutcomeTitleTaken:
@@ -196,7 +199,9 @@ func (a *app) createLesson(v *vault.Vault, entries []vault.Entry, draft lesson.D
 		return proposeResult{}, err
 	}
 
-	return proposeResult{ID: id, Path: path, Status: string(lesson.Proposed), Created: true, Digest: lesson.Digest(draft)}, nil
+	return proposeResult{
+		ID: id, Path: path, Status: string(lesson.Proposed), Created: true, Digest: lesson.Digest(draft), Next: gateStep(id, lesson.Proposed),
+	}, nil
 }
 
 func checkRetires(entries []vault.Entry, draft lesson.Draft) error {

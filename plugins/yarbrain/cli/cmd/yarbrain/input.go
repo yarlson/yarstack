@@ -13,9 +13,26 @@ import (
 // maxInput caps every free-text input; a lesson file is at most 16 KiB.
 const maxInput = 32 * 1024
 
-// readInput reads free text from --input FILE or stdin. Free text never
-// arrives in arguments, because Windows shells mangle quoted arguments.
+// readInput reads free text from --input FILE or stdin and fails when it is
+// empty. Free text never arrives in arguments, because Windows shells mangle
+// quoted arguments.
 func (a *app) readInput(path string) ([]byte, error) {
+	data, err := a.readOptionalInput(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(data) == 0 {
+		return nil, newError("bad_input", "the input is empty", "Pass the input on stdin or with --input FILE; see --help for the format.").
+			with("field", "input")
+	}
+
+	return data, nil
+}
+
+// readOptionalInput reads free text and returns nil when there is none. A
+// terminal on stdin counts as no input, so a person is never left waiting.
+func (a *app) readOptionalInput(path string) ([]byte, error) {
 	reader := a.stdin
 
 	if path != "" {
@@ -27,6 +44,8 @@ func (a *app) readInput(path string) ([]byte, error) {
 		defer func() { _ = file.Close() }()
 
 		reader = file
+	} else if isTerminal(a.stdin) {
+		return nil, nil
 	}
 
 	data, err := io.ReadAll(io.LimitReader(reader, maxInput+1))
@@ -40,11 +59,21 @@ func (a *app) readInput(path string) ([]byte, error) {
 	}
 
 	if len(bytes.TrimSpace(data)) == 0 {
-		return nil, newError("bad_input", "the input is empty", "Pass the input on stdin or with --input FILE; see --help for the format.").
-			with("field", "input")
+		return nil, nil
 	}
 
 	return data, nil
+}
+
+func isTerminal(r io.Reader) bool {
+	file, ok := r.(*os.File)
+	if !ok {
+		return false
+	}
+
+	info, err := file.Stat()
+
+	return err == nil && info.Mode()&os.ModeCharDevice != 0
 }
 
 func problemsError(problems []lesson.Problem) *cliError {

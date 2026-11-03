@@ -89,6 +89,18 @@ func oneLine(field, value string, limit int) []lesson.Problem {
 	return nil
 }
 
+// gateStep names the step that makes a lesson served when it awaits the
+// gate, and is empty otherwise. It points to the skill, which owns the
+// host-specific procedure.
+func gateStep(id string, status lesson.Status) string {
+	if !lesson.AwaitsGate(status) {
+		return ""
+	}
+
+	return "Start the independent gate for " + id + " now, in the background, as the lesson-record skill describes, without asking: " +
+		"gating is part of the plugin's work. Never run brief or verdict yourself."
+}
+
 func badState(r record, message, fix string) *cliError {
 	return newError("bad_state", fmt.Sprintf("lesson %s is %s: %s", r.lesson().ID, r.effective(), message), fix).
 		with("id", r.lesson().ID).with("status", string(r.effective()))

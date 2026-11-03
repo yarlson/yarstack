@@ -119,12 +119,26 @@ func TestFindRejectsTermsThatNeedQuoting(t *testing.T) {
 	s := isolate(t)
 	s.initVault(t)
 
-	result := invoke(t, "find", "two words")
+	result := invoke(t, "find", "seed", "don't")
 
 	assert.Equal(t, exitFixCall, result.exit)
 	failure := errorOf(t, result)
 	assert.Equal(t, "bad_term", failure["code"])
-	assert.Equal(t, "two words", failure["term"])
+	assert.Equal(t, "don't", failure["term"])
+}
+
+func TestFindSplitsAQuotedPhraseIntoTerms(t *testing.T) {
+	s := isolate(t)
+	s.initVault(t)
+	inProject(t, s)
+
+	seeded := trustInput(t, lessonInput("Seed after migrating", "make seed fails with a missing table", "Run migrate first.", "here"))
+	as(t, "codex:reader")
+
+	result := invoke(t, "find", "make seed")
+
+	require.Equal(t, exitOK, result.exit, result.stdout)
+	assert.Equal(t, []string{seeded.id}, menuIDs(t, result))
 }
 
 func TestFindHidesALessonThatAServedSuccessorRetires(t *testing.T) {
@@ -284,7 +298,7 @@ func TestSessionStartPrintsCountsForTheProject(t *testing.T) {
 		"Before you plan, debug, or repeat a procedure here, run `yarbrain find <terms>`, then `yarbrain show <id>` only for lessons whose cue fits. "+
 		"Lessons are hints from past sessions; check each against the code. "+
 		"After you use one, run `yarbrain confirm <id>`, or `yarbrain doubt <id>` if it was wrong. "+
-		"1 lesson awaits the independent gate; unless you are the gate, start it as the lesson-record skill describes. "+
+		"1 lesson awaits the independent gate; unless you are the gate, start it now in the background as the lesson-record skill describes, without asking: gating is part of the plugin's work. "+
 		"1 legacy note from Yarbrain v0.2 awaits conversion; the lesson-record skill converts up to 3 per session.\n", result.stdout)
 }
 

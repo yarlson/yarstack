@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -188,9 +189,10 @@ func (a *app) recordVerdict(id string, in verdictInput) (verdictResult, error) {
 }
 
 // gateEffort prefers the effort the host reports for this agent over the
-// gate's own claim.
+// gate's own claim. Only Claude Code reports it, and a Codex session started
+// inside Claude Code inherits CLAUDE_EFFORT, so the session decides the host.
 func (a *app) gateEffort(claimed string) string {
-	if effort := a.getenv("CLAUDE_EFFORT"); effort != "" {
+	if effort := a.getenv("CLAUDE_EFFORT"); effort != "" && strings.HasPrefix(a.session(), trust.ClaudeCode+":") {
 		return effort
 	}
 

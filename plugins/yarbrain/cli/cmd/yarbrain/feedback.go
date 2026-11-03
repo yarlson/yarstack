@@ -35,6 +35,7 @@ type doubtResult struct {
 
 	ID     string `json:"id"`
 	Status string `json:"status"`
+	Next   string `json:"next,omitempty"`
 }
 
 func newConfirmCommand(a *app) *cobra.Command {
@@ -44,18 +45,27 @@ func newConfirmCommand(a *app) *cobra.Command {
 		Use:   "confirm <id>",
 		Short: "Record that a served lesson worked",
 		Long: "confirm records that applying a served lesson worked. Each session confirms a\n" +
-			"lesson at most once, and the author's confirmations do not count. Input on\n" +
-			"stdin: {\"note\": \"<one line, at most 200 characters>\"}",
-		Example: "  echo '{\"note\": \"seed passed after migrate\"}' | yarbrain confirm l-7k3m9q2x",
+			"lesson at most once, and the author's confirmations do not count. An optional\n" +
+			"note on stdin says what worked: {\"note\": \"<one line, at most 200 characters>\"}",
+		Example: "  yarbrain confirm l-7k3m9q2x\n  echo '{\"note\": \"seed passed after migrate\"}' | yarbrain confirm l-7k3m9q2x",
 		Args:    exactArgs(1, "id"),
 		RunE: func(_ *cobra.Command, args []string) error {
-			var in confirmInput
-			if err := a.readJSON(input, &in); err != nil {
+			raw, err := a.readOptionalInput(input)
+			if err != nil {
 				return err
 			}
 
-			if problems := oneLine("note", in.Note, maxConfirmNote); len(problems) > 0 {
-				return problemsError(problems)
+			var in confirmInput
+			if raw != nil {
+				if err := decodeStrict(raw, &in); err != nil {
+					return err
+				}
+			}
+
+			if in.Note != "" {
+				if problems := oneLine("note", in.Note, maxConfirmNote); len(problems) > 0 {
+					return problemsError(problems)
+				}
 			}
 
 			if failure := screen(map[string]string{"note": in.Note}); failure != nil {
@@ -85,11 +95,11 @@ func newDoubtCommand(a *app) *cobra.Command {
 			"is no longer served until the independent gate judges it again. Each session\n" +
 			"doubts a lesson at most once. Input on stdin:\n" +
 			"{\"digest\": \"<the digest from show>\", \"note\": \"<what went wrong, at most 500 characters>\"}",
-		Example: "  yarbrain doubt l-7k3m9q2x < doubt.json",
+		Example: "  echo '{\"digest\": \"2c9d41e07a6b\", \"note\": \"seed still failed after migrate\"}' | yarbrain doubt l-7k3m9q2x",
 		Args:    exactArgs(1, "id"),
 		RunE: func(_ *cobra.Command, args []string) error {
 			var in doubtInput
-			if err := a.readJSON(input, &in); err != nil {
+			if err := a.readJSON(input, &in, `{"digest": "<digest from show>", "note": "<what went wrong>"}`); err != nil {
 				return err
 			}
 
@@ -119,10 +129,17 @@ func newDoubtCommand(a *app) *cobra.Command {
 	return command
 }
 
-func (a *app) readJSON(path string, target any) error {
-	raw, err := a.readInput(path)
+// readJSON reads one JSON object. When the input is missing, the fix shows
+// example, so the caller can repeat the call with the right input at once.
+func (a *app) readJSON(path string, target any, example string) error {
+	raw, err := a.readOptionalInput(path)
 	if err != nil {
 		return err
+	}
+
+	if raw == nil {
+		return newError("bad_input", "the input is empty", "Pass one JSON object on stdin, for example: echo '"+example+"' | yarbrain ...").
+			with("field", "input")
 	}
 
 	return decodeStrict(raw, target)
@@ -221,7 +238,7 @@ func (a *app) recordDoubt(id string, in doubtInput) (doubtResult, error) {
 			return err
 		}
 
-		result = doubtResult{header: okHeader(), ID: id, Status: string(next)}
+		result = doubtResult{header: okHeader(), ID: id, Status: string(next), Next: gateStep(id, next)}
 
 		return nil
 	})

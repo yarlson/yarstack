@@ -88,7 +88,7 @@ func newDismissCommand(a *app) *cobra.Command {
 		Args:    exactArgs(1, "v0.2-path"),
 		RunE: func(_ *cobra.Command, args []string) error {
 			var in dismissInput
-			if err := a.readJSON(input, &in); err != nil {
+			if err := a.readJSON(input, &in, `{"reason": "<why the note holds nothing worth a lesson>"}`); err != nil {
 				return err
 			}
 

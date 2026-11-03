@@ -191,6 +191,25 @@ func TestTheGateRecordsTheEffortTheHostReports(t *testing.T) {
 	assert.Contains(t, string(raw), `"effort":"low"`, "the host's effort wins over the gate's claim of high")
 }
 
+func TestACodexGateStartedInsideClaudeCodeKeepsItsOwnEffort(t *testing.T) {
+	s := isolate(t)
+	s.initVault(t)
+	inProject(t, s)
+
+	p := proposeAs(t, "codex:author", proposal)
+	require.Equal(t, exitOK, brief(t, "codex:gate", p.id).exit)
+	t.Setenv("CLAUDE_CODE_SESSION_ID", "outer-claude-session")
+	t.Setenv("CLAUDE_EFFORT", "low")
+
+	result := invokeWith(t, verdictJSON(t, p.digest, "trust", true, nil), "verdict", p.id)
+
+	require.Equal(t, exitOK, result.exit, result.stdout)
+
+	raw, err := os.ReadFile(filepath.Join(s.vault, ".yarbrain", "ledger", p.id+".jsonl"))
+	require.NoError(t, err)
+	assert.Contains(t, string(raw), `"effort":"high"`, "CLAUDE_EFFORT leaks into Codex from an outer Claude Code session")
+}
+
 func TestVerdictNeedsTheLeaseFromBrief(t *testing.T) {
 	s := isolate(t)
 	s.initVault(t)
@@ -288,6 +307,7 @@ func TestDoubtTakesALessonOutOfServiceAndKeepsTheNoteOutOfIt(t *testing.T) {
 
 	require.Equal(t, exitOK, result.exit, result.stdout)
 	assert.Equal(t, "doubted", decodeObject(t, result.stdout)["status"])
+	assert.Contains(t, decodeObject(t, result.stdout)["next"], "gate for "+p.id, "a doubted lesson waits for the gate")
 
 	lesson := shown(t, p.id)
 	assert.Equal(t, false, lesson["served"])
@@ -325,6 +345,31 @@ func TestDoubtNeedsTheCurrentDigest(t *testing.T) {
 
 	assert.Equal(t, exitFixCall, result.exit)
 	assert.Equal(t, "changed_underneath", errorOf(t, result)["code"])
+}
+
+func TestConfirmNeedsNoNote(t *testing.T) {
+	s := isolate(t)
+	s.initVault(t)
+	p := trustedLesson(t, s)
+	as(t, "codex:later")
+
+	result := invoke(t, "confirm", p.id)
+
+	require.Equal(t, exitOK, result.exit, result.stdout)
+	assert.InDelta(t, 1, decodeObject(t, result.stdout)["confirmations"], 0)
+}
+
+func TestABareDoubtShowsTheInputItNeeds(t *testing.T) {
+	s := isolate(t)
+	s.initVault(t)
+	p := trustedLesson(t, s)
+	as(t, "codex:later")
+
+	result := invoke(t, "doubt", p.id)
+
+	assert.Equal(t, exitFixCall, result.exit)
+	assert.Contains(t, errorOf(t, result)["fix"], `{"digest": "<digest from show>", "note": "<what went wrong>"}`)
+	assert.Contains(t, result.stdout, "<digest from show>", "the raw output must not escape < and >")
 }
 
 func TestConfirmationsCountOtherSessionsOnce(t *testing.T) {
@@ -405,6 +450,7 @@ func TestALessonTrustedAgainAndAgainRetiresOnTheNextDoubt(t *testing.T) {
 
 	require.Equal(t, exitOK, result.exit, result.stdout)
 	assert.Equal(t, "retired", decodeObject(t, result.stdout)["status"])
+	assert.NotContains(t, decodeObject(t, result.stdout), "next", "a retired lesson needs no gate")
 }
 
 func TestDeferHasALimit(t *testing.T) {

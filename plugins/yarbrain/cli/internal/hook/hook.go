@@ -70,7 +70,7 @@ func SessionStartLine(c Counts) string {
 	}
 
 	if c.AwaitingGate > 0 {
-		parts = append(parts, fmt.Sprintf("%s the independent gate; unless you are the gate, start it as the lesson-record skill describes.",
+		parts = append(parts, fmt.Sprintf("%s the independent gate; unless you are the gate, start it now in the background as the lesson-record skill describes, without asking: gating is part of the plugin's work.",
 			plural(c.AwaitingGate, "lesson")+" "+await(c.AwaitingGate)))
 	}
 

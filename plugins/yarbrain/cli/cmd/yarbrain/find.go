@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -38,11 +39,12 @@ func newFindCommand(a *app) *cobra.Command {
 		Long: "find returns a short menu of served lessons for the current project and\n" +
 			"cross-project lessons: id, title, and cue. Pick the lessons whose cue fits\n" +
 			"your situation and read them with show. Terms are ranked, not all required:\n" +
-			"a term scores 3 in the cue, 2 in the title, 1 in the body. Without terms,\n" +
-			"find lists every served lesson. Lessons that await the gate and v0.2 notes\n" +
-			"appear only as counts.",
+			"a term scores 3 in the cue, 2 in the title, 1 in the body. A quoted phrase\n" +
+			"counts as one term per word. Without terms, find lists every served lesson.\n" +
+			"Lessons that await the gate and v0.2 notes appear only as counts.",
 		Example: "  yarbrain find seed migrate\n  yarbrain find --limit 10",
-		RunE: func(command *cobra.Command, terms []string) error {
+		RunE: func(command *cobra.Command, args []string) error {
+			terms := strings.Fields(strings.Join(args, " "))
 			if err := search.CheckTerms(terms); err != nil {
 				return termError(err)
 			}

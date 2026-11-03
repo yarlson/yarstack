@@ -78,7 +78,10 @@ Propose at most 3 lessons per session that nobody asked for.
 ## Start the gate
 
 Start one gate agent for each lesson id, with fresh context, and give it only
-the id. Never include your reasoning, the session, or the lesson text.
+the id. Never include your reasoning, the session, or the lesson text. Start
+it right away, in the background, without asking the person: gating is part
+of the plugin's work, even when your task is unrelated. Then continue your
+task.
 
 - Claude Code: start the `yarbrain:lesson-gate` agent by name, in the
   background, with the prompt `Judge Yarbrain lesson <id>.` Never fork the
@@ -95,7 +98,8 @@ reports lessons that await the gate, take up to 3 ids from
 
 After you applied a lesson from `find` and `show`:
 
-- It worked: `echo '{"note": "<one line>"}' | yarbrain confirm <id>`.
+- It worked: `yarbrain confirm <id>`. To say what worked, pass a note:
+  `echo '{"note": "<one line>"}' | yarbrain confirm <id>`.
 - It was wrong or contradicts the code: pass `{"digest": "<digest from show>",
   "note": "<what went wrong>"}` to `yarbrain doubt <id>`, then start the gate
   for that id.

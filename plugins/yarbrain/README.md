@@ -16,7 +16,10 @@ worked. Lessons are Markdown files in a vault you own.
 - **Trust without a person.** A proposed lesson is not served. The
   `lesson-record` skill starts a gate agent with fresh context and only the
   lesson id. The gate checks the lesson against the committed code, its docs,
-  and similar lessons, and records trust, reject, retire, or defer.
+  and similar lessons, and records trust, reject, retire, or defer. Agents
+  start the gate without asking you, in the session that proposed or doubted
+  the lesson or in a later one. Each gate is one subagent run: Sonnet at high
+  effort in Claude Code, and the pinned role or the session's model in Codex.
   - In Claude Code, the gate is the plugin's `yarbrain:lesson-gate` agent, and a
     PreToolUse hook blocks every other agent from judging lessons.
   - In Codex, the gate is a subagent spawned without the parent's history; a
@@ -68,3 +71,6 @@ session, each through the gate.
   are not credible, but any process that can write the vault could forge one.
 - Lessons are served only to projects with a Git identity, or with scope
   `all`.
+- A Claude Code session started from a Codex shell inherits the Codex thread
+  id, so Yarbrain counts it as that thread. Its gate verdicts then do not
+  count, and its lessons wait for a gate from a normal session.
