@@ -260,7 +260,7 @@ func TestRetiresMustNameATrustedLesson(t *testing.T) {
 	assert.Equal(t, "bad_state", errorOf(t, untrusted)["code"])
 }
 
-func TestShowServesTheTextOfATrustedLesson(t *testing.T) {
+func TestAHandTypedTrustedStatusIsNotServed(t *testing.T) {
 	s := isolate(t)
 	s.initVault(t)
 	inProject(t, s)
@@ -270,13 +270,14 @@ func TestShowServesTheTextOfATrustedLesson(t *testing.T) {
 
 	raw, err := os.ReadFile(path)
 	require.NoError(t, err)
-	require.NoError(t, os.WriteFile(path, []byte(strings.Replace(string(raw), "status: proposed", "status: trusted", 1)), 0o644))
+
+	forged := strings.Replace(string(raw), "status: proposed", "status: trusted\ntrusted_digest: "+created["digest"].(string), 1)
+	require.NoError(t, os.WriteFile(path, []byte(forged), 0o644))
 
 	shown := decodeObject(t, invoke(t, "show", created["id"].(string)).stdout)["lessons"].([]any)[0].(map[string]any)
 
-	assert.Equal(t, true, shown["served"])
-	assert.Equal(t, "Run migrations before seeding the test database", shown["title"])
-	assert.Equal(t, created["digest"], shown["digest"])
+	assert.Equal(t, false, shown["served"], "trust without a credible gate verdict in the ledger is not served")
+	assert.NotContains(t, shown, "title")
 }
 
 func TestShowOfAnUnknownIDIsNotFound(t *testing.T) {

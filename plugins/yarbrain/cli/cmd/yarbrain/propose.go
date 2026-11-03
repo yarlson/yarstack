@@ -11,6 +11,7 @@ import (
 
 	"github.com/yarlson/yarstack/plugins/yarbrain/cli/internal/lesson"
 	"github.com/yarlson/yarstack/plugins/yarbrain/cli/internal/project"
+	"github.com/yarlson/yarstack/plugins/yarbrain/cli/internal/trust"
 	"github.com/yarlson/yarstack/plugins/yarbrain/cli/internal/vault"
 )
 
@@ -161,7 +162,9 @@ func (a *app) storeProposal(draft lesson.Draft, identity project.Identity) (prop
 
 		result = created
 
-		return nil
+		return v.AppendLedger(created.ID, trust.Event{
+			At: a.now().UTC(), Kind: trust.Proposed, Session: a.session(), Digest: created.Digest,
+		})
 	})
 
 	result.header = okHeader()

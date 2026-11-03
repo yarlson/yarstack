@@ -30,6 +30,7 @@ func isolate(t *testing.T) sandbox {
 	t.Setenv("YARBRAIN_VAULT", "")
 	t.Setenv("CLAUDE_CODE_SESSION_ID", "")
 	t.Setenv("CODEX_THREAD_ID", "")
+	t.Setenv("CLAUDE_EFFORT", "")
 
 	return s
 }
