@@ -162,6 +162,10 @@ func TestInstallShTellsHowToFixAMissingLoginPath(t *testing.T) {
 }
 
 func TestInstallShReportsAFailedReleaseListRequest(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("install.sh is for macOS and Linux")
+	}
+
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		http.Error(w, "rate limited", http.StatusForbidden)
 	}))
