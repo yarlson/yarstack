@@ -34,6 +34,7 @@ func isolate(t *testing.T) sandbox {
 	t.Setenv("CLAUDE_CODE_SESSION_ID", "")
 	t.Setenv("CODEX_THREAD_ID", "")
 	t.Setenv("CLAUDE_EFFORT", "")
+	t.Setenv("CODEX_HOME", "")
 
 	return s
 }
@@ -128,6 +129,21 @@ func TestInitListsSetupForDetectedHosts(t *testing.T) {
 	}
 
 	assert.Equal(t, map[string]int{"claude-code": 1, "codex": 2}, hosts)
+}
+
+func TestCodexSetupFollowsCodexHome(t *testing.T) {
+	s := isolate(t)
+	codexHome := filepath.Join(t.TempDir(), "codex")
+	require.NoError(t, os.MkdirAll(filepath.Join(codexHome, "agents"), 0o755))
+	t.Setenv("CODEX_HOME", codexHome)
+
+	result := invoke(t, "init", s.vault)
+
+	require.Equal(t, exitOK, result.exit, result.stdout)
+	assert.Contains(t, result.stdout, filepath.ToSlash(filepath.Join(codexHome, "config.toml")))
+
+	require.NoError(t, os.WriteFile(filepath.Join(codexHome, "agents", "yarbrain-gate.toml"), nil, 0o600))
+	assert.Equal(t, true, decodeObject(t, invoke(t, "status").stdout)["codex_gate_pinned"])
 }
 
 func TestInitWithoutAnArgumentIsACallerError(t *testing.T) {

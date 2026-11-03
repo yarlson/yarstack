@@ -112,7 +112,7 @@ func (v *Vault) Dismiss(d Dismissal) error {
 // could return.
 func IsLegacyPath(name string) bool {
 	clean := path.Clean(name)
-	if clean != name || strings.HasPrefix(clean, "../") || !strings.HasSuffix(clean, ".md") {
+	if clean != name || strings.ContainsAny(name, `\:`) || strings.HasPrefix(clean, "../") || !strings.HasSuffix(clean, ".md") {
 		return false
 	}
 

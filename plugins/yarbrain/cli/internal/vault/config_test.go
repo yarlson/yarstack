@@ -117,6 +117,26 @@ func TestWriteConfigUsesTheV02FormatOnce(t *testing.T) {
 	assert.False(t, again, "the same vault must not rewrite the config")
 }
 
+func TestWriteConfigTreatsASymlinkToTheSameVaultAsTheSameVault(t *testing.T) {
+	real := filepath.Join(t.TempDir(), "vault")
+	require.NoError(t, os.Mkdir(real, 0o755))
+
+	link := filepath.Join(t.TempDir(), "vault-link")
+	if err := os.Symlink(real, link); err != nil {
+		t.Skipf("symlinks are not available: %v", err)
+	}
+
+	path := filepath.Join(t.TempDir(), "config.json")
+	quoted, err := json.Marshal(real)
+	require.NoError(t, err)
+	writeConfigFile(t, path, `{"vault": `+string(quoted)+`}`)
+
+	written, err := WriteConfig(path, link)
+
+	require.NoError(t, err, "v0.2 stored the resolved path, so init through a link names the same vault")
+	assert.False(t, written)
+}
+
 func TestWriteConfigRefusesADifferentVault(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "config.json")
 	writeConfigFile(t, path, `{"vault": "/vaults/existing"}`)

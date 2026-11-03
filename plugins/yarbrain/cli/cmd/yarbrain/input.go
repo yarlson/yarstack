@@ -58,6 +58,7 @@ func (a *app) readOptionalInput(path string) ([]byte, error) {
 			with("field", "input").with("limit", maxInput)
 	}
 
+	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 	if len(bytes.TrimSpace(data)) == 0 {
 		return nil, nil
 	}
@@ -86,7 +87,7 @@ func problemsError(problems []lesson.Problem) *cliError {
 func screen(fields map[string]string) *cliError {
 	var findings []textrules.Finding
 
-	for _, field := range []string{"title", "cue", "body", "observed", "reason", "note"} {
+	for _, field := range []string{"title", "cue", "body", "observed", "reason", "note", "gate"} {
 		if text, ok := fields[field]; ok {
 			findings = append(findings, textrules.Check(field, text)...)
 		}

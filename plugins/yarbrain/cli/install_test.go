@@ -1,6 +1,7 @@
 package install_test
 
 import (
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -159,6 +161,18 @@ func TestInstallShTellsHowToFixAMissingLoginPath(t *testing.T) {
 	assert.Contains(t, out, `export PATH="`+dir+`:$PATH"`)
 }
 
+func TestInstallShReportsAFailedReleaseListRequest(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		http.Error(w, "rate limited", http.StatusForbidden)
+	}))
+	t.Cleanup(server.Close)
+
+	out, err := runInstallSh(t, server, filepath.Join(t.TempDir(), "bin"))
+
+	require.Error(t, err)
+	assert.Contains(t, out, "could not read the release list from GitHub")
+}
+
 func TestInstallPs1InstallsAVerifiedRelease(t *testing.T) {
 	pwsh, err := exec.LookPath("pwsh")
 	if err != nil {
@@ -176,7 +190,9 @@ func TestInstallPs1InstallsAVerifiedRelease(t *testing.T) {
 		"YARBRAIN_INSTALL_DIR="+dir,
 		"LOCALAPPDATA="+t.TempDir())
 
-	if runtime.GOOS != "windows" {
+	if runtime.GOOS == "windows" {
+		restoreUserPath(t, pwsh)
+	} else {
 		// The user PATH write is Windows-only; elsewhere it must not fail the run.
 		command.Env = append(command.Env, "HOME="+t.TempDir())
 	}
@@ -188,4 +204,24 @@ func TestInstallPs1InstallsAVerifiedRelease(t *testing.T) {
 	installed, err := os.ReadFile(filepath.Join(dir, "yarbrain.exe"))
 	require.NoError(t, err)
 	assert.Equal(t, binary, installed)
+}
+
+// restoreUserPath puts back the Windows user PATH that install.ps1 extends,
+// so the test leaves the developer's registry as it found it.
+func restoreUserPath(t *testing.T, pwsh string) {
+	t.Helper()
+
+	saved, err := exec.CommandContext(t.Context(), pwsh, "-NoProfile", "-NonInteractive", "-Command",
+		"[Environment]::GetEnvironmentVariable('Path', 'User')").Output()
+	require.NoError(t, err)
+
+	t.Cleanup(func() {
+		restore := exec.CommandContext(context.Background(), pwsh, "-NoProfile", "-NonInteractive", "-Command",
+			"[Environment]::SetEnvironmentVariable('Path', $env:YARBRAIN_SAVED_PATH, 'User')")
+
+		restore.Env = append(os.Environ(), "YARBRAIN_SAVED_PATH="+strings.TrimRight(string(saved), "\r\n"))
+
+		out, err := restore.CombinedOutput()
+		assert.NoError(t, err, "restore the user PATH: %s", out)
+	})
 }

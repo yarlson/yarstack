@@ -58,15 +58,36 @@ func TestGateCommandsAreDeniedOutsideTheGateAgent(t *testing.T) {
 		"cd /repo && yarbrain verdict l-7k3m9q2x",
 		"echo x | yarbrain brief l-1",
 		"(yarbrain verdict l-1)",
+		"/usr/local/bin/yarbrain verdict l-1",
+		"~/.local/bin/yarbrain brief l-1",
+		`C:\Users\me\bin\yarbrain.exe verdict l-1`,
+		"Yarbrain brief l-1",
+		"yarbrain --vault ~/vault verdict l-1",
+		"yarbrain --config=c.json brief l-1",
+		`"yarbrain" verdict l-1`,
+		"YARBRAIN_VAULT=/v env yarbrain verdict l-1",
+		"command yarbrain brief l-1",
+		"x=$(yarbrain brief l-1)",
+		"ls\nyarbrain verdict l-1",
+		"`yarbrain verdict l-1`",
+		`printf '%s\n' '{"digest":"a"}' | yarbrain verdict l-1`,
 	} {
 		assert.True(t, DeniesGateCommand(payload("Bash", "", command)), "main agent: %s", command)
 		assert.True(t, DeniesGateCommand(payload("Bash", "Explore", command)), "other subagent: %s", command)
+		assert.True(t, DeniesGateCommand(payload("PowerShell", "", command)), "PowerShell tool: %s", command)
 		assert.False(t, DeniesGateCommand(payload("Bash", GateAgent, command)), "gate agent: %s", command)
 	}
 }
 
 func TestOtherCommandsAreLeftToTheHost(t *testing.T) {
-	for _, command := range []string{"yarbrain find seed", "yarbrain show l-1", "yarbrain propose", "grep verdict notes.md", "notyarbrain verdict"} {
+	for _, command := range []string{
+		"yarbrain find seed", "yarbrain show l-1", "yarbrain propose", "grep verdict notes.md", "notyarbrain verdict",
+		"yarbrain show l-1 | grep verdict",
+		"yarbrain find verdict",
+		`git commit -m "Make yarbrain verdict refuse a contributor"`,
+		`grep -rn 'yarbrain brief' docs`,
+		"echo yarbrain verdict",
+	} {
 		assert.False(t, DeniesGateCommand(payload("Bash", "", command)), command)
 	}
 

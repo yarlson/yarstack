@@ -39,8 +39,8 @@ fi
 
 version="${YARBRAIN_VERSION:-}"
 if [ -z "$version" ]; then
-	tag="$(curl -fsSL --max-time 30 "$api" | grep -o "\"tag_name\": *\"${tag_prefix}[^\"]*\"" | head -n 1 | sed 's/.*"\(.*\)"$/\1/')" ||
-		fail "could not read the release list from GitHub"
+	releases="$(curl -fsSL --max-time 30 "$api")" || fail "could not read the release list from GitHub"
+	tag="$(printf '%s\n' "$releases" | grep -o "\"tag_name\": *\"${tag_prefix}[^\"]*\"" | head -n 1 | sed 's/.*"\(.*\)"$/\1/')"
 	[ -n "$tag" ] || fail "no yarbrain release is published yet"
 	version="${tag#"$tag_prefix"}"
 fi

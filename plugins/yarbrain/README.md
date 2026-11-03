@@ -21,9 +21,11 @@ worked. Lessons are Markdown files in a vault you own.
   the lesson or in a later one. Each gate is one subagent run: Sonnet at high
   effort in Claude Code, and the pinned role or the session's model in Codex.
   - In Claude Code, the gate is the plugin's `yarbrain:lesson-gate` agent, and a
-    PreToolUse hook blocks every other agent from judging lessons.
-  - In Codex, the gate is a subagent spawned without the parent's history; a
-    verdict from a thread that proposed or doubted the lesson does not count.
+    PreToolUse hook denies `yarbrain brief` and `yarbrain verdict` in every
+    other agent's Bash and PowerShell calls.
+  - In Codex, the gate is a subagent spawned without the parent's history;
+    `brief` refuses a thread that proposed the lesson or doubted it since its
+    last trust.
 - **Feedback.** A session that applies a lesson runs `yarbrain confirm`; one
   that finds it wrong runs `yarbrain doubt`, which takes the lesson out of
   service until a gate judges it again. Editing a trusted lesson by hand also
@@ -69,8 +71,10 @@ session, each through the gate.
   gate's read-only rule is an instruction, not a sandbox boundary.
 - A verdict is a record in the vault's ledger. The CLI refuses verdicts that
   are not credible, but any process that can write the vault could forge one.
+- The Claude Code hook reads the command line. A gate call hidden in a
+  variable or in a nested shell string, such as `sh -c '...'`, gets past it.
 - Lessons are served only to projects with a Git identity, or with scope
   `all`.
 - A Claude Code session started from a Codex shell inherits the Codex thread
-  id, so Yarbrain counts it as that thread. Its gate verdicts then do not
-  count, and its lessons wait for a gate from a normal session.
+  id, so Yarbrain counts it as that thread. `brief` refuses its gate agent,
+  and its lessons wait for a gate from a normal session.

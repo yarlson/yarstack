@@ -35,6 +35,15 @@ func TestValidateReportsEveryProblemAtOnce(t *testing.T) {
 	}, Validate(d))
 }
 
+func TestOneLineFieldsRefuseUnicodeLineBreaks(t *testing.T) {
+	for _, separator := range []string{" ", " ", "\u0085"} {
+		d := validDraft()
+		d.Cue = "make seed" + separator + "fails"
+
+		assert.Equal(t, []Problem{{Field: "cue", Rule: "must be one line"}}, Validate(d), "YAML counts %U as a line break", []rune(separator)[0])
+	}
+}
+
 func TestLimitsCountCharactersNotBytes(t *testing.T) {
 	d := validDraft()
 	d.Title = strings.Repeat("ё", 80)

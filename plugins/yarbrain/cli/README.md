@@ -52,6 +52,7 @@ command with `--help` for its input format and an example.
 | `confirm <id>` | agent | Record that a served lesson worked |
 | `doubt <id>` | agent | Take a served lesson out of service because it was wrong |
 | `legacy` | agent | List v0.2 notes that no lesson converts yet |
+| `legacy dismiss <v0.2-path>` | agent | Take a v0.2 note with nothing worth a lesson out of the backlog |
 | `check` | anyone | Validate every lesson file; exit 1 on findings |
 | `hook session-start\|pre-tool-use` | host | The plugin's hook handlers |
 
@@ -65,12 +66,15 @@ latest verdict is a credible trust verdict for its current content:
 
 - it comes from a gate agent, recorded with `brief` then `verdict`, in a host
   session (Claude Code or Codex);
-- in Codex, the gate's thread did not propose or doubt the lesson since the
-  previous verdict; in Claude Code, whose subagents share the parent's
-  session id, the plugin's PreToolUse hook lets only the
-  `yarbrain:lesson-gate` agent run `brief` and `verdict`;
-- no edit changed the lesson's title, cue, scope, body, or Observed section
-  since.
+- in Codex, the gate's thread did not propose the lesson and did not doubt it
+  since its last trust verdict, and `brief` refuses such a thread; in Claude
+  Code, whose subagents share the parent's session id, the plugin's
+  PreToolUse hook lets only the `yarbrain:lesson-gate` agent run `brief` and
+  `verdict`;
+- the lesson text passes the same rules as `propose`;
+- no edit changed the lesson's title, cue, scope, body, Observed section,
+  retires, or converts since, and no doubt or replacement followed the
+  verdict.
 
 The ledger in `<vault>/.yarbrain/ledger/` records every proposal, verdict,
 confirmation, and doubt. Its notes and reasons never become lesson text.

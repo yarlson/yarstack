@@ -166,11 +166,25 @@ func WriteConfig(path, vault string) (written bool, err error) {
 	return true, nil
 }
 
+// sameDir compares directories after resolving symlinks, because v0.2 stored
+// the resolved vault path.
 func sameDir(a, b string) bool {
-	absA, errA := filepath.Abs(a)
-	absB, errB := filepath.Abs(b)
+	resolvedA, resolvedB := resolvedDir(a), resolvedDir(b)
 
-	return errA == nil && errB == nil && filepath.Clean(absA) == filepath.Clean(absB)
+	return resolvedA != "" && resolvedA == resolvedB
+}
+
+func resolvedDir(dir string) string {
+	abs, err := filepath.Abs(dir)
+	if err != nil {
+		return ""
+	}
+
+	if resolved, err := filepath.EvalSymlinks(abs); err == nil {
+		return resolved
+	}
+
+	return filepath.Clean(abs)
 }
 
 // writeFileAtomic replaces path through a temporary file in the same

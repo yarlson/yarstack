@@ -55,8 +55,8 @@ func newVerdictCommand(a *app) *cobra.Command {
 		Short: "Record the gate's decision on one lesson",
 		Long: "verdict is for the independent gate agent only, after brief. It records\n" +
 			"trust, reject, retire, or defer with the four checks. trust needs every\n" +
-			"check to pass. Optional keys: duplicate_of (with reject) and retires (repeat\n" +
-			"the lesson's own retires to confirm the replacement). Input on stdin:\n\n" + verdictTemplate,
+			"check to pass. Optional keys: duplicate_of (with reject) and retires (required\n" +
+			"when the lesson has retires: repeat its value). Input on stdin:\n\n" + verdictTemplate,
 		Example: "  yarbrain verdict l-7k3m9q2x < verdict.json",
 		Args:    exactArgs(1, "id"),
 		RunE: func(_ *cobra.Command, args []string) error {
@@ -94,9 +94,10 @@ func validateVerdict(in verdictInput) error {
 		problems = append(problems, lesson.Problem{Field: "decision", Rule: "must be trust, reject, retire, or defer"})
 	}
 
-	fields := map[string]string{"reason": in.Reason}
+	fields := map[string]string{"reason": in.Reason, "gate": in.Gate.Model + "\n" + in.Gate.Effort}
 	problems = append(problems, oneLine("reason", in.Reason, maxReason)...)
 	problems = append(problems, oneLine("gate.model", in.Gate.Model, 80)...)
+	problems = append(problems, oneLine("gate.effort", in.Gate.Effort, 40)...)
 
 	allPass := true
 
@@ -232,13 +233,50 @@ func (a *app) checkVerdict(v *vault.Vault, entries []vault.Entry, target record,
 		}
 	}
 
-	if next == lesson.Trusted && target.lesson().Retires != "" {
-		if err := checkRetireTarget(v, entries, target); err != nil {
+	if next == lesson.Trusted {
+		if err := checkTrust(v, entries, target); err != nil {
 			return "", err
 		}
 	}
 
 	return next, nil
+}
+
+// checkTrust holds the checks that only a trust verdict needs: the lesson text
+// and the lesson it retires.
+func checkTrust(v *vault.Vault, entries []vault.Entry, target record) error {
+	if refusal := textRefusal(target); refusal != nil {
+		return refusal
+	}
+
+	if target.lesson().Retires == "" {
+		return nil
+	}
+
+	return checkRetireTarget(v, entries, target)
+}
+
+// textRefusal blocks trust for lesson text that propose would refuse, such as
+// a hand edit, so no served text skips the deterministic rules.
+func textRefusal(target record) *cliError {
+	d := lesson.Normalize(target.lesson().Draft)
+	problems := lesson.Validate(d)
+	failure := screen(map[string]string{"title": d.Title, "cue": d.Cue, "body": d.Body, "observed": d.Observed})
+
+	if len(problems) == 0 && failure == nil {
+		return nil
+	}
+
+	refusal := badState(target, "its text breaks the lesson rules", "Reject it; trust needs text that propose would accept.")
+	if len(problems) > 0 {
+		refusal = refusal.with("problems", problems)
+	}
+
+	if failure != nil {
+		refusal = refusal.with("findings", failure.Fields["findings"])
+	}
+
+	return refusal
 }
 
 func checkRetireTarget(v *vault.Vault, entries []vault.Entry, target record) error {
@@ -247,8 +285,8 @@ func checkRetireTarget(v *vault.Vault, entries []vault.Entry, target record) err
 		return err
 	}
 
-	if !old.served() || !lesson.ScopesOverlap(old.lesson().Scope, target.lesson().Scope) {
-		return badState(old, "it is not a served lesson of the same project", "Reject the replacement, or propose it without retires.")
+	if !lesson.Replaceable(old.effective()) || !lesson.ScopesOverlap(old.lesson().Scope, target.lesson().Scope) {
+		return badState(old, "it is not a trusted or doubted lesson of the same project", "Reject the replacement, or propose it without retires.")
 	}
 
 	return nil

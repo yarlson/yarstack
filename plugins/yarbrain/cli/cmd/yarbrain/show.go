@@ -8,8 +8,9 @@ import (
 	"github.com/yarlson/yarstack/plugins/yarbrain/cli/internal/vault"
 )
 
-// shownLesson carries lesson text only when the lesson is served. Text that no
-// gate trusted never reaches an agent through show.
+// shownLesson carries lesson text only when the lesson is served, and only the
+// fields its digest covers. Text that no gate trusted never reaches an agent
+// through show.
 type shownLesson struct {
 	ID            string   `json:"id"`
 	Status        string   `json:"status"`
@@ -19,8 +20,6 @@ type shownLesson struct {
 	Body          string   `json:"body,omitempty"`
 	Observed      string   `json:"observed,omitempty"`
 	Scope         []string `json:"scope,omitempty"`
-	ProjectName   string   `json:"project_name,omitempty"`
-	Created       string   `json:"created,omitempty"`
 	Retires       string   `json:"retires,omitempty"`
 	Confirmations int      `json:"confirmations"`
 	Path          string   `json:"path"`
@@ -119,7 +118,7 @@ func present(target record) shownLesson {
 
 	shown.Served = true
 	shown.Title, shown.Cue, shown.Body, shown.Observed = draft.Title, draft.Cue, draft.Body, draft.Observed
-	shown.Scope, shown.ProjectName, shown.Created, shown.Retires = draft.Scope, l.ProjectName, l.Created, draft.Retires
+	shown.Scope, shown.Retires = draft.Scope, draft.Retires
 	shown.Confirmations, _ = trust.Confirmations(target.events)
 
 	return shown

@@ -225,6 +225,20 @@ func TestADismissedNoteLeavesTheBacklogAndStaysOnDisk(t *testing.T) {
 	assert.Equal(t, "bad_input", errorOf(t, noReason)["code"])
 }
 
+func TestABrokenDismissalLogSkipsOnlyTheLegacyBacklog(t *testing.T) {
+	s := isolate(t)
+	s.initVault(t)
+	p := trustedLesson(t, s)
+	require.NoError(t, os.WriteFile(filepath.Join(s.vault, ".yarbrain", "legacy.jsonl"), []byte("<<<<<<< HEAD\n"), 0o600))
+	as(t, "codex:reader")
+
+	result := invoke(t, "find")
+
+	require.Equal(t, exitOK, result.exit, result.stdout)
+	assert.Equal(t, []string{p.id}, menuIDs(t, result))
+	assert.Equal(t, []any{".yarbrain/legacy.jsonl"}, decodeObject(t, result.stdout)["skipped"])
+}
+
 func TestStatusListsTheIDsAwaitingTheGate(t *testing.T) {
 	s := isolate(t)
 	s.initVault(t)

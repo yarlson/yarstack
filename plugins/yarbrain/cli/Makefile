@@ -35,8 +35,10 @@ release-check:
 workflow-check:
 	actionlint $(WORKFLOWS)
 
+# goreleaser reads the nearest tag, and a prefixed tag such as
+# plugins/yarbrain/cli/v0.3.0 is not a semantic version, so pin a bare one.
 snapshot:
-	goreleaser release --snapshot --clean
+	GORELEASER_CURRENT_TAG=v0.0.0 goreleaser release --snapshot --clean
 
 # Stage the goreleaser binaries under their release names, with checksums.txt
 # and the install scripts, and verify every binary against checksums.txt.

@@ -70,4 +70,6 @@ func TestIsLegacyPath(t *testing.T) {
 	assert.False(t, IsLegacyPath("../notes/x.md"))
 	assert.False(t, IsLegacyPath("notes/x.txt"))
 	assert.False(t, IsLegacyPath("lessons/x.md"))
+	assert.False(t, IsLegacyPath(`notes/..\lessons\x.md`), "os.Root on Windows treats a backslash as a separator")
+	assert.False(t, IsLegacyPath("notes/C:x.md"))
 }

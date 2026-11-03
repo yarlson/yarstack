@@ -6,8 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"regexp"
+	"slices"
 	"strings"
+	"unicode"
 )
 
 // maxPayload caps the hook input that the host sends on stdin.
@@ -114,9 +115,100 @@ func await(count int) string {
 	return "await"
 }
 
-// gateCommand matches a shell command that runs brief or verdict, anywhere in
-// a compound command line.
-var gateCommand = regexp.MustCompile(`(^|[\s;&|(` + "`" + `])yarbrain\s+(brief|verdict)\b`)
+// commandWrappers run the command that follows them.
+var commandWrappers = []string{"env", "command", "exec", "sudo", "nohup", "time"}
+
+// runsGateCommand reports whether a Bash or PowerShell command line calls
+// yarbrain brief or verdict in any of its simple commands.
+func runsGateCommand(line string) bool {
+	return slices.ContainsFunc(simpleCommands(line), isGateCall)
+}
+
+// simpleCommands splits a command line into simple commands and their words.
+// It honors single and double quotes and ends a simple command at ; & | ( )
+// a newline, or a backtick. A backslash stays literal, because PowerShell
+// and Windows paths use it. It recognizes gate calls; it is no shell parser.
+func simpleCommands(line string) [][]string {
+	var (
+		commands [][]string
+		words    []string
+		word     strings.Builder
+		inWord   bool
+		quote    rune
+	)
+
+	endWord := func() {
+		if inWord {
+			words, inWord = append(words, word.String()), false
+			word.Reset()
+		}
+	}
+
+	for _, r := range line {
+		switch {
+		case quote != 0 && r == quote:
+			quote = 0
+		case quote != 0:
+			word.WriteRune(r)
+		case r == '\'' || r == '"':
+			quote, inWord = r, true
+		case strings.ContainsRune(";&|()\n`", r):
+			endWord()
+
+			if len(words) > 0 {
+				commands, words = append(commands, words), nil
+			}
+		case unicode.IsSpace(r):
+			endWord()
+		default:
+			word.WriteRune(r)
+
+			inWord = true
+		}
+	}
+
+	endWord()
+
+	return append(commands, words)
+}
+
+// isGateCall reports whether a simple command runs yarbrain brief or verdict:
+// after assignments and wrappers, a program named yarbrain in any directory
+// and case, then global flags, then brief or verdict.
+func isGateCall(words []string) bool {
+	i := 0
+	for i < len(words) && (isAssignment(words[i]) || slices.Contains(commandWrappers, words[i]) || strings.HasPrefix(words[i], "-")) {
+		i++
+	}
+
+	if i == len(words) || !isYarbrain(words[i]) {
+		return false
+	}
+
+	for i++; i < len(words); i++ {
+		switch word := words[i]; {
+		case word == "--vault" || word == "--config":
+			i++
+		case strings.HasPrefix(word, "-"):
+		default:
+			return word == "brief" || word == "verdict"
+		}
+	}
+
+	return false
+}
+
+func isAssignment(word string) bool {
+	name, _, ok := strings.Cut(word, "=")
+
+	return ok && name != "" && strings.IndexFunc(name, func(r rune) bool { return r != '_' && !unicode.IsLetter(r) && !unicode.IsDigit(r) }) < 0
+}
+
+func isYarbrain(word string) bool {
+	name := strings.ToLower(word[strings.LastIndexAny(word, `/\`)+1:])
+
+	return name == "yarbrain" || name == "yarbrain.exe"
+}
 
 // DenyReason is the reason the Claude Code hook gives when it blocks a gate
 // command outside the gate agent.
@@ -128,7 +220,7 @@ const DenyReason = "Only the yarbrain:lesson-gate agent may run `yarbrain brief`
 // parent's session id, so the agent type in the payload is the only signal
 // that tells the gate apart.
 func DeniesGateCommand(p Payload) bool {
-	return p.ToolName == "Bash" && p.AgentType != GateAgent && gateCommand.MatchString(p.ToolInput.Command)
+	return (p.ToolName == "Bash" || p.ToolName == "PowerShell") && p.AgentType != GateAgent && runsGateCommand(p.ToolInput.Command)
 }
 
 // DenyOutput is the PreToolUse output that blocks the tool call and shows the

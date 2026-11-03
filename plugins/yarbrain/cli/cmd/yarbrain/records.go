@@ -67,7 +67,7 @@ func decodeStrict(raw []byte, target any) error {
 			"Run the command with --help to see the input format.").with("field", "input")
 	}
 
-	if decoder.More() {
+	if len(bytes.TrimSpace(raw[decoder.InputOffset():])) > 0 {
 		return newError("bad_input", "the input holds more than one JSON value",
 			"Pass exactly one JSON object.").with("field", "input")
 	}

@@ -35,6 +35,12 @@ var verdicts = map[Status]map[Decision]Status{
 	Changed:  {DecideTrust: Trusted, DecideRetire: Retired, DecideDefer: Deferred},
 }
 
+// Replaceable reports whether a lesson in this effective status may be named
+// by a successor's retires: it is served, or it was served until a doubt.
+func Replaceable(effective Status) bool {
+	return effective == Trusted || effective == Doubted
+}
+
 // AwaitsGate reports whether a lesson in this effective status waits for a
 // gate verdict.
 func AwaitsGate(effective Status) bool {

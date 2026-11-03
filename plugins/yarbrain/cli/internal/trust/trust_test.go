@@ -48,14 +48,48 @@ func TestADoubterJudgingTheLessonInCodexIsNotCredible(t *testing.T) {
 	assert.False(t, Credible(events, digest))
 }
 
-func TestAnEarlierContributorMayGateALaterRound(t *testing.T) {
-	events := []Event{
-		proposed("codex:author"), trusted("codex:gate", 1),
-		{At: at(2), Kind: Doubt, Session: "codex:doubter", Digest: digest},
-		trusted("codex:author", 3),
+func deferred(session string, minutes int) Event {
+	return Event{At: at(minutes), Kind: Verdict, Session: session, Digest: digest, Decision: lesson.DecideDefer, Gate: &Gate{Host: Host(session)}}
+}
+
+func doubted(session string, minutes int) Event {
+	return Event{At: at(minutes), Kind: Doubt, Session: session, Digest: digest}
+}
+
+func TestTheAuthorNeverGatesItsOwnLessonInCodex(t *testing.T) {
+	laterRound := []Event{proposed("codex:author"), trusted("codex:gate", 1), doubted("codex:doubter", 2), trusted("codex:author", 3)}
+	afterADefer := []Event{proposed("codex:author"), deferred("codex:gate", 1), trusted("codex:author", 2)}
+	afterItsOwnDefer := []Event{proposed("codex:author"), deferred("codex:author", 1), trusted("codex:author", 2)}
+
+	assert.False(t, Credible(laterRound, digest), "a later round still judges the author's text")
+	assert.False(t, Credible(afterADefer, digest), "a defer settles nothing")
+	assert.False(t, Credible(afterItsOwnDefer, digest))
+}
+
+func TestADoubterMayGateOnlyAfterAnotherTrust(t *testing.T) {
+	deferredDoubt := []Event{proposed("codex:a"), trusted("codex:g1", 1), doubted("codex:x", 2), deferred("codex:g2", 3), trusted("codex:x", 4)}
+	laterRound := []Event{
+		proposed("codex:a"), trusted("codex:g1", 1), doubted("codex:x", 2), trusted("codex:g2", 3), doubted("codex:y", 4), trusted("codex:x", 5),
 	}
 
-	assert.True(t, Credible(events, digest), "only contributors since the previous verdict count")
+	assert.False(t, Credible(deferredDoubt, digest), "a defer does not end the doubter's round")
+	assert.True(t, Credible(laterRound, digest), "a trust by another gate ended the doubter's round")
+}
+
+func TestAReplacedLessonIsNotCredible(t *testing.T) {
+	events := []Event{proposed("codex:a"), trusted("codex:g", 1), {At: at(2), Kind: Replaced, Session: "codex:g2", Successor: "l-0000000z"}}
+
+	assert.False(t, Credible(events, digest), "a hand-typed trusted status must not revive a replaced lesson")
+}
+
+func TestMayJudge(t *testing.T) {
+	events := []Event{proposed("codex:author"), trusted("codex:gate", 1), doubted("codex:doubter", 2)}
+
+	assert.True(t, MayJudge(events, "codex:gate"), "the earlier gate contributed no text")
+	assert.False(t, MayJudge(events, "codex:author"))
+	assert.False(t, MayJudge(events, "codex:doubter"))
+	assert.False(t, MayJudge(events, "manual:abc"), "a manual session is no gate")
+	assert.True(t, MayJudge([]Event{proposed("claude-code:s1")}, "claude-code:s1"), "Claude Code subagents share the session id")
 }
 
 func TestClaudeCodeSessionsAreNotCompared(t *testing.T) {
@@ -96,6 +130,8 @@ func TestConfirmationsCountDistinctNonAuthorSessionsSinceTrust(t *testing.T) {
 		{At: at(4), Kind: Confirm, Session: "codex:a"},
 		{At: at(5), Kind: Confirm, Session: "codex:author"},
 		{At: at(6), Kind: Confirm, Session: "codex:b"},
+		{At: at(7), Kind: Confirm, Session: "manual:x1"},
+		{At: at(8), Kind: Confirm, Session: "manual:x2"},
 	}
 
 	count, latest := Confirmations(events)
@@ -111,7 +147,6 @@ func TestRecordedAndAuthor(t *testing.T) {
 	assert.True(t, Recorded(events, Doubt, "codex:d"))
 	assert.False(t, Recorded(events, Doubt, "codex:other"))
 	assert.False(t, Recorded(events, Confirm, "codex:d"))
-	assert.Equal(t, []string{"codex:author", "codex:d"}, Contributors(events))
 }
 
 func TestDefersCountOnlyTheCurrentRun(t *testing.T) {

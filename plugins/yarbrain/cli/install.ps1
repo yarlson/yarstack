@@ -13,9 +13,10 @@ $base = if ($env:YARBRAIN_RELEASE_BASE) { $env:YARBRAIN_RELEASE_BASE } else { "h
 $api = if ($env:YARBRAIN_RELEASE_API) { $env:YARBRAIN_RELEASE_API } else { "https://api.github.com/repos/$repo/releases?per_page=50" }
 $installDir = if ($env:YARBRAIN_INSTALL_DIR) { $env:YARBRAIN_INSTALL_DIR } else { Join-Path $env:LOCALAPPDATA 'Programs\yarbrain' }
 
+# Fail throws instead of calling exit: under `irm ... | iex` the script runs in
+# the user's session, and exit would close it.
 function Fail([string]$message) {
-    [Console]::Error.WriteLine("yarbrain install: $message")
-    exit 1
+    throw "yarbrain install: $message"
 }
 
 $version = $env:YARBRAIN_VERSION

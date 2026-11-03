@@ -84,15 +84,15 @@ func (a *app) setupSteps(vaultPath string) []setupStep {
 		})
 	}
 
-	if dirExists(filepath.Join(a.home, ".codex")) {
+	if dirExists(a.codexHome()) {
 		steps = append(steps,
 			setupStep{
 				Host: "codex",
-				Step: fmt.Sprintf("Add %q to writable_roots under [sandbox_workspace_write] in ~/.codex/config.toml.", vaultPath),
+				Step: fmt.Sprintf("Add %q to writable_roots under [sandbox_workspace_write] in %s.", vaultPath, a.codexFile("config.toml")),
 			},
 			setupStep{
 				Host: "codex",
-				Step: "Pin the gate in ~/.codex/agents/yarbrain-gate.toml: name = \"yarbrain-gate\", " +
+				Step: "Pin the gate in " + a.codexFile("agents/yarbrain-gate.toml") + ": name = \"yarbrain-gate\", " +
 					"description = \"Independent Yarbrain lesson gate\", developer_instructions = " +
 					"\"Judge the one Yarbrain lesson id in your task with the lesson-gate skill.\", " +
 					"model_reasoning_effort = \"high\", and a model different from your main session's.",

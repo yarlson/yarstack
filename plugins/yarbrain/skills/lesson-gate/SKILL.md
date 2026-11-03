@@ -1,7 +1,7 @@
 ---
 name: lesson-gate
 description: Judge one Yarbrain lesson by id as the independent gate and record the verdict. Use only inside a fresh-context gate agent that was started for this purpose with a lesson id; never in a session that proposed or doubted the lesson.
-allowed-tools: Bash(yarbrain brief *), Bash(yarbrain verdict *), Bash(echo *), Read, Grep, Glob
+allowed-tools: Bash(yarbrain brief *), Bash(yarbrain verdict *), Bash(printf *), Read, Grep, Glob
 ---
 
 # Judge a Yarbrain Lesson
@@ -54,13 +54,15 @@ When the lesson has `retires`, repeat that value in the verdict.
 ## Record the verdict
 
 Pass the verdict as one line of JSON. Hosts allow a one-line command more
-reliably than a heredoc. Keep every reason free of single quotes.
+reliably than a heredoc, and `printf` keeps backslashes that `echo` in zsh
+would change. Keep every reason free of single quotes.
 
 ```sh
-echo '{"digest":"<digest from brief>","decision":"trust","checks":{"safety":{"pass":true,"reason":"<one line>"},"correct":{"pass":true,"reason":"<one line>"},"valuable":{"pass":true,"reason":"<one line>"},"scope":{"pass":true,"reason":"<one line>"}},"reason":"<one line, at most 200 characters>","gate":{"model":"<your model>","effort":"<your reasoning effort>"}}' | yarbrain verdict <id>
+printf '%s\n' '{"digest":"<digest from brief>","decision":"trust","checks":{"safety":{"pass":true,"reason":"<one line>"},"correct":{"pass":true,"reason":"<one line>"},"valuable":{"pass":true,"reason":"<one line>"},"scope":{"pass":true,"reason":"<one line>"}},"reason":"<one line, at most 200 characters>","gate":{"model":"<your model>","effort":"<your reasoning effort>"}}' | yarbrain verdict <id>
 ```
 
-On Windows PowerShell, use the same one-line JSON with `| yarbrain verdict <id>`.
+In PowerShell, pipe the single-quoted JSON string itself:
+`'<json>' | yarbrain verdict <id>`.
 If `verdict` returns `changed_underneath`, run `brief` again and judge the
 current text. If it returns another error, follow its `fix` field once.
 

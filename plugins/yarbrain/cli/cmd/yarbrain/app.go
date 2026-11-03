@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/yarlson/yarstack/plugins/yarbrain/cli/internal/vault"
@@ -123,11 +124,25 @@ func classifyVault(err error) *cliError {
 	return nil
 }
 
+// codexHome is where Codex keeps its configuration: CODEX_HOME, or ~/.codex.
+func (a *app) codexHome() string {
+	if dir := a.getenv("CODEX_HOME"); dir != "" {
+		return dir
+	}
+
+	return filepath.Join(a.home, ".codex")
+}
+
+// codexFile names a file in the Codex home for a setup step.
+func (a *app) codexFile(name string) string {
+	return filepath.ToSlash(filepath.Join(a.codexHome(), name))
+}
+
 // writeDeniedFix names the one-time host setup that a denied write points to.
 func (a *app) writeDeniedFix() string {
 	switch {
 	case a.getenv("CODEX_THREAD_ID") != "":
-		return "Add the vault to [sandbox_workspace_write] writable_roots in ~/.codex/config.toml, then retry."
+		return "Add the vault to [sandbox_workspace_write] writable_roots in " + a.codexFile("config.toml") + ", then retry."
 	case a.getenv("CLAUDE_CODE_SESSION_ID") != "":
 		return `Add "Bash(yarbrain *)" to permissions.allow in ~/.claude/settings.json, then retry.`
 	default:

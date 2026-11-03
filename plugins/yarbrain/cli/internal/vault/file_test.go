@@ -67,6 +67,15 @@ func TestParseAcceptsABlockListScope(t *testing.T) {
 	assert.Equal(t, []string{"all"}, parsed.Scope)
 }
 
+func TestParseFindsAnObservedHeadingWithTrailingSpaces(t *testing.T) {
+	raw := "---\nid: l-0000000z\nscope: [all]\n---\n# T\n\nbody\n\n## Observed  \n\nseen\n"
+
+	parsed, err := Parse([]byte(raw), "lessons/x.md")
+	require.NoError(t, err)
+	assert.Equal(t, "body", parsed.Body)
+	assert.Equal(t, "seen", parsed.Observed)
+}
+
 func TestParseRejectsBrokenFiles(t *testing.T) {
 	cases := map[string]string{
 		"no frontmatter":     "# Title\n",
@@ -131,6 +140,9 @@ func TestSetOwnedRefusesUnsafeFiles(t *testing.T) {
 		"plain continuation": strings.Replace(handEdited, "status: trusted   # a person's note\n",
 			"status: trusted\n  still status\n", 1),
 		"duplicate key": strings.Replace(handEdited, "cue:", "status: proposed\ncue:", 1),
+		"flow mapping":  "---\n{id: l-7k3m9q2x, status: trusted, cue: c, scope: [all]}\n---\n# Title\n\nBody.\n",
+		"line separator in an earlier value": strings.Replace(handEdited, "status: trusted   # a person's note\ncue: 'make seed fails'",
+			"cue: 'make seed fails'\nstatus: trusted", 1),
 	}
 	for name, raw := range cases {
 		t.Run(name, func(t *testing.T) {

@@ -59,8 +59,8 @@ agent judges, and later sessions confirm or doubt. The repository root
   CLI owns, keep every other byte, and refuse a file whose owned key is
   duplicated or spans several lines.
 - `hook session-start` is read-only, prints counts only, never starts with `{`,
-  and finishes within 2 seconds. It exits 0 unless a configured vault is
-  missing.
+  and finishes within 2 seconds. It exits 0, or 1 with a notice on stderr
+  when the configured vault or the project cannot be read.
 - The CLI never calls the network or a model.
 
 ## Go and developer-experience rules

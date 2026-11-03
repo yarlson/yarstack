@@ -107,7 +107,8 @@ func line(field, value string, limit int) []Problem {
 		return []Problem{{Field: field, Rule: "required"}}
 	}
 
-	if strings.ContainsAny(value, "\r\n") {
+	// YAML also breaks lines at U+0085, U+2028, and U+2029.
+	if strings.ContainsAny(value, "\r\n\u0085  ") {
 		return []Problem{{Field: field, Rule: "must be one line"}}
 	}
 

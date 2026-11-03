@@ -47,7 +47,7 @@ func newConfirmCommand(a *app) *cobra.Command {
 		Long: "confirm records that applying a served lesson worked. Each session confirms a\n" +
 			"lesson at most once, and the author's confirmations do not count. An optional\n" +
 			"note on stdin says what worked: {\"note\": \"<one line, at most 200 characters>\"}",
-		Example: "  yarbrain confirm l-7k3m9q2x\n  echo '{\"note\": \"seed passed after migrate\"}' | yarbrain confirm l-7k3m9q2x",
+		Example: "  yarbrain confirm l-7k3m9q2x\n  printf '%s\\n' '{\"note\": \"seed passed after migrate\"}' | yarbrain confirm l-7k3m9q2x",
 		Args:    exactArgs(1, "id"),
 		RunE: func(_ *cobra.Command, args []string) error {
 			raw, err := a.readOptionalInput(input)
@@ -95,7 +95,7 @@ func newDoubtCommand(a *app) *cobra.Command {
 			"is no longer served until the independent gate judges it again. Each session\n" +
 			"doubts a lesson at most once. Input on stdin:\n" +
 			"{\"digest\": \"<the digest from show>\", \"note\": \"<what went wrong, at most 500 characters>\"}",
-		Example: "  echo '{\"digest\": \"2c9d41e07a6b\", \"note\": \"seed still failed after migrate\"}' | yarbrain doubt l-7k3m9q2x",
+		Example: "  printf '%s\\n' '{\"digest\": \"2c9d41e07a6b\", \"note\": \"seed still failed after migrate\"}' | yarbrain doubt l-7k3m9q2x",
 		Args:    exactArgs(1, "id"),
 		RunE: func(_ *cobra.Command, args []string) error {
 			var in doubtInput
@@ -138,7 +138,7 @@ func (a *app) readJSON(path string, target any, example string) error {
 	}
 
 	if raw == nil {
-		return newError("bad_input", "the input is empty", "Pass one JSON object on stdin, for example: echo '"+example+"' | yarbrain ...").
+		return newError("bad_input", "the input is empty", "Pass one JSON object on stdin, for example: printf '%s\\n' '"+example+"' | yarbrain ...").
 			with("field", "input")
 	}
 

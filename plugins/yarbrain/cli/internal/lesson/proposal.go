@@ -35,14 +35,15 @@ const (
 // ClassifyProposal compares a normalized draft with the existing lessons. A
 // lesson with the same intent key in an overlapping scope is the same lesson:
 // identical content is a repeat, and different content is a conflict unless
-// the existing lesson was rejected or retired. A rejection therefore blocks
-// only the identical content, never a corrected version.
+// the existing lesson was rejected or retired, or is the lesson the draft
+// retires. A rejection therefore blocks only the identical content, never a
+// corrected version.
 func ClassifyProposal(existing []Lesson, d Draft) (Outcome, Lesson) {
 	key := IntentKey(d.Title)
 	digest := Digest(d)
 
 	for _, other := range existing {
-		if IntentKey(other.Title) != key || !ScopesOverlap(other.Scope, d.Scope) {
+		if other.ID == d.Retires || IntentKey(other.Title) != key || !ScopesOverlap(other.Scope, d.Scope) {
 			continue
 		}
 

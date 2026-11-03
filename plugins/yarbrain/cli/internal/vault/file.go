@@ -238,7 +238,7 @@ func splitBody(lines []string, name string) (title, body, observed string, err e
 
 	section := func(lines []string) string { return strings.Trim(strings.Join(lines, "\n"), "\n") }
 
-	split := slices.Index(rest, observedHeading)
+	split := slices.IndexFunc(rest, func(line string) bool { return strings.TrimRight(line, " \t") == observedHeading })
 	if split < 0 {
 		return title, section(rest), "", nil
 	}
@@ -360,6 +360,12 @@ func setLine(text, name, key, value string) (string, error) {
 		return strings.Join(lines, "\n"), nil
 	}
 
+	// YAML line numbers match the file's "\n" lines only when every key starts
+	// its own line and no value holds a Unicode line break.
+	if keyNode.Line >= doc.closing || !strings.HasPrefix(doc.lines[keyNode.Line], key+":") {
+		return "", &BadFileError{Path: name, Reason: fmt.Sprintf("the key %q is not at the start of its own line; write one key per line", key)}
+	}
+
 	if !doc.singleLine(index, keyNode, valueNode) {
 		return "", &BadFileError{Path: name, Reason: fmt.Sprintf("the key %q spans several lines; put it on one line", key)}
 	}
@@ -388,6 +394,10 @@ func (d *document) singleLine(index int, keyNode, valueNode *yaml.Node) bool {
 	next := d.closing
 	if pairStart := 2 * (index + 1); pairStart < len(d.mapping.Content) {
 		next = d.mapping.Content[pairStart].Line
+	}
+
+	if next <= keyNode.Line || next > d.closing {
+		return false
 	}
 
 	for _, between := range d.lines[keyNode.Line+1 : next] {

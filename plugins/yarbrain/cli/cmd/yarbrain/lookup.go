@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"slices"
 	"time"
 
@@ -55,7 +56,14 @@ func viewFor(v *vault.Vault, identity project.Identity) (scopedView, error) {
 
 	view.collect(v, entries, identity)
 
-	if view.legacy, err = unconvertedNotes(v, entries); err != nil {
+	// A broken dismissal log hides only the legacy backlog, not the lessons.
+	var bad *vault.BadFileError
+
+	view.legacy, err = unconvertedNotes(v, entries)
+	switch {
+	case errors.As(err, &bad):
+		view.addSkipped(bad.Path)
+	case err != nil:
 		return scopedView{}, err
 	}
 

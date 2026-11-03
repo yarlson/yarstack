@@ -151,14 +151,15 @@ func (a *app) storeProposal(draft lesson.Draft, identity project.Identity) (prop
 		switch outcome {
 		case lesson.OutcomeRepeat:
 			existing, _ := vault.Find(entries, match.ID)
+			status := lesson.Effective(match)
 			result = proposeResult{
-				ID: match.ID, Path: existing.Path, Status: string(match.Status), Digest: lesson.Digest(draft), Next: gateStep(match.ID, match.Status),
+				ID: match.ID, Path: existing.Path, Status: string(status), Digest: lesson.Digest(draft), Next: gateStep(match.ID, status),
 			}
 
 			return nil
 		case lesson.OutcomeTitleTaken:
 			return newError("title_taken", fmt.Sprintf("lesson %s already has this title with different content", match.ID),
-				fmt.Sprintf("Run `yarbrain show %s`. If it covers your lesson, stop. If it is wrong, doubt it and propose a replacement with retires. Otherwise change the title.", match.ID)).
+				fmt.Sprintf("Run `yarbrain show %s`. If it covers your lesson, stop. If it is wrong, doubt it and propose a replacement with retires: %s; it may keep the title. Otherwise change the title.", match.ID, match.ID)).
 				with("id", match.ID).with("status", string(match.Status))
 		}
 
@@ -215,9 +216,10 @@ func checkRetires(entries []vault.Entry, draft lesson.Draft) error {
 			with("field", "retires")
 	}
 
-	if target.Lesson.Status != lesson.Trusted || !lesson.ScopesOverlap(target.Lesson.Scope, draft.Scope) {
-		return newError("bad_state", fmt.Sprintf("lesson %s is %s or belongs to another project", draft.Retires, target.Lesson.Status),
-			"retires may name only a trusted lesson of the same project.").with("field", "retires")
+	status := lesson.Effective(target.Lesson)
+	if !lesson.Replaceable(status) || !lesson.ScopesOverlap(target.Lesson.Scope, draft.Scope) {
+		return newError("bad_state", fmt.Sprintf("lesson %s is %s or belongs to another project", draft.Retires, status),
+			"retires may name only a trusted or doubted lesson of the same project.").with("field", "retires")
 	}
 
 	return nil

@@ -150,6 +150,10 @@ func (a *app) leaseForBrief(v *vault.Vault, target record, identity project.Iden
 		return trust.Lease{}, badState(target, "it does not await a gate verdict", "Judge only lessons that the hook or status reports as awaiting the gate.")
 	}
 
+	if !trust.MayJudge(target.events, session) {
+		return trust.Lease{}, notIndependent(target, session)
+	}
+
 	l := target.lesson()
 	if !l.IsAllScope() && !lesson.ScopesOverlap(l.Scope, identity.IDs()) {
 		return trust.Lease{}, newError("project_mismatch", fmt.Sprintf("lesson %s belongs to another project (%s)", l.ID, l.ProjectName),
@@ -172,8 +176,28 @@ func (a *app) leaseForBrief(v *vault.Vault, target record, identity project.Iden
 	return lease, v.SetLease(l.ID, lease)
 }
 
+// notIndependent explains why a session may not gate a lesson. A verdict needs
+// the brief's lease, so refusing the brief keeps every verdict independent.
+func notIndependent(target record, session string) *cliError {
+	if trust.Host(session) == trust.Manual {
+		return badState(target, "brief needs a Claude Code or Codex session", "Run the gate as an agent in Claude Code or Codex.")
+	}
+
+	return badState(target, "this session proposed or doubted it", "Start a fresh gate agent with only the lesson id; never judge your own work.")
+}
+
 func allowedNow(target record) []lesson.Decision {
 	allowed := lesson.AllowedDecisions(target.effective())
+
+	if target.effective() == lesson.Deferred {
+		unfit := lesson.DecideRetire
+		if trust.WasTrusted(target.events) {
+			unfit = lesson.DecideReject
+		}
+
+		allowed = slices.DeleteFunc(allowed, func(d lesson.Decision) bool { return d == unfit })
+	}
+
 	if trust.Defers(target.events) >= trust.MaxDefers {
 		allowed = slices.DeleteFunc(allowed, func(d lesson.Decision) bool { return d == lesson.DecideDefer })
 	}
@@ -273,12 +297,12 @@ func gateNeighbors(v *vault.Vault, entries []vault.Entry, target record) (neighb
 }
 
 func (s sameScope) retiresTarget(target record) *briefLesson {
-	id := target.lesson().Retires
-	if id == "" || !slices.ContainsFunc(s.served, func(l lesson.Lesson) bool { return l.ID == id }) {
+	entry, ok := s.entries[target.lesson().Retires]
+	if !ok || !lesson.Replaceable(lesson.Effective(entry.Lesson)) {
 		return nil
 	}
 
-	retired := briefOf(s.entries[id], lesson.Trusted)
+	retired := briefOf(entry, lesson.Effective(entry.Lesson))
 
 	return &retired
 }

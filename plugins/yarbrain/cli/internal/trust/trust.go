@@ -75,11 +75,22 @@ func Host(session string) string {
 // gate agent runs verdict, and the session comparison cannot apply.
 func distinctSessions(host string) bool { return host == Codex }
 
+// MayJudge reports whether a verdict from session could be credible: it
+// comes from a host session and, where the host can tell sessions apart, from
+// a session that did not contribute to the lesson.
+func MayJudge(events []Event, session string) bool {
+	host := Host(session)
+	if host != ClaudeCode && host != Codex {
+		return false
+	}
+
+	return !distinctSessions(host) || !slices.Contains(contributors(events), session)
+}
+
 // Credible reports whether the lesson's latest verdict is a trust verdict
 // that a later session may rely on: it binds digest, carries gate metadata,
-// comes from a host session, and, where the host can tell sessions apart,
-// comes from a session that did not contribute to the lesson since the
-// previous verdict.
+// comes from a session that MayJudge the lesson as it stood, and no doubt or
+// replacement followed it.
 func Credible(events []Event, digest string) bool {
 	last := lastIndex(events, Verdict)
 	if last < 0 {
@@ -91,20 +102,11 @@ func Credible(events []Event, digest string) bool {
 		return false
 	}
 
-	if verdict.Gate == nil || verdict.Gate.Host == "" {
+	if verdict.Gate == nil || verdict.Gate.Host == "" || !MayJudge(events[:last], verdict.Session) {
 		return false
 	}
 
-	host := Host(verdict.Session)
-	if host != ClaudeCode && host != Codex {
-		return false
-	}
-
-	if distinctSessions(host) && slices.Contains(contributors(events, last), verdict.Session) {
-		return false
-	}
-
-	return !slices.ContainsFunc(events[last+1:], func(e Event) bool { return e.Kind == Doubt })
+	return !slices.ContainsFunc(events[last+1:], func(e Event) bool { return e.Kind == Doubt || e.Kind == Replaced })
 }
 
 // Served reports whether a lesson may reach an agent: it is trusted, its
@@ -113,26 +115,28 @@ func Served(l lesson.Lesson, events []Event) bool {
 	return lesson.Effective(l) == lesson.Trusted && Credible(events, lesson.Digest(lesson.Normalize(l.Draft)))
 }
 
-// contributors lists the sessions that proposed or doubted the lesson after
-// the verdict before the one at index.
-func contributors(events []Event, index int) []string {
-	start := lastIndex(events[:index], Verdict) + 1
+// contributors lists the sessions whose work a gate would judge: the author,
+// for the life of the lesson, and every session that doubted it since its
+// latest trust verdict. A defer or a reject settles nothing, so it does not
+// end a round.
+func contributors(events []Event) []string {
+	lastTrust := -1
+
+	for i, e := range events {
+		if e.Kind == Verdict && e.Decision == lesson.DecideTrust {
+			lastTrust = i
+		}
+	}
 
 	var sessions []string
 
-	for _, e := range events[start:index] {
-		if e.Kind == Proposed || e.Kind == Doubt {
+	for i, e := range events {
+		if e.Kind == Proposed || (e.Kind == Doubt && i > lastTrust) {
 			sessions = append(sessions, e.Session)
 		}
 	}
 
 	return sessions
-}
-
-// Contributors lists the sessions that proposed or doubted the lesson since
-// its latest verdict: a gate from any of them would judge its own work.
-func Contributors(events []Event) []string {
-	return contributors(events, len(events))
 }
 
 func lastIndex(events []Event, kind Kind) int {
@@ -162,9 +166,10 @@ func Recorded(events []Event, kind Kind, session string) bool {
 	return slices.ContainsFunc(events, func(e Event) bool { return e.Kind == kind && e.Session == session })
 }
 
-// Confirmations counts the distinct sessions, other than the author, that
+// Confirmations counts the distinct host sessions, other than the author, that
 // confirmed the lesson since its latest trust verdict, and returns the time
-// of the latest confirmation.
+// of the latest confirmation. Every manual command is a new session, so manual
+// confirmations do not count.
 func Confirmations(events []Event) (int, time.Time) {
 	start := lastIndex(events, Verdict) + 1
 	author := Author(events)
@@ -173,7 +178,7 @@ func Confirmations(events []Event) (int, time.Time) {
 	var latest time.Time
 
 	for _, e := range events[start:] {
-		if e.Kind != Confirm || e.Session == author || seen[e.Session] {
+		if e.Kind != Confirm || e.Session == author || seen[e.Session] || Host(e.Session) == Manual {
 			continue
 		}
 
@@ -185,6 +190,13 @@ func Confirmations(events []Event) (int, time.Time) {
 	}
 
 	return len(seen), latest
+}
+
+// WasTrusted reports whether any gate ever trusted the lesson. A deferred
+// lesson that was trusted before can be retired; one that never was can only
+// be rejected.
+func WasTrusted(events []Event) bool {
+	return slices.ContainsFunc(events, func(e Event) bool { return e.Kind == Verdict && e.Decision == lesson.DecideTrust })
 }
 
 // MaxDefers is how many defer verdicts in a row a lesson may get. After that

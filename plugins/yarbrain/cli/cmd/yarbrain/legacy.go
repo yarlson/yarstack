@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 
@@ -84,7 +85,7 @@ func newDismissCommand(a *app) *cobra.Command {
 		Short: "Record that a v0.2 note holds nothing worth a lesson",
 		Long: "dismiss takes a v0.2 note out of the conversion backlog. The note itself stays\n" +
 			"untouched. Input on stdin: {\"reason\": \"<one line, at most 200 characters>\"}",
-		Example: "  echo '{\"reason\": \"status notes from one sprint\"}' | yarbrain legacy dismiss notes/projects/old.md",
+		Example: "  printf '%s\\n' '{\"reason\": \"status notes from one sprint\"}' | yarbrain legacy dismiss notes/projects/old.md",
 		Args:    exactArgs(1, "v0.2-path"),
 		RunE: func(_ *cobra.Command, args []string) error {
 			var in dismissInput
@@ -128,7 +129,7 @@ func newDismissCommand(a *app) *cobra.Command {
 // codexGatePinned reports whether the one-time Codex setup pinned the gate
 // agent's model.
 func (a *app) codexGatePinned() bool {
-	_, err := os.Stat(a.home + "/.codex/agents/yarbrain-gate.toml")
+	_, err := os.Stat(filepath.Join(a.codexHome(), "agents", "yarbrain-gate.toml"))
 
 	return err == nil
 }

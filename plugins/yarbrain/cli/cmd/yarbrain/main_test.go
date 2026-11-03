@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -88,17 +90,43 @@ func TestVersionFlagPrintsOnlyTheVersion(t *testing.T) {
 
 func TestExitCodeClassesFollowTheContract(t *testing.T) {
 	cases := map[string]int{
-		"internal":     exitCrash,
-		"bad_input":    exitFixCall,
-		"title_taken":  exitFixCall,
-		"locked":       exitRetry,
-		"busy":         exitRetry,
-		"no_vault":     exitSetup,
-		"write_denied": exitSetup,
+		"internal":     2,
+		"bad_input":    3,
+		"title_taken":  3,
+		"locked":       4,
+		"busy":         4,
+		"no_vault":     5,
+		"write_denied": 5,
 	}
 	for code, want := range cases {
 		assert.Equal(t, want, newError(code, "m", "f").exitCode(), "code %s", code)
 	}
+}
+
+func TestRealFailuresExitWithThePublishedCodes(t *testing.T) {
+	s := isolate(t)
+	s.initVault(t)
+	inProject(t, s)
+
+	assert.Equal(t, 0, invoke(t, "status").exit)
+	assert.Equal(t, 3, invoke(t, "show").exit, "a missing argument is a call to fix")
+
+	lock := filepath.Join(s.vault, ".yarbrain", "lock")
+	require.NoError(t, os.WriteFile(lock, nil, 0o600))
+
+	locked := invokeWith(t, proposal, "propose")
+	assert.Equal(t, 4, locked.exit, locked.stdout)
+	assert.Equal(t, "locked", errorOf(t, locked)["code"])
+	require.NoError(t, os.Remove(lock))
+
+	require.NoError(t, os.WriteFile(filepath.Join(s.vault, "lessons", "drop-in.md"), []byte("# Dropped in by hand\n\nNo frontmatter.\n"), 0o600))
+	assert.Equal(t, 1, invoke(t, "check").exit, "check findings")
+
+	require.NoError(t, os.WriteFile(filepath.Join(s.vault, ".yarbrain", "format"), []byte("2\n"), 0o600))
+
+	newer := invoke(t, "status")
+	assert.Equal(t, 5, newer.exit, newer.stdout)
+	assert.Equal(t, "contract_unsupported", errorOf(t, newer)["code"])
 }
 
 func TestUnclassifiedErrorBecomesInternal(t *testing.T) {
