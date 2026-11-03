@@ -2,7 +2,7 @@
 
 ## Commands
 
-- Run `make validate` before finalizing changes.
+- Run `make validate` before finalizing changes. It also runs `make ci` for the Go CLI in `plugins/yarbrain/cli`, which needs the tools pinned in its `mise.toml`.
 - Run `make install-system-prompt` only when the user explicitly requests changes to global agent guidance; it writes outside the repository.
 - Test installer changes with `YARSTACK_AGENT_HOME` pointed at a temporary directory. Do not test destructive paths against the real home directory.
 
