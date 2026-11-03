@@ -16,10 +16,14 @@ type statusResult struct {
 	Vault           statusVault      `json:"vault"`
 	Project         project.Identity `json:"project"`
 	Counts          statusCounts     `json:"counts"`
+	AwaitingGateIDs []string         `json:"awaiting_gate_ids"`
 	Totals          map[string]int   `json:"totals"`
 	Findings        int              `json:"findings"`
 	CodexGatePinned bool             `json:"codex_gate_pinned"`
 }
+
+// maxAwaitingIDs bounds the ids status lists for gate runs.
+const maxAwaitingIDs = 10
 
 type statusVault struct {
 	vault.Location
@@ -42,8 +46,8 @@ func newStatusCommand(a *app) *cobra.Command {
 		Short: "Show the contract, the vault, and this project's lesson counts",
 		Long: "status is the first call an agent makes. It reports the CLI contract version,\n" +
 			"where the vault is, the current project's identity, its counts of served\n" +
-			"lessons, lessons awaiting the gate, and unconverted v0.2 notes, and the\n" +
-			"vault-wide totals by status.",
+			"lessons, lessons awaiting the gate, and unconverted v0.2 notes, the ids of\n" +
+			"up to 10 lessons awaiting the gate, and the vault-wide totals by status.",
 		Args: noArgs,
 		RunE: func(command *cobra.Command, _ []string) error {
 			identity, err := a.projectIdentity(command)
@@ -82,6 +86,7 @@ func newStatusCommand(a *app) *cobra.Command {
 					Trusted: counts.Trusted, CrossProject: counts.CrossProject,
 					AwaitingGate: counts.AwaitingGate, Legacy: counts.Legacy,
 				},
+				AwaitingGateIDs: nonNil(view.awaiting[:min(maxAwaitingIDs, len(view.awaiting))]),
 				Totals:          totals(entries),
 				Findings:        len(findings),
 				CodexGatePinned: a.codexGatePinned(),

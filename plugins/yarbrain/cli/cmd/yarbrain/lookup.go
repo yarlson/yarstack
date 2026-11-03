@@ -18,14 +18,16 @@ const maxSkipped = 10
 // scopedView is what one project sees of the vault. find, status, and the
 // session-start hook all read it, so they always agree.
 type scopedView struct {
-	candidates   []search.Candidate
-	awaitingGate int
-	legacy       []string
-	skipped      []string
+	candidates []search.Candidate
+	// awaiting holds the ids of lessons in scope that await the gate, oldest
+	// file first. Ids carry no lesson text.
+	awaiting []string
+	legacy   []string
+	skipped  []string
 }
 
 func (s scopedView) counts() hook.Counts {
-	counts := hook.Counts{Trusted: len(s.candidates), AwaitingGate: s.awaitingGate, Legacy: len(s.legacy)}
+	counts := hook.Counts{Trusted: len(s.candidates), AwaitingGate: len(s.awaiting), Legacy: len(s.legacy)}
 
 	for _, candidate := range s.candidates {
 		if candidate.CrossProject {
@@ -85,21 +87,25 @@ func (s *scopedView) collect(v *vault.Vault, entries []vault.Entry, identity pro
 			s.candidates = append(s.candidates, candidateOf(l, events))
 			retiredBySuccessor[l.Retires] = true
 		case lesson.AwaitsGate(lesson.Effective(l)):
-			s.awaitingGate++
+			s.awaiting = append(s.awaiting, l.ID)
 		}
 	}
 
 	s.candidates = slices.DeleteFunc(s.candidates, func(c search.Candidate) bool { return retiredBySuccessor[c.Lesson.ID] })
 }
 
-// unconvertedNotes lists the v0.2 notes that no lesson converts, except
-// through a rejected conversion.
+// unconvertedNotes lists the v0.2 notes that await conversion: no lesson
+// converts them, except through a rejected conversion, and no session
+// dismissed them.
 func unconvertedNotes(v *vault.Vault, entries []vault.Entry) ([]string, error) {
-	converted := map[string]bool{}
+	handled, err := v.Dismissed()
+	if err != nil {
+		return nil, err
+	}
 
 	for _, entry := range entries {
 		if entry.Lesson.Converts != "" && entry.Lesson.Status != lesson.Rejected {
-			converted[entry.Lesson.Converts] = true
+			handled[entry.Lesson.Converts] = true
 		}
 	}
 
@@ -108,7 +114,7 @@ func unconvertedNotes(v *vault.Vault, entries []vault.Entry) ([]string, error) {
 		return nil, err
 	}
 
-	return slices.DeleteFunc(notes, func(note string) bool { return converted[note] }), nil
+	return slices.DeleteFunc(notes, func(note string) bool { return handled[note] }), nil
 }
 
 func (s *scopedView) addSkipped(path string) {

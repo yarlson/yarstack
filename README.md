@@ -200,17 +200,24 @@ Repository instructions still take precedence. Your host's permissions control
 the agent's access. Asking for a review does not authorize edits or external
 writes.
 
-## Optional session memory with Yarbrain
+## Optional lessons with Yarbrain
 
 [Yarbrain](plugins/yarbrain/README.md) is a separate plugin in the same
-marketplace. It stores session evidence and notes in a Markdown vault at a path
-you choose. You can recall those notes during later sessions.
+marketplace. Agents record what a session taught as small lessons in a Markdown
+vault at a path you choose, and later sessions in any host find and apply them.
 
-Episode notes preserve what happened in a session. Other notes record the current
-understanding. You review proposed knowledge before adding it to those notes and
-approve proposed skills before activating them.
+Nobody has to approve a lesson by hand. An independent gate agent, started with
+fresh context, trusts or rejects each proposal against the committed code, and
+later sessions confirm or doubt the lessons they use. You can read, add, or edit
+lessons yourself, but nothing waits for you.
 
-After adding the marketplace, install Yarbrain for your host:
+Install the `yarbrain` CLI, which owns every vault read and write:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/yarlson/yarstack/main/plugins/yarbrain/cli/install.sh | sh
+```
+
+Then install the plugin for your host:
 
 ```sh
 codex plugin add yarbrain@yarstack
@@ -222,22 +229,11 @@ Or, for Claude Code:
 claude plugin install yarbrain@yarstack
 ```
 
-Start a new Codex thread or reload Claude Code's plugins, then ask:
-
-```text
-Use Yarbrain's wiki-initialize skill to create my vault at <path>.
-```
-
-Initialization requires Python 3 and a vault path you choose. It preserves
-existing vault files. Use `wiki-capture` after a session to save evidence and
-propose notes or procedures. Use `wiki-reconcile` to compare those proposals with
-existing knowledge. Use `wiki-recall` to find relevant notes for your next task.
-
-After you configure a vault, hooks load up to 12,000 characters from its index
-at session start. Other hooks queue session IDs and transcript paths for later
-capture. Hooks do not copy transcript bodies, call models or network services,
-or edit current notes. Capture and reconciliation happen when you invoke those
-skills. You can use Yarstack without installing Yarbrain.
+Run `yarbrain init <vault-path>` once, and apply the one-time host setup it
+prints, so vault writes never prompt. An existing v0.2 vault is adopted as is;
+its notes stay untouched, and agents convert them into lessons over time. See
+the [plugin README](plugins/yarbrain/README.md) for details. You can use
+Yarstack without installing Yarbrain.
 
 ## Skill catalog
 
@@ -330,12 +326,8 @@ from plugins, so in Codex these skills use Codex's own subagents.
 
 | Skill | Use it to |
 | --- | --- |
-| [`wiki-initialize`](plugins/yarbrain/skills/wiki-initialize/SKILL.md) | Create or adopt a vault at a path you choose. |
-| [`wiki-capture`](plugins/yarbrain/skills/wiki-capture/SKILL.md) | Save a session as evidence and propose notes or reusable procedures. |
-| [`wiki-reconcile`](plugins/yarbrain/skills/wiki-reconcile/SKILL.md) | Compare proposed knowledge with existing notes before updating them. |
-| [`wiki-recall`](plugins/yarbrain/skills/wiki-recall/SKILL.md) | Retrieve up to five relevant notes, episodes, or approved procedures. |
-| [`procedure-promote`](plugins/yarbrain/skills/procedure-promote/SKILL.md) | Propose a skill for a procedure verified in repeated use. |
-| [`wiki-maintain`](plugins/yarbrain/skills/wiki-maintain/SKILL.md) | Check vault links and structure. Find stale, duplicate, or conflicting notes and outdated skills. |
+| [`lesson-record`](plugins/yarbrain/skills/lesson-record/SKILL.md) | Propose a lesson from this session, report whether a used lesson worked, convert v0.2 notes, and start the independent gate. |
+| [`lesson-gate`](plugins/yarbrain/skills/lesson-gate/SKILL.md) | Judge one proposed lesson as the fresh-context gate and record the verdict. |
 
 </details>
 
@@ -376,11 +368,12 @@ Run the repository checks before submitting changes:
 make validate
 ```
 
-This runs the Yarbrain Python tests, `plugin-scanner lint` and
+This runs `make ci` for the Yarbrain CLI, `plugin-scanner lint` and
 `plugin-scanner verify` for both Codex packages, and
 `claude plugin validate --strict` for both Claude Code plugins and the marketplace.
-The command requires Python 3, `pipx`, and the Claude Code CLI; the Makefile pins
-the scanner version.
+The command requires the tools pinned in `plugins/yarbrain/cli/mise.toml`
+(`mise install`), `pipx`, and the Claude Code CLI; the Makefile pins the scanner
+version.
 
 Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 

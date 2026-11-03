@@ -7,7 +7,6 @@ PLUGIN_SCANNER := pipx run plugin-scanner==2.0.1112
 validate: validate-yarbrain validate-codex validate-claude
 
 validate-yarbrain:
-	python3 -m unittest discover -s $(YARBRAIN_PLUGIN_DIR)/tests -p 'test_*.py'
 	$(MAKE) -C $(YARBRAIN_PLUGIN_DIR)/cli ci
 
 validate-codex:

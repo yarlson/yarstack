@@ -71,7 +71,7 @@ func newFindCommand(a *app) *cobra.Command {
 			ranked := search.Rank(terms, view.candidates)
 			result := findResult{
 				header: okHeader(), ProjectName: identity.Name, Lessons: []menuEntry{},
-				More: max(0, len(ranked)-limit), AwaitingGate: view.awaitingGate, Legacy: len(view.legacy), Skipped: view.skipped,
+				More: max(0, len(ranked)-limit), AwaitingGate: len(view.awaiting), Legacy: len(view.legacy), Skipped: view.skipped,
 			}
 
 			for _, candidate := range ranked[:min(limit, len(ranked))] {

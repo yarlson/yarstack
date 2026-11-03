@@ -1,7 +1,7 @@
 {
   "name": "yarbrain",
-  "version": "0.2.0",
-  "description": "A reviewable Markdown second brain for Codex and Claude Code.",
+  "version": "0.3.0",
+  "description": "Lessons that coding agents record, an independent gate agent trusts, and later sessions reuse.",
   "author": {
     "name": "Yar Kravtsov",
     "url": "https://github.com/yarlson"
@@ -18,8 +18,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Yarbrain",
-    "shortDescription": "A reviewable Markdown second brain",
-    "longDescription": "Capture session evidence, reconcile durable knowledge, recall relevant context, and promote proven procedures.",
+    "shortDescription": "Lessons agents record and an independent gate trusts",
+    "longDescription": "Record what a session taught as small Markdown lessons, have a fresh-context gate agent trust or reject them against the committed code, and find, confirm, or doubt them in later sessions.",
     "developerName": "Yar Kravtsov",
     "category": "Productivity",
     "capabilities": [
@@ -27,9 +27,9 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Initialize my Yarbrain knowledge vault.",
-      "Recall relevant knowledge before I start this task.",
-      "Capture and reconcile what this session taught us."
+      "Set up Yarbrain with a vault at a path I choose.",
+      "Find Yarbrain lessons that apply to this task.",
+      "Record what this session taught us as a Yarbrain lesson."
     ]
   }
 }

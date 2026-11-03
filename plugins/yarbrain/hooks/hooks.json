@@ -1,36 +1,27 @@
 {
-  "description": "Load the Yarbrain index and enqueue session evidence.",
+  "description": "Print Yarbrain lesson counts at session start, and let only the Yarbrain gate agent judge lessons in Claude Code.",
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/yarbrain.py\" hook",
-            "timeout": 3
+            "command": "command -v yarbrain >/dev/null 2>&1 || exit 0; yarbrain hook session-start --contract 1",
+            "commandWindows": "(where yarbrain >nul 2>nul || exit /b 0) && yarbrain hook session-start --contract 1",
+            "timeout": 5
           }
         ]
       }
     ],
-    "PreCompact": [
+    "PreToolUse": [
       {
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/yarbrain.py\" hook",
-            "timeout": 3
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/yarbrain.py\" hook",
-            "timeout": 3
+            "command": "command -v yarbrain >/dev/null 2>&1 || exit 0; yarbrain hook pre-tool-use --contract 1",
+            "commandWindows": "(where yarbrain >nul 2>nul || exit /b 0) && yarbrain hook pre-tool-use --contract 1",
+            "timeout": 5
           }
         ]
       }

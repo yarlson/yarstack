@@ -192,6 +192,35 @@ func TestLegacyListsUnconvertedNotesAndShowReadsThem(t *testing.T) {
 	assert.Equal(t, []any{"notes/concepts/cache.md"}, decodeObject(t, invoke(t, "legacy").stdout)["paths"])
 }
 
+func TestADismissedNoteLeavesTheBacklogAndStaysOnDisk(t *testing.T) {
+	s := isolate(t)
+	s.initVault(t)
+	writeLegacy(t, s, "notes/projects/old.md", "# Sprint 3 status\n")
+	writeLegacy(t, s, "notes/projects/keep.md", "# Keep\n")
+
+	dismissed := invokeWith(t, `{"reason":"status notes from one sprint"}`, "legacy", "dismiss", "notes/projects/old.md")
+	require.Equal(t, exitOK, dismissed.exit, dismissed.stdout)
+
+	assert.Equal(t, []any{"notes/projects/keep.md"}, decodeObject(t, invoke(t, "legacy").stdout)["paths"])
+	assert.FileExists(t, filepath.Join(s.vault, "notes", "projects", "old.md"))
+
+	missing := invokeWith(t, `{"reason":"x"}`, "legacy", "dismiss", "notes/absent.md")
+	assert.Equal(t, "not_found", errorOf(t, missing)["code"])
+
+	noReason := invokeWith(t, `{}`, "legacy", "dismiss", "notes/projects/keep.md")
+	assert.Equal(t, "bad_input", errorOf(t, noReason)["code"])
+}
+
+func TestStatusListsTheIDsAwaitingTheGate(t *testing.T) {
+	s := isolate(t)
+	s.initVault(t)
+	inProject(t, s)
+
+	pending := proposeAs(t, "codex:author", lessonInput("Cache pending", "the cache is stale", "Clear it.", "here"))
+
+	assert.Equal(t, []any{pending.id}, decodeObject(t, invoke(t, "status").stdout)["awaiting_gate_ids"])
+}
+
 func TestLegacyOfAVaultWithoutV02NotesIsAnEmptyList(t *testing.T) {
 	s := isolate(t)
 	s.initVault(t)

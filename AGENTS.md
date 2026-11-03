@@ -26,10 +26,12 @@
 
 ## Yarbrain invariants
 
-- Keep the canonical vault and all mutable knowledge outside the installed or cached plugin root.
-- Do not choose, create, import, or configure a vault during plugin installation. Require an explicit `wiki-initialize` action and preserve existing vault contents.
-- Keep lifecycle hooks lightweight. They may load a bounded index or enqueue session locators, but must not copy transcript bodies, call a model or network service, or change canonical semantic notes.
-- Preserve episodes as evidence. Search before semantic writes, keep proposed changes reviewable, and do not activate a generated skill without explicit approval.
+- Keep the vault and all mutable knowledge outside the installed or cached plugin root.
+- Do not choose, create, or configure a vault during plugin installation. Create or adopt a vault only with `yarbrain init` and a path the user gave, and preserve existing vault contents.
+- The `yarbrain` CLI in `plugins/yarbrain/cli` owns every vault read and write. Skills and hooks call it; they never edit vault files directly.
+- Keep lifecycle hooks read-only and bounded. They may print counts and decide on gate commands, but must not write, print lesson text, copy transcripts, or call a model or network service.
+- No person gates a lesson. Trust comes only from a credible verdict that a fresh-context gate agent records through the CLI. Never weaken the credibility rules to make a lesson served.
+- Never modify or delete v0.2 vault content (`episodes/`, `notes/`, `inbox/`, `skills/`, `archive/`, `reports/`, `INDEX.md`).
 - Test Yarbrain with a temporary `YARBRAIN_CONFIG` and vault. Never use the real user configuration or vault.
 
 ## Change discipline
