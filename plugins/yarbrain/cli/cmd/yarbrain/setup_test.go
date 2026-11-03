@@ -173,9 +173,11 @@ func TestStatusReportsTheContractAndCounts(t *testing.T) {
 	require.Equal(t, exitOK, result.exit, result.stdout)
 	object := decodeObject(t, result.stdout)
 	assert.InDelta(t, 1, object["contract"], 0)
+	assert.Equal(t, map[string]any{"trusted": 0.0, "cross_project": 0.0, "awaiting_gate": 0.0, "legacy": 0.0}, object["counts"])
 	assert.Equal(t, map[string]any{
-		"proposed": 0.0, "trusted": 0.0, "deferred": 0.0, "rejected": 0.0, "doubted": 0.0, "retired": 0.0,
-	}, object["counts"])
+		"proposed": 0.0, "trusted": 0.0, "deferred": 0.0, "rejected": 0.0, "doubted": 0.0, "retired": 0.0, "changed": 0.0,
+	}, object["totals"])
+	assert.Equal(t, false, object["codex_gate_pinned"])
 
 	vault, ok := object["vault"].(map[string]any)
 	require.True(t, ok)

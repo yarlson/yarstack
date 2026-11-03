@@ -83,6 +83,9 @@ func newRootCommand(a *app) *cobra.Command {
 		newVerdictCommand(a),
 		newConfirmCommand(a),
 		newDoubtCommand(a),
+		newFindCommand(a),
+		newLegacyCommand(a),
+		newHookCommand(a),
 	)
 
 	return root

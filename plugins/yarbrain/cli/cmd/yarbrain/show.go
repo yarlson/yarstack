@@ -5,6 +5,7 @@ import (
 
 	"github.com/yarlson/yarstack/plugins/yarbrain/cli/internal/lesson"
 	"github.com/yarlson/yarstack/plugins/yarbrain/cli/internal/trust"
+	"github.com/yarlson/yarstack/plugins/yarbrain/cli/internal/vault"
 )
 
 // shownLesson carries lesson text only when the lesson is served. Text that no
@@ -30,18 +31,29 @@ type shownLesson struct {
 type showResult struct {
 	header
 
-	Lessons []shownLesson `json:"lessons"`
+	Lessons     []shownLesson `json:"lessons"`
+	LegacyNotes []legacyNote  `json:"legacy_notes,omitempty"`
+}
+
+// legacyNote is a v0.2 note read by path for conversion. No gate ever judged
+// its text.
+type legacyNote struct {
+	Path  string `json:"path"`
+	Gated bool   `json:"gated"`
+	Text  string `json:"text"`
 }
 
 func newShowCommand(a *app) *cobra.Command {
 	return &cobra.Command{
-		Use:   "show <id>...",
-		Short: "Show lessons by id",
+		Use:   "show <id|v0.2-path>...",
+		Short: "Show lessons by id, or v0.2 notes by path",
 		Long: "show returns the full text of each served lesson: trusted by an independent\n" +
-			"gate, unchanged since. For any other lesson it returns only its id and status.",
-		Example: "  yarbrain show l-7k3m9q2x",
+			"gate, unchanged since. For any other lesson it returns only its id and status.\n" +
+			"A v0.2 note path from `yarbrain legacy` returns that note's text, marked\n" +
+			"gated: false, for conversion into a lesson.",
+		Example: "  yarbrain show l-7k3m9q2x\n  yarbrain show notes/projects/shop.md",
 		Args:    minimumArgs(1, "id"),
-		RunE: func(_ *cobra.Command, ids []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			v, _, err := a.openVault()
 			if err != nil {
 				return err
@@ -53,10 +65,21 @@ func newShowCommand(a *app) *cobra.Command {
 				return err
 			}
 
-			result := showResult{header: okHeader()}
+			result := showResult{header: okHeader(), Lessons: []shownLesson{}}
 
-			for _, id := range ids {
-				target, err := loadRecord(v, entries, id)
+			for _, arg := range args {
+				if !lesson.IsID(arg) {
+					note, err := readLegacy(v, arg)
+					if err != nil {
+						return err
+					}
+
+					result.LegacyNotes = append(result.LegacyNotes, note)
+
+					continue
+				}
+
+				target, err := loadRecord(v, entries, arg)
 				if err != nil {
 					return err
 				}
@@ -67,6 +90,20 @@ func newShowCommand(a *app) *cobra.Command {
 			return writeJSON(a.stdout, result)
 		},
 	}
+}
+
+func readLegacy(v *vault.Vault, path string) (legacyNote, error) {
+	if !vault.IsLegacyPath(path) {
+		return legacyNote{}, newError("bad_input", path+" is neither a lesson id nor a v0.2 note path",
+			"Pass a lesson id such as l-7k3m9q2x, or a path from `yarbrain legacy`.").with("field", "arguments")
+	}
+
+	raw, err := v.ReadFile(path)
+	if err != nil {
+		return legacyNote{}, newError("not_found", "no v0.2 note at "+path, "Use a path from `yarbrain legacy`.").with("path", path)
+	}
+
+	return legacyNote{Path: path, Gated: false, Text: string(raw[:min(len(raw), lesson.MaxFileBytes)])}, nil
 }
 
 func present(target record) shownLesson {

@@ -141,6 +141,10 @@ func (a *app) storeProposal(draft lesson.Draft, identity project.Identity) (prop
 			return err
 		}
 
+		if err := checkConverts(v, draft); err != nil {
+			return err
+		}
+
 		outcome, match := lesson.ClassifyProposal(lessonsOf(entries), draft)
 
 		switch outcome {
@@ -209,6 +213,24 @@ func checkRetires(entries []vault.Entry, draft lesson.Draft) error {
 	if target.Lesson.Status != lesson.Trusted || !lesson.ScopesOverlap(target.Lesson.Scope, draft.Scope) {
 		return newError("bad_state", fmt.Sprintf("lesson %s is %s or belongs to another project", draft.Retires, target.Lesson.Status),
 			"retires may name only a trusted lesson of the same project.").with("field", "retires")
+	}
+
+	return nil
+}
+
+func checkConverts(v *vault.Vault, draft lesson.Draft) error {
+	if draft.Converts == "" {
+		return nil
+	}
+
+	if !vault.IsLegacyPath(draft.Converts) {
+		return newError("bad_input", "converts must be a v0.2 note path under notes/ or skills/: "+draft.Converts,
+			"Use a path from `yarbrain legacy`.").with("field", "converts")
+	}
+
+	if _, err := v.ReadFile(draft.Converts); err != nil {
+		return newError("bad_input", "converts names no v0.2 note: "+draft.Converts, "Use a path from `yarbrain legacy`.").
+			with("field", "converts")
 	}
 
 	return nil
