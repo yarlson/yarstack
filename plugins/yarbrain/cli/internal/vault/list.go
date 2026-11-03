@@ -98,6 +98,45 @@ func (v *Vault) readLesson(name string, dirEntry fs.DirEntry) (Entry, *Finding) 
 	return Entry{Path: name, Rev: Rev(raw), Lesson: parsed}, nil
 }
 
+// CreateLesson writes a new lesson file named after its slug and returns the
+// vault-relative path. When another file already has that name, the id
+// becomes part of it. Call it under WithLock.
+func (v *Vault) CreateLesson(l lesson.Lesson) (string, error) {
+	raw, err := Render(l)
+	if err != nil {
+		return "", err
+	}
+
+	stem := lesson.Slug(l.Title)
+	if stem == "" {
+		stem = l.ID
+	}
+
+	name := path.Join(lessonsDir, stem+".md")
+
+	err = v.CreateFile(name, raw)
+	if errors.Is(err, fs.ErrExist) {
+		name = path.Join(lessonsDir, stem+"-"+strings.TrimPrefix(l.ID, "l-")+".md")
+		err = v.CreateFile(name, raw)
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	return name, nil
+}
+
+// Find returns the entry with id, or false.
+func Find(entries []Entry, id string) (Entry, bool) {
+	index := slices.IndexFunc(entries, func(entry Entry) bool { return entry.Lesson.ID == id })
+	if index < 0 {
+		return Entry{}, false
+	}
+
+	return entries[index], true
+}
+
 func withoutDuplicateIDs(entries []Entry) ([]Entry, []Finding) {
 	paths := map[string][]string{}
 	for _, entry := range entries {

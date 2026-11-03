@@ -20,9 +20,15 @@ type invocation struct {
 func invoke(t *testing.T, args ...string) invocation {
 	t.Helper()
 
+	return invokeWith(t, "", args...)
+}
+
+func invokeWith(t *testing.T, stdin string, args ...string) invocation {
+	t.Helper()
+
 	var stdout, stderr bytes.Buffer
 
-	exit := run(args, strings.NewReader(""), &stdout, &stderr)
+	exit := run(args, strings.NewReader(stdin), &stdout, &stderr)
 
 	return invocation{exit: exit, stdout: stdout.String(), stderr: stderr.String()}
 }

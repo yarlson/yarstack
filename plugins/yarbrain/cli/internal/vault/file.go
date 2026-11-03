@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"slices"
 	"strings"
@@ -134,6 +135,71 @@ func Parse(raw []byte, name string) (lesson.Lesson, error) {
 	l.Title, l.Body, l.Observed = title, body, observed
 
 	return l, nil
+}
+
+// proposalKeys are the frontmatter keys a proposal may carry.
+var proposalKeys = []string{"cue", "scope", "retires", "converts"}
+
+// InputError lists every problem in a proposal.
+type InputError struct{ Problems []lesson.Problem }
+
+func (e *InputError) Error() string {
+	return fmt.Sprintf("the input has %d problem(s), first: %s %s", len(e.Problems), e.Problems[0].Field, e.Problems[0].Rule)
+}
+
+// ParseProposal reads a lesson proposal in the file format. Its scope is the
+// keyword "here" or "all", which the caller resolves. It rejects keys the CLI
+// owns and keys it does not know.
+func ParseProposal(raw []byte) (lesson.Draft, string, error) {
+	text := strings.ReplaceAll(string(bytes.TrimPrefix(raw, bom)), "\r\n", "\n")
+
+	doc, err := splitDocument(text, "input")
+	if err != nil {
+		return lesson.Draft{}, "", &InputError{Problems: []lesson.Problem{{Field: "input", Rule: inputReason(err)}}}
+	}
+
+	problems := proposalKeyProblems(doc.mapping)
+
+	parsed, err := Parse([]byte(text), "input")
+	if err != nil {
+		return lesson.Draft{}, "", &InputError{Problems: append(problems, lesson.Problem{Field: "input", Rule: inputReason(err)})}
+	}
+
+	scope := strings.Join(parsed.Scope, ",")
+	if scope != "here" && scope != lesson.AllScope {
+		problems = append(problems, lesson.Problem{Field: "scope", Rule: "must be here or all"})
+	}
+
+	if len(problems) > 0 {
+		return lesson.Draft{}, "", &InputError{Problems: problems}
+	}
+
+	return parsed.Draft, scope, nil
+}
+
+func proposalKeyProblems(mapping *yaml.Node) []lesson.Problem {
+	var problems []lesson.Problem
+
+	for i := 0; i < len(mapping.Content); i += 2 {
+		key := mapping.Content[i].Value
+
+		switch {
+		case slices.Contains(ownedKeys, key):
+			problems = append(problems, lesson.Problem{Field: key, Rule: "set by the CLI; remove this key"})
+		case !slices.Contains(proposalKeys, key):
+			problems = append(problems, lesson.Problem{Field: key, Rule: "unknown key; allowed keys are cue, scope, retires, converts"})
+		}
+	}
+
+	return problems
+}
+
+func inputReason(err error) string {
+	if bad, ok := errors.AsType[*BadFileError](err); ok {
+		return bad.Reason
+	}
+
+	return err.Error()
 }
 
 func scopeValues(node *yaml.Node, name string) ([]string, error) {

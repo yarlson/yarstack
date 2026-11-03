@@ -2,6 +2,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -24,7 +25,7 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	root := newRootCommand(a)
 	root.SetArgs(args)
 
-	err := root.Execute()
+	err := root.ExecuteContext(context.Background())
 	if err == nil {
 		return exitOK
 	}
@@ -76,6 +77,8 @@ func newRootCommand(a *app) *cobra.Command {
 		newInitCommand(a),
 		newStatusCommand(a),
 		newCheckCommand(a),
+		newProposeCommand(a),
+		newShowCommand(a),
 	)
 
 	return root
@@ -107,4 +110,15 @@ func exactArgs(count int, names ...string) cobra.PositionalArgs {
 
 func noArgs(cmd *cobra.Command, args []string) error {
 	return exactArgs(0)(cmd, args)
+}
+
+func minimumArgs(count int, name string) cobra.PositionalArgs {
+	return func(_ *cobra.Command, args []string) error {
+		if len(args) >= count {
+			return nil
+		}
+
+		return newError("bad_input", fmt.Sprintf("expected at least %d %s argument(s), got %d", count, name, len(args)),
+			"Run the command with --help to see its arguments.").with("field", "arguments")
+	}
 }

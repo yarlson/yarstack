@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"time"
 
 	"github.com/yarlson/yarstack/plugins/yarbrain/cli/internal/vault"
 )
@@ -18,6 +19,7 @@ type app struct {
 	stderr     io.Writer
 	getenv     func(string) string
 	home       string
+	now        func() time.Time
 	flagVault  string
 	flagConfig string
 }
@@ -25,8 +27,11 @@ type app struct {
 func newApp(stdin io.Reader, stdout, stderr io.Writer) *app {
 	home, _ := os.UserHomeDir()
 
-	return &app{stdin: stdin, stdout: stdout, stderr: stderr, getenv: os.Getenv, home: home}
+	return &app{stdin: stdin, stdout: stdout, stderr: stderr, getenv: os.Getenv, home: home, now: time.Now}
 }
+
+// today is the UTC date that lessons and ledger events record.
+func (a *app) today() string { return a.now().UTC().Format(time.DateOnly) }
 
 func (a *app) locator() vault.Locator {
 	return vault.Locator{FlagVault: a.flagVault, FlagConfig: a.flagConfig, Getenv: a.getenv, Home: a.home}
@@ -104,6 +109,10 @@ func classifyVault(err error) *cliError {
 	if bad, ok := errors.AsType[*vault.BadFileError](err); ok {
 		return newError("bad_file", err.Error(), fmt.Sprintf("Fix %s by hand; the reason says what is wrong.", bad.Path)).
 			with("path", bad.Path)
+	}
+
+	if input, ok := errors.AsType[*vault.InputError](err); ok {
+		return problemsError(input.Problems)
 	}
 
 	if changed, ok := errors.AsType[*vault.ChangedError](err); ok {
