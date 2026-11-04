@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "command -v yarbrain >/dev/null 2>&1 || exit 0; yarbrain hook session-start --contract 1",
+            "command": "YARBRAIN_NO_DOWNLOAD=1 \"${CLAUDE_PLUGIN_ROOT}/bin/yarbrain\" hook session-start --contract 1",
             "commandWindows": "(where yarbrain >nul 2>nul || exit /b 0) && yarbrain hook session-start --contract 1",
             "timeout": 5
           }
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "command -v yarbrain >/dev/null 2>&1 || exit 0; yarbrain hook pre-tool-use --contract 1",
+            "command": "YARBRAIN_NO_DOWNLOAD=1 \"${CLAUDE_PLUGIN_ROOT}/bin/yarbrain\" hook pre-tool-use --contract 1",
             "commandWindows": "(where yarbrain >nul 2>nul || exit /b 0) && yarbrain hook pre-tool-use --contract 1",
             "timeout": 5
           }

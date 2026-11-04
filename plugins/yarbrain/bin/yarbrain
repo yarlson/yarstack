@@ -1,0 +1,146 @@
+#!/bin/sh
+# Run the yarbrain CLI build that this plugin pins in ../cli-checksums.txt.
+# The first call downloads it from the GitHub release and checks its SHA-256
+# against that file; later calls run the cached copy.
+#
+#   YARBRAIN_NO_DOWNLOAD=1  never download; the plugin's hooks set it so that
+#                           they stay offline and fast
+set -eu
+
+# YARBRAIN_RELEASE_BASE exists for tests only.
+base="${YARBRAIN_RELEASE_BASE:-https://github.com/yarlson/yarstack/releases/download}"
+offline="${YARBRAIN_NO_DOWNLOAD:-}"
+hook=
+[ "${1:-}" = hook ] && hook=1
+
+json_text() {
+	printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'
+}
+
+# fail prints the CLI's error envelope, so callers handle the launcher like
+# any other yarbrain command. A hook gets nothing on stdout and exit 0.
+fail() {
+	printf 'yarbrain launcher: %s\n' "$3" >&2
+	[ "$hook" = 1 ] && exit 0
+	printf '{"v":1,"ok":false,"error":{"code":"%s","message":"%s","fix":"%s"}}\n' "$2" "$(json_text "$3")" "$(json_text "$4")"
+	exit "$1"
+}
+
+case "$(uname -s)" in
+Darwin) os=darwin ext= ;;
+Linux) os=linux ext= ;;
+MINGW* | MSYS* | CYGWIN*) os=windows ext=.exe ;;
+*) fail 5 io "yarbrain has no build for $(uname -s)" "Tell the person that Yarbrain does not support this OS." ;;
+esac
+
+case "$(uname -m)" in
+x86_64 | amd64) arch=amd64 ;;
+arm64 | aarch64) arch=arm64 ;;
+*) fail 5 io "yarbrain has no build for $(uname -m)" "Tell the person that Yarbrain does not support this CPU." ;;
+esac
+
+# A shell under Rosetta reports x86_64 on Apple silicon; run the native build.
+if [ "$os" = darwin ] && [ "$arch" = amd64 ] && [ "$(sysctl -n hw.optional.arm64 2>/dev/null || true)" = 1 ]; then
+	arch=arm64
+fi
+
+plugin_root="$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd -P)"
+suffix="_${os}_${arch}${ext}"
+pin="$(awk -v s="$suffix" 'index($2, "yarbrain_") == 1 && substr($2, length($2) - length(s) + 1) == s { print $1, $2; exit }' "$plugin_root/cli-checksums.txt" 2>/dev/null || true)"
+[ -n "$pin" ] || fail 5 bad_file "the Yarbrain plugin pins no yarbrain build for $os/$arch" "Tell the person to reinstall the Yarbrain plugin."
+
+digest="${pin%% *}"
+asset="${pin#* }"
+version="${asset#yarbrain_}"
+version="${version%"$suffix"}"
+
+# The directory carries the digest, so a cached binary is the pinned one.
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/yarbrain/$digest"
+binary="$cache/yarbrain$ext"
+
+# The command a session-start line tells the agent to run. Claude Code puts
+# the plugin's bin/ on the agent's PATH, though not on a hook's. Codex sets
+# PLUGIN_ROOT for a hook and puts bin/ on neither, so its agent needs the path.
+cli=yarbrain
+if [ -n "${PLUGIN_ROOT:-}" ] && ! command -v yarbrain >/dev/null 2>&1; then
+	cli="\"$0\""
+fi
+
+if [ -x "$binary" ]; then
+	if [ "${1:-} ${2:-}" = "hook session-start" ] && [ "$cli" != yarbrain ]; then
+		line="$("$binary" "$@")" && code=0 || code=$?
+		if [ -n "$line" ]; then
+			printf '%s The yarbrain command is not on PATH in this session; run it as %s.\n' "$line" "$cli"
+		fi
+		exit "$code"
+	fi
+	exec "$binary" "$@"
+fi
+
+if [ "$offline" = 1 ]; then
+	[ "$hook" = 1 ] || fail 5 io "yarbrain $version is not downloaded, and YARBRAIN_NO_DOWNLOAD=1 forbids the download" "Run the same command without YARBRAIN_NO_DOWNLOAD."
+
+	# Until the pinned build is downloaded, a yarbrain that the person
+	# installed on PATH answers the hooks.
+	if found="$(command -v yarbrain 2>/dev/null)" && [ "$(CDPATH='' cd -- "$(dirname -- "$found")" && pwd -P)" != "$plugin_root/bin" ]; then
+		exec "$found" "$@"
+	fi
+
+	case "${2:-}" in
+	session-start)
+		# Tell the session about a vault it cannot read yet; stay silent for
+		# a person who never set one up. This is the CLI's config lookup order.
+		config="${YARBRAIN_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/yarbrain/config.json}"
+		case "$config" in \~/*) config="$HOME/${config#\~/}" ;; esac
+		if [ -n "${YARBRAIN_VAULT:-}" ] || [ -f "$config" ]; then
+			printf 'yarbrain: lessons from past sessions may apply to this project, but the Yarbrain plugin has not downloaded its CLI yet. Before you start the task, run `%s status` now, without asking: the download is part of the plugin'"'"'s work. If it exits 4, run it once more. If it reports trusted lessons, run `%s find <terms>` before you plan, debug, or repeat a procedure, then `%s show <id>` only for lessons whose cue fits.\n' "$cli" "$cli" "$cli"
+		fi
+		;;
+	pre-tool-use)
+		# Without the CLI this hook cannot tell a gate agent from any other,
+		# and one tool call could download the CLI and then run brief. Refuse
+		# brief and verdict until a call of their own has downloaded it.
+		payload="$(head -c 65536)"
+		case "$payload" in
+		*yarbrain*)
+			if printf '%s' "$payload" | grep -Eq '(^|[^[:alnum:]_-])(brief|verdict)([^[:alnum:]_-]|$)'; then
+				printf 'The yarbrain CLI is not downloaded yet, so this hook cannot check yarbrain brief or verdict. Run `%s status` alone first; it downloads the CLI. Then run this command again.\n' "$cli" >&2
+				exit 2
+			fi
+			;;
+		esac
+		;;
+	esac
+	exit 0
+fi
+
+command -v curl >/dev/null 2>&1 || fail 5 io "curl is required to download yarbrain $version" "Tell the person to install curl."
+
+if command -v sha256sum >/dev/null 2>&1; then
+	sha256() { sha256sum "$1" | awk '{ print $1 }'; }
+elif command -v shasum >/dev/null 2>&1; then
+	sha256() { shasum -a 256 "$1" | awk '{ print $1 }'; }
+else
+	fail 5 io "sha256sum or shasum is required to verify the yarbrain download" "Tell the person to install sha256sum or shasum."
+fi
+
+mkdir -p "$cache" 2>/dev/null || fail 5 write_denied "could not create $cache" "If a sandbox blocks writes outside the workspace, run the same command again with that restriction lifted."
+staged="$cache/.yarbrain.$$"
+trap 'rm -f "$staged"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+curl -fsSL --connect-timeout 10 --max-time 120 -o "$staged" "$base/plugins/yarbrain/cli/v$version/$asset" ||
+	fail 5 io "could not download $asset from the GitHub release" "If a sandbox blocks network access, run the same command again with network access allowed."
+
+[ "$(sha256 "$staged")" = "$digest" ] || fail 5 io "the downloaded $asset does not match the plugin's checksum; nothing was installed" "Tell the person; do not retry."
+
+chmod 0755 "$staged" || fail 5 write_denied "could not make $staged executable" "Tell the person."
+# A concurrent first call may have installed the same build already.
+mv -f "$staged" "$binary" || [ -x "$binary" ] || fail 5 write_denied "could not install $binary" "Tell the person."
+
+# Do not run the command in this call. A host hook that checks yarbrain
+# commands could not run while the binary was missing, so the retry must pass
+# through it.
+printf '{"v":1,"ok":false,"error":{"code":"busy","message":"downloaded yarbrain %s","fix":"Run the same command again."}}\n' "$version"
+exit 4

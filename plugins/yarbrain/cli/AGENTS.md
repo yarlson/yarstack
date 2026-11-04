@@ -29,6 +29,10 @@ agent judges, and later sessions confirm or doubt. The repository root
   distribution. Release tags are `plugins/yarbrain/cli/vX.Y.Z`, the prefix Go
   requires for a module in a subdirectory. Keep release targets aligned with
   `make cross-build`.
+- The plugin's launcher, `../bin/yarbrain`, runs the build that
+  `../cli-checksums.txt` pins; `launcher_test.go` tests both. The launcher
+  prints the CLI's error envelope for its own failures, except in a hook,
+  where it stays silent.
 - Add an `internal` package only when it hides a real decision. Do not create
   generic `common`, `util`, `types`, or `models` packages.
 

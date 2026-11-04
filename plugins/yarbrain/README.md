@@ -35,27 +35,38 @@ You can read, add, and edit lessons yourself, but no step waits for you.
 
 ## Install
 
-1. Install the CLI:
-
-   ```sh
-   curl -fsSL https://raw.githubusercontent.com/yarlson/yarstack/main/plugins/yarbrain/cli/install.sh | sh
-   ```
-
-   On Windows: `irm https://raw.githubusercontent.com/yarlson/yarstack/main/plugins/yarbrain/cli/install.ps1 | iex`.
-   See the [CLI README](cli/README.md) for verification.
-
-2. Install the plugin: `codex plugin add yarbrain@yarstack`, or
+1. Install the plugin: `codex plugin add yarbrain@yarstack`, or
    `claude plugin install yarbrain@yarstack`.
+2. Ask your agent to set up Yarbrain, for example: "Set up Yarbrain with its
+   vault at ~/yarbrain."
 
-3. Create or adopt a vault: `yarbrain init <vault-path>`. It prints the
-   one-time host setup, which keeps vault writes free of prompts:
+The agent does the rest:
 
-   - Claude Code: add `Bash(yarbrain *)` to `permissions.allow`.
-   - Codex: add the vault to `writable_roots` under
-     `[sandbox_workspace_write]`, and create `~/.codex/agents/yarbrain-gate.toml`
-     to pin the gate's model and reasoning effort.
+- It runs the plugin's launcher, `bin/yarbrain`. The first call downloads the
+  `yarbrain` CLI build that the plugin pins, checks its SHA-256 against
+  [`cli-checksums.txt`](cli-checksums.txt), and caches it in
+  `~/.cache/yarbrain` (or `$XDG_CACHE_HOME/yarbrain`).
+- It creates or adopts the vault with `yarbrain init <vault-path>`.
+- It applies the one-time host setup that `init` prints, which keeps vault
+  writes free of prompts:
+  - Claude Code: add `Bash(yarbrain *)` to `permissions.allow`.
+  - Codex: add the vault to `writable_roots` under
+    `[sandbox_workspace_write]`, and create `~/.codex/agents/yarbrain-gate.toml`
+    to pin the gate's model and reasoning effort.
 
-The CLI never edits host configuration itself.
+Your host asks you to approve each settings edit. In Codex, the sandbox also
+asks before the first download. The CLI never edits host configuration itself.
+
+A plugin update also updates the CLI: the new version pins a new build, and
+the launcher downloads it on first use. Hooks never download. Until the first
+download, the PreToolUse hook refuses every `yarbrain brief` and
+`yarbrain verdict` call, and the agent runs `yarbrain status` alone first.
+
+The launcher is a POSIX shell script; on Windows it runs in Git Bash. Codex
+on Windows, and Claude Code on Windows without Git Bash, need the CLI on
+`PATH` instead:
+`irm https://raw.githubusercontent.com/yarlson/yarstack/main/plugins/yarbrain/cli/install.ps1 | iex`.
+The [CLI README](cli/README.md) covers manual installs and verification.
 
 ## Upgrading from v0.2
 
@@ -72,7 +83,17 @@ session, each through the gate.
 - A verdict is a record in the vault's ledger. The CLI refuses verdicts that
   are not credible, but any process that can write the vault could forge one.
 - The Claude Code hook reads the command line. A gate call hidden in a
-  variable or in a nested shell string, such as `sh -c '...'`, gets past it.
+  variable or in a nested shell string, such as `sh -c '...'`, gets past it,
+  and so does the launcher run through a shell, as in
+  `sh <plugin>/bin/yarbrain brief <id>`.
+- Claude Code on Windows without Git Bash runs hooks in PowerShell, where the
+  plugin's hooks fail: no counts line and no gate check.
+- claude.ai and Cowork do not install a plugin with a top-level `bin/`
+  directory, so Yarbrain works only in Claude Code and Codex.
+- A `yarbrain` that you installed on `PATH` yourself can run instead of the
+  pinned build. Codex agents run it whenever they call `yarbrain`, and the
+  hooks run it until the pinned build is downloaded. Remove it to always run
+  the pinned build.
 - Lessons are served only to projects with a Git identity, or with scope
   `all`.
 - A Claude Code session started from a Codex shell inherits the Codex thread

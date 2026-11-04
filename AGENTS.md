@@ -29,6 +29,7 @@
 - Keep the vault and all mutable knowledge outside the installed or cached plugin root.
 - Do not choose, create, or configure a vault during plugin installation. Create or adopt a vault only with `yarbrain init` and a path the user gave, and preserve existing vault contents.
 - The `yarbrain` CLI in `plugins/yarbrain/cli` owns every vault read and write. Skills and hooks call it; they never edit vault files directly.
+- The plugin runs the CLI through `plugins/yarbrain/bin/yarbrain`. It downloads only the build whose SHA-256 is in `plugins/yarbrain/cli-checksums.txt` and runs it from a cache directory, outside the plugin root, named by that digest. Hooks set `YARBRAIN_NO_DOWNLOAD=1`; until the build is downloaded, they use a `yarbrain` on `PATH` if there is one. After a CLI release, replace `cli-checksums.txt` with that release's `checksums.txt` and bump the plugin version.
 - Keep lifecycle hooks read-only and bounded. They may print counts and decide on gate commands, but must not write, print lesson text, copy transcripts, or call a model or network service.
 - No person gates a lesson. Trust comes only from a credible verdict that a fresh-context gate agent records through the CLI. Never weaken the credibility rules to make a lesson served.
 - Never modify or delete v0.2 vault content (`episodes/`, `notes/`, `inbox/`, `skills/`, `archive/`, `reports/`, `INDEX.md`).

@@ -7,6 +7,10 @@ skills and hooks. People can call it from a terminal.
 
 ## Install
 
+The Yarbrain plugin downloads the build it pins on first use, so agents need
+no manual install. To put `yarbrain` on your `PATH` yourself, for a terminal
+or for Codex on Windows:
+
 macOS and Linux:
 
 ```sh
@@ -120,3 +124,11 @@ requires this prefix for a module in a subdirectory. The release workflow
 runs `make ci`, builds the binaries, publishes them with `checksums.txt` and
 the install scripts, downloads and verifies every asset, and attests their
 build provenance.
+
+Then make the plugin run the new build. Replace the plugin's pin with the
+release's checksums, and bump the plugin version in both manifests:
+
+```sh
+gh release download plugins/yarbrain/cli/vX.Y.Z --repo yarlson/yarstack \
+  --pattern checksums.txt --output ../cli-checksums.txt --clobber
+```
