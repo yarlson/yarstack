@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "yarbrain",
   "displayName": "Yarbrain",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Lessons that coding agents record, an independent gate agent trusts, and later sessions reuse.",
   "author": {
     "name": "Yar Kravtsov",

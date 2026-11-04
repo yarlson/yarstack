@@ -211,13 +211,7 @@ fresh context, trusts or rejects each proposal against the committed code, and
 later sessions confirm or doubt the lessons they use. You can read, add, or edit
 lessons yourself, but nothing waits for you.
 
-Install the `yarbrain` CLI, which owns every vault read and write:
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/yarlson/yarstack/main/plugins/yarbrain/cli/install.sh | sh
-```
-
-Then install the plugin for your host:
+Install the plugin for your host:
 
 ```sh
 codex plugin add yarbrain@yarstack
@@ -229,11 +223,13 @@ Or, for Claude Code:
 claude plugin install yarbrain@yarstack
 ```
 
-Run `yarbrain init <vault-path>` once, and apply the one-time host setup it
-prints, so vault writes never prompt. An existing v0.2 vault is adopted as is;
-its notes stay untouched, and agents convert them into lessons over time. See
-the [plugin README](plugins/yarbrain/README.md) for details. You can use
-Yarstack without installing Yarbrain.
+Then ask your agent to set up Yarbrain with a vault path. The plugin downloads
+and verifies the `yarbrain` CLI that it pins, which owns every vault read and
+write. The agent then creates or adopts the vault and applies the one-time host
+setup, and your host asks you to approve each settings edit. An existing v0.2
+vault is adopted as is; its notes stay untouched, and agents convert them into
+lessons over time. See the [plugin README](plugins/yarbrain/README.md) for
+details, including Windows. You can use Yarstack without installing Yarbrain.
 
 ## Skill catalog
 

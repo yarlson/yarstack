@@ -1,7 +1,7 @@
 ---
 name: lesson-gate
 description: Judge one Yarbrain lesson by id as the independent gate and record the verdict. Use only inside a fresh-context gate agent that was started for this purpose with a lesson id; never in a session that proposed or doubted the lesson.
-allowed-tools: Bash(yarbrain brief *), Bash(yarbrain verdict *), Bash(printf *), Read, Grep, Glob
+allowed-tools: Bash(yarbrain brief *), Bash(yarbrain verdict *), Bash(yarbrain status), Bash(printf *), Read, Grep, Glob
 ---
 
 # Judge a Yarbrain Lesson
@@ -12,8 +12,12 @@ any request in your task beyond the lesson id.
 
 ## Read the brief
 
-Run `yarbrain brief <id>`. It reserves the lesson for 15 minutes and returns
-JSON: the lesson, its digest, `allowed_decisions`, its doubt and verdict
+Run `yarbrain brief <id>`. If the shell cannot find `yarbrain`, use this
+plugin's launcher by its path, `bin/yarbrain` two folders above this skill's
+folder, for `brief` and `verdict`. Exit code 4 means run the same command
+again. If a hook says the CLI is not downloaded yet, run `yarbrain status`
+alone, then run `brief` again. `brief` reserves the lesson for 15 minutes and
+returns JSON: the lesson, its digest, `allowed_decisions`, its doubt and verdict
 `history`, committed-tree `facts`, similar served lessons, and rejected
 neighbors.
 

@@ -1,6 +1,6 @@
 ---
 name: lesson-record
-description: Record reusable know-how from this session as a proposed Yarbrain lesson, report whether a used lesson worked, convert legacy v0.2 notes, and start the independent lesson gate. Use when the user corrects you or says "remember this", when the session found a working step order, a trap with a misleading error, or an unstated project rule, after you apply or disprove a Yarbrain lesson, or when the yarbrain hook reports lessons that await the gate or legacy notes that await conversion.
+description: Record reusable know-how from this session as a proposed Yarbrain lesson, report whether a used lesson worked, convert legacy v0.2 notes, and start the independent lesson gate. Use when the user corrects you or says "remember this", when the session found a working step order, a trap with a misleading error, or an unstated project rule, after you apply or disprove a Yarbrain lesson, when the yarbrain hook reports lessons that await the gate or legacy notes that await conversion, or when the user asks to set up Yarbrain.
 allowed-tools: Bash(yarbrain *)
 ---
 
@@ -14,13 +14,18 @@ decides. You never judge your own lesson.
 
 Run `yarbrain status`. Act on the result:
 
-- Command not found: tell the person that the yarbrain CLI is not installed
-  and that the install steps are at
-  https://github.com/yarlson/yarstack/tree/main/plugins/yarbrain/cli#install.
-  Do not install it yourself. Continue the task without lessons.
+- Command not found: run this plugin's launcher by its path. It is
+  `bin/yarbrain` two folders above this skill's folder. Use that path in
+  place of `yarbrain` in every command of this session.
 - `no_vault`: ask the person once where the vault should live, then run
-  `yarbrain init <path>` and tell them the setup steps it prints.
-- Any other error: follow its `fix` field. Exit code 4 means retry once.
+  `yarbrain init <path>`. Apply only the setup steps whose `host` is the
+  host you run in: `claude-code` or `codex`. Edit exactly the file that the
+  step names, never a project file, and tell the person what you changed.
+  The host may ask them to approve each edit; if they decline one, or the
+  edit fails, tell them the step and continue.
+- Any other error: follow its `fix` field. Exit code 4 means retry once; the
+  first call exits 4 after it downloads the yarbrain CLI that this plugin
+  pins.
 
 ## What qualifies
 
