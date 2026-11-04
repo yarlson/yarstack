@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "yarbrain",
   "displayName": "Yarbrain",
-  "version": "0.2.0",
-  "description": "A reviewable Markdown second brain for Codex and Claude Code.",
+  "version": "0.3.0",
+  "description": "Lessons that coding agents record, an independent gate agent trusts, and later sessions reuse.",
   "author": {
     "name": "Yar Kravtsov",
     "url": "https://github.com/yarlson"

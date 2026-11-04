@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+project_name: yarbrain
+
+builds:
+  - id: yarbrain
+    main: ./cmd/yarbrain
+    binary: yarbrain
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      # No Windows arm64 build: install.ps1 installs the amd64 build, which
+      # Windows on arm64 runs under emulation.
+      - goos: windows
+        goarch: arm64
+
+archives:
+  - formats:
+      - binary
+    name_template: "yarbrain_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+# The release workflow publishes with gh after it verifies the assets.
+release:
+  disable: true
+
+changelog:
+  disable: true
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-snapshot"

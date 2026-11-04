@@ -1,0 +1,6 @@
+# Build outputs: the go build binary, crap4go coverage, goreleaser dist, staged release assets
+/yarbrain
+/yarbrain.exe
+/target/
+/dist/
+/release/

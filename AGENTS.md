@@ -2,7 +2,7 @@
 
 ## Commands
 
-- Run `make validate` before finalizing changes.
+- Run `make validate` before finalizing changes. It also runs `make ci` for the Go CLI in `plugins/yarbrain/cli`, which needs the tools pinned in its `mise.toml`.
 - Run `make install-system-prompt` only when the user explicitly requests changes to global agent guidance; it writes outside the repository.
 - Test installer changes with `YARSTACK_AGENT_HOME` pointed at a temporary directory. Do not test destructive paths against the real home directory.
 
@@ -26,17 +26,19 @@
 
 ## Yarbrain invariants
 
-- Keep the canonical vault and all mutable knowledge outside the installed or cached plugin root.
-- Do not choose, create, import, or configure a vault during plugin installation. Require an explicit `wiki-initialize` action and preserve existing vault contents.
-- Keep lifecycle hooks lightweight. They may load a bounded index or enqueue session locators, but must not copy transcript bodies, call a model or network service, or change canonical semantic notes.
-- Preserve episodes as evidence. Search before semantic writes, keep proposed changes reviewable, and do not activate a generated skill without explicit approval.
+- Keep the vault and all mutable knowledge outside the installed or cached plugin root.
+- Do not choose, create, or configure a vault during plugin installation. Create or adopt a vault only with `yarbrain init` and a path the user gave, and preserve existing vault contents.
+- The `yarbrain` CLI in `plugins/yarbrain/cli` owns every vault read and write. Skills and hooks call it; they never edit vault files directly.
+- Keep lifecycle hooks read-only and bounded. They may print counts and decide on gate commands, but must not write, print lesson text, copy transcripts, or call a model or network service.
+- No person gates a lesson. Trust comes only from a credible verdict that a fresh-context gate agent records through the CLI. Never weaken the credibility rules to make a lesson served.
+- Never modify or delete v0.2 vault content (`episodes/`, `notes/`, `inbox/`, `skills/`, `archive/`, `reports/`, `INDEX.md`).
 - Test Yarbrain with a temporary `YARBRAIN_CONFIG` and vault. Never use the real user configuration or vault.
 
 ## Change discipline
 
 - Keep `Makefile` as direct command entrypoints. Do not put custom validators, test harnesses, dependency bootstrap frameworks, metadata reimplementations, or large shell programs in it.
 - Use `plugin-scanner lint` and `plugin-scanner verify` for Codex validation and `claude plugin validate --strict` for Claude validation. Do not invent parallel validation logic.
-- Keep `.github/workflows/validate.yml` calling `make validate`; do not duplicate Make targets in workflow YAML.
+- Keep `.github/workflows/validate.yml` calling `make validate`, plus `make -C plugins/yarbrain/cli test` on macOS and Windows; do not duplicate Make targets in workflow YAML.
 - Add dependencies, generated files, wrappers, configuration layers, or host-specific adapters only when a current capability requires them.
 - Prefer one shared implementation. Split by host only where the platform contracts actually differ.
 - Do not add placeholders, speculative abstractions, future-proofing, or unrelated repository polish.
