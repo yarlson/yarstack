@@ -297,6 +297,7 @@ from plugins, so in Codex these skills use Codex's own subagents.
 | [`repo-context-document`](plugins/yarstack/skills/repo-context-document/SKILL.md) | Document how the system currently works under `docs/context/`. |
 | [`critical-journey-document`](plugins/yarstack/skills/critical-journey-document/SKILL.md) | Document how one actor completes a task, with links to the code and other evidence. |
 | [`explainer-video-create`](plugins/yarstack/skills/explainer-video-create/SKILL.md) | Make a narrated animated video that explains how a feature works, based on investigated code. |
+| [`diagram-create`](plugins/yarstack/skills/diagram-create/SKILL.md) | Draw architecture, deployment, pipeline, and sequence diagrams from the code, with checked layout and one PNG per diagram. |
 | [`docs-review`](plugins/yarstack/skills/docs-review/SKILL.md) | Audit or improve repository documentation against actual behavior. |
 | [`docs-drift-review`](plugins/yarstack/skills/docs-drift-review/SKILL.md) | Find documentation made inaccurate by the current change. |
 | [`text-improve`](plugins/yarstack/skills/text-improve/SKILL.md) | Rewrite technical prose for clarity while preserving meaning. |
